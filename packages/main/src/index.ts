@@ -11,7 +11,7 @@ import {
 } from './hooks';
 import { renderGherkin } from './render';
 import { DataTable } from '@cucumber/cucumber';
-import { DocString } from './models/doc_string';
+import { DocString } from './models/DocString';
 
 export { setWorldConstructor, getWorldConstructor } from './world';
 export { DocString, DataTable }

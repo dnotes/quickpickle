@@ -166,6 +166,23 @@ come to notice:
   the "world" variable passed to each test step contains an "info" property
   with data about the current feature, rule, scenario or example, step, and line:
 
+  ```gherkin
+  Feature: Basic Test
+
+    Rule: Every step must have access to information about itself
+      This is so we can know what is happening when writing step definitions
+
+      @tag-test
+      Example: The world has info
+        Given I run the tests
+        Then the property "info.feature" should include "Basic Test"
+        And the property "info.rule" should include "Every step must have access to information about itself"
+        And the property "info.scenario" should include "The world has info"
+        And the property "info.tags" should include "@tag-test"
+        And the property "info.step" should include "FWAH!!! (or really whatever you write here, since it's part of the step)"
+        And the property "info.line" should include "23"
+  ```
+
 ## Acknowledgements
 
 This project started out as a fork of [vitest-cucumber-plugin] by Sam Ziegler.

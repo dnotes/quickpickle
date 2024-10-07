@@ -19,7 +19,7 @@ Feature: Basic Test
       And the property "info.rule" should include "Every step must have access to information about itself"
       And the property "info.scenario" should include "The world has info"
       And the property "info.tags" should include "@tag-test"
-      And the property "info.step" should include 'the test "step" should include'
+      And the property "info.step" should include "FWAH!!! (or really whatever you write here, since it's part of the step)"
       And the property "info.line" should include "23"
 
   Rule: DataTables and DocStrings must work like in @cucumber/cucumber

@@ -1,8 +1,8 @@
 import { expect } from "vitest";
 import { Given, Then, When } from "../src";
-import { DataTable } from "@cucumber/cucumber";
+import type { DataTable } from "@cucumber/cucumber";
 import { clone, get } from "lodash-es";
-import { DocString } from "../src/models/doc_string";
+import type { DocString } from "../src/models/DocString";
 
 Given("I run the tests", () => {});
 
