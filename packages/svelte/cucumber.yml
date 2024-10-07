@@ -1,0 +1,6 @@
+default:
+  loader: ["vite-node"]
+  paths:
+    - "test/*.feature"
+  import:
+    - "src/**/*.{step.ts,steps.ts}"
