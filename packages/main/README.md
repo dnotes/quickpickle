@@ -91,6 +91,12 @@ Feature: A simple example
     Then the sum should be 9
 ```
 
+### Run tests
+
+```sh
+npx vitest --run
+```
+
 ### Write step definitions
 
 Write your step definitions in a typescript or javascript file as configured
@@ -113,12 +119,6 @@ Given('a/another number {int}', (world, int) => {
 Then('the sum should be {int}', (world, int) => {
   expect(world.numbers.reduce((a,b) => a + b, 0)).toBe(int)
 })
-```
-
-### Run tests
-
-```sh
-npx vitest --run
 ```
 
 ### Define a custom "world" variable
@@ -166,25 +166,22 @@ come to notice:
   the "world" variable passed to each test step contains an "info" property
   with data about the current feature, rule, scenario or example, step, and line:
 
-  ```gherkin
-  Feature: Basic Test
+## Acknowledgements
 
-  Rule: Every step must have access to information about itself
-    This is so we can know what is happening when writing step definitions
+This project started out as a fork of [vitest-cucumber-plugin] by Sam Ziegler.
+It's been almost completely rewritten in the following ways:
 
-    @tag-test
-    Example: The world has info
-      Given I run the tests
-      Then the property "info.feature" should include "Basic Test"
-      And the property "info.rule" should include "Every step must have access to information about itself"
-      And the property "info.scenario" should include "The world has info"
-      And the property "info.tags" should include "@tag-test"
-      And the property "info.step" should include 'the test "step" should include'
-      And the property "info.line" should include "23"
-  ```
+- it has been converted to typescript
+- a custom Gherkin parser has been replaced with the official [Gherkin Parser]
+- the step definition format has been reverted to more closely match CucumberJS
 
+Nonetheless, the brilliant ideas behind the original plugin are still present
+in the architecture of this project. Thanks Sam, your work blew my mind.
+
+![it's so simple](https://www.memecreator.org/static/images/memes/5439760.jpg)
 
 [Vitest]: https://vitest.dev/
 [Gherkin Syntax]: https://cucumber.io/docs/gherkin/reference/
 [Gherkin Parser]: https://www.npmjs.com/package/@cucumber/gherkin
 [CucumberJS]: https://github.com/cucumber/cucumber-js
+[vitest-cucumber-plugin]: https://github.com/samuel-ziegler/vitest-cucumber-plugin
