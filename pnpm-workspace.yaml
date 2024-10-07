@@ -1,0 +1,9 @@
+# pnpm-workspace.yaml
+
+# The directory where the monorepo's root package is located.
+packages:
+  # List of directories containing npm packages (relative to the location of this file)
+  - 'packages/*'
+  - 'sites/*'
+
+# Other configurations can be added here if needed

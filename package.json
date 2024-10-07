@@ -1,0 +1,34 @@
+{
+  "name": "quickpickle",
+  "version": "0.0.1",
+  "description": "A suite of tools for behavioral testing (BDD) using Gherkin for Javascript.",
+  "main": "index.js",
+  "scripts": {
+    "changeset": "changeset",
+    "publish": "changeset publish",
+    "version": "changeset version",
+    "build": "pnpm run build --workspace-root",
+    "test": "pnpm run test --workspace-root"
+  },
+  "keywords": [
+    "BDD",
+    "testing",
+    "behavioral",
+    "cucumber",
+    "gherkin",
+    "vitest",
+    "playwright",
+    "react",
+    "svelte",
+    "vue",
+    "angular"
+  ],
+  "author": "David Hunt",
+  "license": "MIT",
+  "devDependencies": {
+    "pnpm": "^9.12.0"
+  },
+  "dependencies": {
+    "@changesets/cli": "^2.27.9"
+  }
+}
