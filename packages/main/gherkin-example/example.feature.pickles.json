@@ -1,0 +1,1023 @@
+[
+  {
+    "id": "bf74f356-1a65-470f-a49a-48aa7d654750",
+    "uri": "/gherkin-example/example.feature",
+    "astNodeIds": [
+      "b18bda58-7aad-42ac-937a-5aa485d61a4e"
+    ],
+    "tags": [
+      {
+        "name": "@tag",
+        "astNodeId": "4678958c-89a9-4a08-96b9-ef22f7a3bf5d"
+      },
+      {
+        "name": "@multiple_tags",
+        "astNodeId": "a58fa027-7ea7-492c-bac1-b335c1c41359"
+      },
+      {
+        "name": "@scenario_tag",
+        "astNodeId": "762d59d0-90ec-45bd-9c5c-ee5faa40084c"
+      }
+    ],
+    "name": "Basic scenario example",
+    "language": "en",
+    "steps": [
+      {
+        "id": "60ab8a95-f264-4c4d-9443-7f19d8fe6ab9",
+        "text": "a common precondition",
+        "type": "Context",
+        "astNodeIds": [
+          "e6cc37b8-d2df-4c06-afe0-40d777710a39"
+        ]
+      },
+      {
+        "id": "1a08ccbd-44f7-4bff-b914-22bbf0474725",
+        "text": "another common precondition",
+        "type": "Context",
+        "astNodeIds": [
+          "649383b7-fa8e-4067-961e-c8c9beb8f451"
+        ]
+      },
+      {
+        "id": "95674909-53e0-45a8-89cc-68ecf34e40cf",
+        "text": "an initial context",
+        "type": "Context",
+        "astNodeIds": [
+          "ced49e8b-5fce-4339-8d88-98038c109cd5"
+        ]
+      },
+      {
+        "id": "58fb570d-cb2b-4bb4-972d-d13275b59c04",
+        "text": "an action is performed",
+        "type": "Action",
+        "astNodeIds": [
+          "76c58037-33b5-4812-bf68-533a32756364"
+        ]
+      },
+      {
+        "id": "b367ebb3-d7bc-4efe-9845-0f2e900ef8a6",
+        "text": "a verifiable outcome is achieved",
+        "type": "Outcome",
+        "astNodeIds": [
+          "c9205dec-6c4e-4650-8cc7-12180e731214"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "650da710-6cef-46b4-86bf-efeeba752704",
+    "uri": "/gherkin-example/example.feature",
+    "astNodeIds": [
+      "13b238cd-d02f-416e-8bc2-0a5426d8618d",
+      "27a31b92-3520-46b4-a14e-df4074bcde92"
+    ],
+    "name": "Parameterized scenario",
+    "language": "en",
+    "steps": [
+      {
+        "id": "59c64912-818f-4e4d-b71a-b09c46020c87",
+        "text": "a common precondition",
+        "type": "Context",
+        "astNodeIds": [
+          "e6cc37b8-d2df-4c06-afe0-40d777710a39"
+        ]
+      },
+      {
+        "id": "baaf6562-1914-4d08-b779-47ad7f9134fd",
+        "text": "another common precondition",
+        "type": "Context",
+        "astNodeIds": [
+          "649383b7-fa8e-4067-961e-c8c9beb8f451"
+        ]
+      },
+      {
+        "id": "186bf27a-6736-46a1-bec2-2ca208ddced1",
+        "text": "a precondition with value1",
+        "type": "Context",
+        "astNodeIds": [
+          "a41be998-4c15-40d1-9b91-9d63f1cc41b6",
+          "27a31b92-3520-46b4-a14e-df4074bcde92"
+        ]
+      },
+      {
+        "id": "fed5a4d4-3ed7-493c-85aa-113704ffc0c7",
+        "text": "an action is taken with value2",
+        "type": "Action",
+        "astNodeIds": [
+          "d3e37706-edcc-4dd8-8348-03e0034974d2",
+          "27a31b92-3520-46b4-a14e-df4074bcde92"
+        ]
+      },
+      {
+        "id": "be1a6d78-7d34-4ff8-858c-330d3a33d43f",
+        "text": "the outcome is result1",
+        "type": "Outcome",
+        "astNodeIds": [
+          "103a3fa0-6278-4d8f-ae0c-c9a482cb3aa4",
+          "27a31b92-3520-46b4-a14e-df4074bcde92"
+        ]
+      }
+    ],
+    "tags": [
+      {
+        "name": "@tag",
+        "astNodeId": "4678958c-89a9-4a08-96b9-ef22f7a3bf5d"
+      },
+      {
+        "name": "@multiple_tags",
+        "astNodeId": "a58fa027-7ea7-492c-bac1-b335c1c41359"
+      }
+    ]
+  },
+  {
+    "id": "9ecd6fc5-22a8-4022-a729-1c6aef49fb9d",
+    "uri": "/gherkin-example/example.feature",
+    "astNodeIds": [
+      "13b238cd-d02f-416e-8bc2-0a5426d8618d",
+      "00301597-8b1b-4dbd-b7b6-f9924acdc5f4"
+    ],
+    "name": "Parameterized scenario",
+    "language": "en",
+    "steps": [
+      {
+        "id": "8cd82333-8a13-4241-8098-6094e7e588e9",
+        "text": "a common precondition",
+        "type": "Context",
+        "astNodeIds": [
+          "e6cc37b8-d2df-4c06-afe0-40d777710a39"
+        ]
+      },
+      {
+        "id": "3a17594c-7f3d-4d1d-b09c-fbaabe73562c",
+        "text": "another common precondition",
+        "type": "Context",
+        "astNodeIds": [
+          "649383b7-fa8e-4067-961e-c8c9beb8f451"
+        ]
+      },
+      {
+        "id": "cf878df8-e05b-4c11-bbd5-5ad6d9236268",
+        "text": "a precondition with value3",
+        "type": "Context",
+        "astNodeIds": [
+          "a41be998-4c15-40d1-9b91-9d63f1cc41b6",
+          "00301597-8b1b-4dbd-b7b6-f9924acdc5f4"
+        ]
+      },
+      {
+        "id": "060fd797-0c98-465b-b6be-cda615fe1e42",
+        "text": "an action is taken with value4",
+        "type": "Action",
+        "astNodeIds": [
+          "d3e37706-edcc-4dd8-8348-03e0034974d2",
+          "00301597-8b1b-4dbd-b7b6-f9924acdc5f4"
+        ]
+      },
+      {
+        "id": "7a9d47a7-6649-495e-be52-4c16ce838441",
+        "text": "the outcome is result2",
+        "type": "Outcome",
+        "astNodeIds": [
+          "103a3fa0-6278-4d8f-ae0c-c9a482cb3aa4",
+          "00301597-8b1b-4dbd-b7b6-f9924acdc5f4"
+        ]
+      }
+    ],
+    "tags": [
+      {
+        "name": "@tag",
+        "astNodeId": "4678958c-89a9-4a08-96b9-ef22f7a3bf5d"
+      },
+      {
+        "name": "@multiple_tags",
+        "astNodeId": "a58fa027-7ea7-492c-bac1-b335c1c41359"
+      }
+    ]
+  },
+  {
+    "id": "2b7a5be3-9501-456f-a048-9940d357d5af",
+    "uri": "/gherkin-example/example.feature",
+    "astNodeIds": [
+      "b8ffbdf8-3680-419a-8dbe-4dd05050dc35"
+    ],
+    "tags": [
+      {
+        "name": "@tag",
+        "astNodeId": "4678958c-89a9-4a08-96b9-ef22f7a3bf5d"
+      },
+      {
+        "name": "@multiple_tags",
+        "astNodeId": "a58fa027-7ea7-492c-bac1-b335c1c41359"
+      },
+      {
+        "name": "@data_table",
+        "astNodeId": "891df95e-07b8-4928-b861-3054df8f9bbb"
+      }
+    ],
+    "name": "Scenario with various DataTable types",
+    "language": "en",
+    "steps": [
+      {
+        "id": "959c6070-9a7d-423c-b049-091bddf8055b",
+        "text": "a common precondition",
+        "type": "Context",
+        "astNodeIds": [
+          "e6cc37b8-d2df-4c06-afe0-40d777710a39"
+        ]
+      },
+      {
+        "id": "7ed3698c-250d-4d89-ac3b-9ae40882f87d",
+        "text": "another common precondition",
+        "type": "Context",
+        "astNodeIds": [
+          "649383b7-fa8e-4067-961e-c8c9beb8f451"
+        ]
+      },
+      {
+        "id": "3f9199ee-9d8f-4a9f-a8b8-ab4336f0f213",
+        "text": "a list of strings:",
+        "type": "Context",
+        "argument": {
+          "dataTable": {
+            "rows": [
+              {
+                "cells": [
+                  {
+                    "value": "Apple"
+                  }
+                ]
+              },
+              {
+                "cells": [
+                  {
+                    "value": "Banana"
+                  }
+                ]
+              },
+              {
+                "cells": [
+                  {
+                    "value": "Cherry"
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        "astNodeIds": [
+          "084b9f00-bb2e-4b2d-9b38-9b8588dcfed9"
+        ]
+      },
+      {
+        "id": "f47b049b-1b11-4655-910c-0aa81373877c",
+        "text": "a list of integers:",
+        "type": "Context",
+        "argument": {
+          "dataTable": {
+            "rows": [
+              {
+                "cells": [
+                  {
+                    "value": "1"
+                  }
+                ]
+              },
+              {
+                "cells": [
+                  {
+                    "value": "2"
+                  }
+                ]
+              },
+              {
+                "cells": [
+                  {
+                    "value": "3"
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        "astNodeIds": [
+          "800be78b-b4b5-4e53-bcef-8914a62d58e6"
+        ]
+      },
+      {
+        "id": "0d012072-03be-4193-846f-110b7b7cb383",
+        "text": "a map of string to string:",
+        "type": "Context",
+        "argument": {
+          "dataTable": {
+            "rows": [
+              {
+                "cells": [
+                  {
+                    "value": "key1"
+                  },
+                  {
+                    "value": "value1"
+                  }
+                ]
+              },
+              {
+                "cells": [
+                  {
+                    "value": "key2"
+                  },
+                  {
+                    "value": "value2"
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        "astNodeIds": [
+          "000db2ba-6f30-4812-9703-4f714f1f8528"
+        ]
+      },
+      {
+        "id": "f28f0a31-1ac8-489e-848e-4f092b14156c",
+        "text": "a list of maps:",
+        "type": "Context",
+        "argument": {
+          "dataTable": {
+            "rows": [
+              {
+                "cells": [
+                  {
+                    "value": "name"
+                  },
+                  {
+                    "value": "age"
+                  },
+                  {
+                    "value": "role"
+                  }
+                ]
+              },
+              {
+                "cells": [
+                  {
+                    "value": "Alice"
+                  },
+                  {
+                    "value": "30"
+                  },
+                  {
+                    "value": "admin"
+                  }
+                ]
+              },
+              {
+                "cells": [
+                  {
+                    "value": "Bob"
+                  },
+                  {
+                    "value": "25"
+                  },
+                  {
+                    "value": "user"
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        "astNodeIds": [
+          "3b1e5917-b519-4b25-ba59-7b2550794898"
+        ]
+      },
+      {
+        "id": "68f824b9-20f0-4cab-8165-923ff324c6e2",
+        "text": "a map of string to list of string:",
+        "type": "Context",
+        "argument": {
+          "dataTable": {
+            "rows": [
+              {
+                "cells": [
+                  {
+                    "value": "fruits"
+                  },
+                  {
+                    "value": "Apple, Banana, Cherry"
+                  }
+                ]
+              },
+              {
+                "cells": [
+                  {
+                    "value": "vegetables"
+                  },
+                  {
+                    "value": "Carrot, Potato, Onion"
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        "astNodeIds": [
+          "9b270be0-fc52-4c6e-ace2-170e69bf6d79"
+        ]
+      },
+      {
+        "id": "523baf7c-92e3-4701-8bb9-797721e0f5f9",
+        "text": "they are processed",
+        "type": "Action",
+        "astNodeIds": [
+          "af1aead6-77a2-427c-8a6f-cde9ffbbdfda"
+        ]
+      },
+      {
+        "id": "98bc66be-90fb-4b54-90b5-df1b3610b37b",
+        "text": "the system behaves correctly",
+        "type": "Outcome",
+        "astNodeIds": [
+          "ac62fd8c-0c08-4723-bfc9-3da3398c6420"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "7a5d5cb1-5df1-4d75-b263-15da96c3c3a2",
+    "uri": "/gherkin-example/example.feature",
+    "astNodeIds": [
+      "f1b206fe-a60d-45f9-ab3e-ccd0ef36cf97"
+    ],
+    "tags": [
+      {
+        "name": "@tag",
+        "astNodeId": "4678958c-89a9-4a08-96b9-ef22f7a3bf5d"
+      },
+      {
+        "name": "@multiple_tags",
+        "astNodeId": "a58fa027-7ea7-492c-bac1-b335c1c41359"
+      },
+      {
+        "name": "@rule_tag",
+        "astNodeId": "a61c59f9-303d-437b-b8e9-203f9035b93b"
+      }
+    ],
+    "name": "Rule example scenario",
+    "language": "en",
+    "steps": [
+      {
+        "id": "7e42d38b-daf3-4d00-a0b7-b7fc41b066b2",
+        "text": "a common precondition",
+        "type": "Context",
+        "astNodeIds": [
+          "e6cc37b8-d2df-4c06-afe0-40d777710a39"
+        ]
+      },
+      {
+        "id": "43e3de45-fa3e-404e-8ac1-6d563141d591",
+        "text": "another common precondition",
+        "type": "Context",
+        "astNodeIds": [
+          "649383b7-fa8e-4067-961e-c8c9beb8f451"
+        ]
+      },
+      {
+        "id": "f4270b5c-28fe-4e84-ac68-8d9ee3886505",
+        "text": "a specific rule context",
+        "type": "Context",
+        "astNodeIds": [
+          "aec79176-1263-4b23-a18d-4ea6ddc6a46e"
+        ]
+      },
+      {
+        "id": "bcfaecc6-edea-4843-bc55-5687270b7b3c",
+        "text": "another specific rule context",
+        "type": "Context",
+        "astNodeIds": [
+          "44a81676-41ba-479a-a104-b955c1441af5"
+        ]
+      },
+      {
+        "id": "d14e5b42-219a-4fe0-a91a-4c80c17b727f",
+        "text": "a specific rule context",
+        "type": "Context",
+        "astNodeIds": [
+          "b6d8652d-90ee-45d6-94fb-e8d154e8bedf"
+        ]
+      },
+      {
+        "id": "38a094fc-a67b-4a74-add7-22370d5fda73",
+        "text": "a rule-related action occurs",
+        "type": "Action",
+        "astNodeIds": [
+          "fc7b88c8-805f-4312-93ae-f1ecf6cf6ee5"
+        ]
+      },
+      {
+        "id": "c160797f-55b1-42d9-bd7c-4688714cab06",
+        "text": "the rule outcome is observed",
+        "type": "Outcome",
+        "astNodeIds": [
+          "d689bacc-e39f-4754-84b2-b00fc2c4f923"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "2ff6b958-e812-4b30-a9d9-0394e6782bad",
+    "uri": "/gherkin-example/example.feature",
+    "astNodeIds": [
+      "809bfd8e-e180-488e-9ac6-f38dcf0896c8"
+    ],
+    "tags": [
+      {
+        "name": "@tag",
+        "astNodeId": "4678958c-89a9-4a08-96b9-ef22f7a3bf5d"
+      },
+      {
+        "name": "@multiple_tags",
+        "astNodeId": "a58fa027-7ea7-492c-bac1-b335c1c41359"
+      },
+      {
+        "name": "@rule_tag",
+        "astNodeId": "a61c59f9-303d-437b-b8e9-203f9035b93b"
+      }
+    ],
+    "name": "Also a rule example",
+    "language": "en",
+    "steps": [
+      {
+        "id": "c053ebdf-4bbf-4fd7-9f03-f677853c051d",
+        "text": "a common precondition",
+        "type": "Context",
+        "astNodeIds": [
+          "e6cc37b8-d2df-4c06-afe0-40d777710a39"
+        ]
+      },
+      {
+        "id": "469ba182-af26-4ebc-a312-a9ca93e58c1b",
+        "text": "another common precondition",
+        "type": "Context",
+        "astNodeIds": [
+          "649383b7-fa8e-4067-961e-c8c9beb8f451"
+        ]
+      },
+      {
+        "id": "e9410be0-e4bf-4151-9289-a439febfc424",
+        "text": "a specific rule context",
+        "type": "Context",
+        "astNodeIds": [
+          "aec79176-1263-4b23-a18d-4ea6ddc6a46e"
+        ]
+      },
+      {
+        "id": "263f6776-a89b-4256-9e5f-ad9c8367e86a",
+        "text": "another specific rule context",
+        "type": "Context",
+        "astNodeIds": [
+          "44a81676-41ba-479a-a104-b955c1441af5"
+        ]
+      },
+      {
+        "id": "cda9a75e-095c-482d-bff6-28243a86afde",
+        "text": "a Rule statement",
+        "type": "Context",
+        "astNodeIds": [
+          "f304d1f7-d53a-4f5e-b4f4-91407b67c6bd"
+        ]
+      },
+      {
+        "id": "8903e374-8744-4ccf-8596-75ee2a70614c",
+        "text": "a scenario is below it",
+        "type": "Action",
+        "astNodeIds": [
+          "02abe1b1-1c59-4a36-9ee3-aa3c5e72e933"
+        ]
+      },
+      {
+        "id": "ae034f93-d616-47a7-9e21-983a3ffe3f2c",
+        "text": "it is a child of the Rule, even if it isn't indented",
+        "type": "Outcome",
+        "astNodeIds": [
+          "01afe11b-0880-4523-8fb3-050c6e3c553f"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "c0448360-292c-48b2-b7d2-ac1f73397ab5",
+    "uri": "/gherkin-example/example.feature",
+    "astNodeIds": [
+      "bdbdc5fc-194e-4ba6-a3af-6ec0c576332b"
+    ],
+    "tags": [
+      {
+        "name": "@tag",
+        "astNodeId": "4678958c-89a9-4a08-96b9-ef22f7a3bf5d"
+      },
+      {
+        "name": "@multiple_tags",
+        "astNodeId": "a58fa027-7ea7-492c-bac1-b335c1c41359"
+      },
+      {
+        "name": "@rule_tag",
+        "astNodeId": "a61c59f9-303d-437b-b8e9-203f9035b93b"
+      },
+      {
+        "name": "@wip",
+        "astNodeId": "35ee67b3-9686-41a3-be62-95506a46798f"
+      },
+      {
+        "name": "@skip",
+        "astNodeId": "70020fd2-6399-45e2-8e54-917a5e3c2bd4"
+      }
+    ],
+    "name": "Scenario with doc string",
+    "language": "en",
+    "steps": [
+      {
+        "id": "b47c8691-4602-4606-8755-573fc7e16fc7",
+        "text": "a common precondition",
+        "type": "Context",
+        "astNodeIds": [
+          "e6cc37b8-d2df-4c06-afe0-40d777710a39"
+        ]
+      },
+      {
+        "id": "da2ecfdf-b84b-44a1-a020-054b95e55d9b",
+        "text": "another common precondition",
+        "type": "Context",
+        "astNodeIds": [
+          "649383b7-fa8e-4067-961e-c8c9beb8f451"
+        ]
+      },
+      {
+        "id": "dd57c895-000d-42b2-b00c-8091068d16c3",
+        "text": "a specific rule context",
+        "type": "Context",
+        "astNodeIds": [
+          "aec79176-1263-4b23-a18d-4ea6ddc6a46e"
+        ]
+      },
+      {
+        "id": "0d99d963-09da-4023-9a62-a48178a5f0c2",
+        "text": "another specific rule context",
+        "type": "Context",
+        "astNodeIds": [
+          "44a81676-41ba-479a-a104-b955c1441af5"
+        ]
+      },
+      {
+        "id": "d2456da5-749d-424c-bfc4-dee3abc4bdd1",
+        "text": "a document with the following content:",
+        "type": "Context",
+        "argument": {
+          "docString": {
+            "content": "This is a doc string.\nIt can contain multiple lines.\nUseful for specifying larger text inputs."
+          }
+        },
+        "astNodeIds": [
+          "ed3135d8-9158-4334-a551-530060514fc6"
+        ]
+      },
+      {
+        "id": "4c9fbf9e-5b5d-402b-8242-a2a0dc4adaa5",
+        "text": "the document is processed",
+        "type": "Action",
+        "astNodeIds": [
+          "e5b119b7-88cd-4d6f-85b3-b46052815f65"
+        ]
+      },
+      {
+        "id": "afd264c4-3609-4d7d-8208-ce3763ab991b",
+        "text": "the system handles it correctly",
+        "type": "Outcome",
+        "astNodeIds": [
+          "f28aaa5a-7310-4a5e-990c-5cf89ea1b98d"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "ca2b4fde-c1b9-412a-9a6e-0bdea94e2b02",
+    "uri": "/gherkin-example/example.feature",
+    "astNodeIds": [
+      "348706a3-15f5-4453-ad66-14c18df95a3a"
+    ],
+    "tags": [
+      {
+        "name": "@tag",
+        "astNodeId": "4678958c-89a9-4a08-96b9-ef22f7a3bf5d"
+      },
+      {
+        "name": "@multiple_tags",
+        "astNodeId": "a58fa027-7ea7-492c-bac1-b335c1c41359"
+      },
+      {
+        "name": "@rule_tag",
+        "astNodeId": "a61c59f9-303d-437b-b8e9-203f9035b93b"
+      }
+    ],
+    "name": "Scenario with content type doc string",
+    "language": "en",
+    "steps": [
+      {
+        "id": "c160a8e1-44bd-4ed5-9d56-cd4d9c3b107c",
+        "text": "a common precondition",
+        "type": "Context",
+        "astNodeIds": [
+          "e6cc37b8-d2df-4c06-afe0-40d777710a39"
+        ]
+      },
+      {
+        "id": "0397bfbe-15ad-482a-9cbf-95717e02392f",
+        "text": "another common precondition",
+        "type": "Context",
+        "astNodeIds": [
+          "649383b7-fa8e-4067-961e-c8c9beb8f451"
+        ]
+      },
+      {
+        "id": "5cddcc82-a784-4afb-a359-905217a33421",
+        "text": "a specific rule context",
+        "type": "Context",
+        "astNodeIds": [
+          "aec79176-1263-4b23-a18d-4ea6ddc6a46e"
+        ]
+      },
+      {
+        "id": "f61f0868-17b3-43a7-9259-0e5bb8cd53e2",
+        "text": "another specific rule context",
+        "type": "Context",
+        "astNodeIds": [
+          "44a81676-41ba-479a-a104-b955c1441af5"
+        ]
+      },
+      {
+        "id": "d6ddc541-8add-4761-a0d7-49775b02bb86",
+        "text": "a document with the following Markdown content:",
+        "type": "Context",
+        "argument": {
+          "docString": {
+            "content": "Lorem Ipsum\n===============\nLorem ipsum dolor sit amet,\nconsectetur adipiscing elit.",
+            "mediaType": "markdown"
+          }
+        },
+        "astNodeIds": [
+          "eaa92ae1-b354-4bc4-b481-b174aa867578"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "0088f086-d181-44ed-99f2-7a97983a338f",
+    "uri": "/gherkin-example/example.feature",
+    "astNodeIds": [
+      "0d06f09e-70d9-473a-b20e-b3c0e7b0a4e2"
+    ],
+    "tags": [
+      {
+        "name": "@tag",
+        "astNodeId": "4678958c-89a9-4a08-96b9-ef22f7a3bf5d"
+      },
+      {
+        "name": "@multiple_tags",
+        "astNodeId": "a58fa027-7ea7-492c-bac1-b335c1c41359"
+      },
+      {
+        "name": "@rule_tag",
+        "astNodeId": "a61c59f9-303d-437b-b8e9-203f9035b93b"
+      }
+    ],
+    "name": "Scenario with And and But steps",
+    "language": "en",
+    "steps": [
+      {
+        "id": "b250d597-d86b-403d-afda-c944b562cbf8",
+        "text": "a common precondition",
+        "type": "Context",
+        "astNodeIds": [
+          "e6cc37b8-d2df-4c06-afe0-40d777710a39"
+        ]
+      },
+      {
+        "id": "fb3d7743-9c84-4e30-8d9a-28c042d005b3",
+        "text": "another common precondition",
+        "type": "Context",
+        "astNodeIds": [
+          "649383b7-fa8e-4067-961e-c8c9beb8f451"
+        ]
+      },
+      {
+        "id": "e6cf6381-bfcd-4032-b48c-0e1fcb79605d",
+        "text": "a specific rule context",
+        "type": "Context",
+        "astNodeIds": [
+          "aec79176-1263-4b23-a18d-4ea6ddc6a46e"
+        ]
+      },
+      {
+        "id": "999244dc-8f2a-4f5c-80e1-538d8fa76330",
+        "text": "another specific rule context",
+        "type": "Context",
+        "astNodeIds": [
+          "44a81676-41ba-479a-a104-b955c1441af5"
+        ]
+      },
+      {
+        "id": "45bfd8b3-76c7-4cd0-b975-c8c955bf06db",
+        "text": "an initial state",
+        "type": "Context",
+        "astNodeIds": [
+          "bfe4c2ad-b93e-4bae-a3f5-988824be4ee4"
+        ]
+      },
+      {
+        "id": "9af24598-3f49-4839-9f9a-ffbe0036febb",
+        "text": "some additional context",
+        "type": "Context",
+        "astNodeIds": [
+          "6f963408-e4e0-4b97-b610-8afdaa2e826b"
+        ]
+      },
+      {
+        "id": "3c3a622c-c7bf-45c1-a09a-3cd9e3dc6223",
+        "text": "an action is performed",
+        "type": "Action",
+        "astNodeIds": [
+          "cd5488e7-4cf0-4cc8-a778-c849ec5a9f5a"
+        ]
+      },
+      {
+        "id": "23493955-6495-474c-956f-8211b3c6af90",
+        "text": "another action is performed",
+        "type": "Action",
+        "astNodeIds": [
+          "45d14816-79e4-4c85-b20c-c38aa80bd8e5"
+        ]
+      },
+      {
+        "id": "d57b56f3-be91-416f-bc02-726e1450701d",
+        "text": "some assertion is made",
+        "type": "Outcome",
+        "astNodeIds": [
+          "82bdee73-5656-466c-8222-d4b747ab3e69"
+        ]
+      },
+      {
+        "id": "34ca45c4-2558-4d5f-9e23-0f619f60b64a",
+        "text": "some exception is also handled",
+        "type": "Outcome",
+        "astNodeIds": [
+          "dc555c6d-3a26-4108-ae93-e540e00dc7e9"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "25d55957-733a-41f5-8002-295132b9e081",
+    "uri": "/gherkin-example/example.feature",
+    "astNodeIds": [
+      "fa9982b0-1dc7-4898-817f-c3ae363ca92e"
+    ],
+    "tags": [
+      {
+        "name": "@tag",
+        "astNodeId": "4678958c-89a9-4a08-96b9-ef22f7a3bf5d"
+      },
+      {
+        "name": "@multiple_tags",
+        "astNodeId": "a58fa027-7ea7-492c-bac1-b335c1c41359"
+      },
+      {
+        "name": "@rule_tag",
+        "astNodeId": "a61c59f9-303d-437b-b8e9-203f9035b93b"
+      },
+      {
+        "name": "@failing",
+        "astNodeId": "8a679759-f8b7-4013-95bd-e87677e391b9"
+      }
+    ],
+    "name": "Failing scenario example",
+    "language": "en",
+    "steps": [
+      {
+        "id": "34ce6e01-6d2b-4cfa-95bc-2b8e09c3d8e9",
+        "text": "a common precondition",
+        "type": "Context",
+        "astNodeIds": [
+          "e6cc37b8-d2df-4c06-afe0-40d777710a39"
+        ]
+      },
+      {
+        "id": "352ad070-03cd-49dd-929e-f5837d44fea2",
+        "text": "another common precondition",
+        "type": "Context",
+        "astNodeIds": [
+          "649383b7-fa8e-4067-961e-c8c9beb8f451"
+        ]
+      },
+      {
+        "id": "d1fac584-12d1-4d5e-88f7-f8af66f5249c",
+        "text": "a specific rule context",
+        "type": "Context",
+        "astNodeIds": [
+          "aec79176-1263-4b23-a18d-4ea6ddc6a46e"
+        ]
+      },
+      {
+        "id": "4d14fc6f-9ba0-4d18-85f6-b5e0e5b3eaaf",
+        "text": "another specific rule context",
+        "type": "Context",
+        "astNodeIds": [
+          "44a81676-41ba-479a-a104-b955c1441af5"
+        ]
+      },
+      {
+        "id": "a4bdff14-0ada-4fb6-b500-3a9db00f2ff4",
+        "text": "a condition that will fail",
+        "type": "Context",
+        "astNodeIds": [
+          "e4bf85ea-dd9e-498c-b6ec-cee8799ec64f"
+        ]
+      },
+      {
+        "id": "2adf6a2e-bdfb-45e3-bd64-c8e8d5f38cef",
+        "text": "an impossible action is attempted",
+        "type": "Action",
+        "astNodeIds": [
+          "4fc3afdc-8515-4c4e-9b90-791cd83adb4d"
+        ]
+      },
+      {
+        "id": "ff79e0e3-ac37-4bbc-aeb7-144795609a7b",
+        "text": "an unreachable assertion is made",
+        "type": "Outcome",
+        "astNodeIds": [
+          "251d9ec2-ad33-4845-99a4-901b4396d515"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "07c81ef0-4326-415e-9421-a1d10fdceac3",
+    "uri": "/gherkin-example/example.feature",
+    "astNodeIds": [
+      "f2c471f8-d4e5-4aea-ba56-49e543f238ff"
+    ],
+    "tags": [
+      {
+        "name": "@tag",
+        "astNodeId": "4678958c-89a9-4a08-96b9-ef22f7a3bf5d"
+      },
+      {
+        "name": "@multiple_tags",
+        "astNodeId": "a58fa027-7ea7-492c-bac1-b335c1c41359"
+      }
+    ],
+    "name": "This rule doesn't nest",
+    "language": "en",
+    "steps": [
+      {
+        "id": "034d97cd-0159-4d4a-916b-96a8e7810d08",
+        "text": "a common precondition",
+        "type": "Context",
+        "astNodeIds": [
+          "e6cc37b8-d2df-4c06-afe0-40d777710a39"
+        ]
+      },
+      {
+        "id": "f203922f-d422-4721-ab6b-5b39e1baea3a",
+        "text": "another common precondition",
+        "type": "Context",
+        "astNodeIds": [
+          "649383b7-fa8e-4067-961e-c8c9beb8f451"
+        ]
+      },
+      {
+        "id": "e971b07f-a1e2-458f-bdf9-0592d34fc731",
+        "text": "a Rule statement",
+        "type": "Context",
+        "astNodeIds": [
+          "eb10666e-8023-473c-bc9d-68abe5e69ea8"
+        ]
+      },
+      {
+        "id": "4228a7fa-348e-40f9-a512-7d211b0e211f",
+        "text": "another Rule is indented below it",
+        "type": "Action",
+        "astNodeIds": [
+          "ab23dd1e-15cb-45e1-a781-18c4b172f10c"
+        ]
+      },
+      {
+        "id": "cf0cfcf6-b49e-4fb0-8728-5438482916e6",
+        "text": "the indented Rule is NOT a child of the previous Rule",
+        "type": "Outcome",
+        "astNodeIds": [
+          "afa77d73-064f-4c12-a272-5a694b108cae"
+        ]
+      }
+    ]
+  }
+]

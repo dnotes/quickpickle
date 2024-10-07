@@ -1,0 +1,64 @@
+{
+  "name": "quickpickle",
+  "version": "1.0.0",
+  "description": "Plugin for Vitest to run tests written in Gherkin Syntax.",
+  "keywords": [
+    "BDD",
+    "testing",
+    "behavioral",
+    "cucumber",
+    "gherkin",
+    "vitest",
+    "playwright",
+    "react",
+    "svelte",
+    "vue",
+    "angular"
+  ],
+  "homepage": "https://github.com/dnotes/quickpickle#readme",
+  "bugs": {
+    "url": "https://github.com/dnotes/quickpickle/issues"
+  },
+  "license": "MIT",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.esm.js",
+  "types": "./dist/index.d.ts",
+  "type": "module",
+  "exports": {
+    ".": {
+      "require": "./dist/index.cjs",
+      "import": "./dist/index.esm.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "rollup -c",
+    "type-check": "tsc --noEmit",
+    "test:watch": "vitest",
+    "test": "vitest --run"
+  },
+  "dependencies": {
+    "@cucumber/cucumber": "^11.0.1",
+    "@cucumber/cucumber-expressions": "^16.1.2",
+    "@cucumber/gherkin": "^29.0.0",
+    "@cucumber/messages": "^22.0.0",
+    "@cucumber/tag-expressions": "^6.1.0",
+    "fast-glob": "^3.3.2",
+    "lodash-es": "^4.17.21"
+  },
+  "devDependencies": {
+    "@rollup/plugin-replace": "^6.0.1",
+    "@rollup/plugin-terser": "^0.4.4",
+    "@rollup/plugin-typescript": "^12.1.0",
+    "@types/lodash": "^4.14.194",
+    "@types/lodash-es": "^4.17.12",
+    "@types/node": "^18.16.3",
+    "rollup": "^3.20.7",
+    "typescript": "^5.6.2",
+    "vitest": "^2.1.2"
+  },
+  "repository": "https://github.com/dnotes/quickpickle.git"
+}

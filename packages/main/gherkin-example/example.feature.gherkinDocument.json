@@ -1,0 +1,1148 @@
+{
+  "feature": {
+    "tags": [
+      {
+        "location": {
+          "line": 4,
+          "column": 1
+        },
+        "name": "@tag",
+        "id": "4678958c-89a9-4a08-96b9-ef22f7a3bf5d"
+      },
+      {
+        "location": {
+          "line": 4,
+          "column": 6
+        },
+        "name": "@multiple_tags",
+        "id": "a58fa027-7ea7-492c-bac1-b335c1c41359"
+      }
+    ],
+    "location": {
+      "line": 5,
+      "column": 1
+    },
+    "language": "en",
+    "keyword": "Feature",
+    "name": "Comprehensive Gherkin Syntax Example",
+    "description": "  This is a description of the feature.\n  It can span multiple lines and provides context.",
+    "children": [
+      {
+        "background": {
+          "id": "c7cee46e-80b0-4757-a601-21764487bcea",
+          "location": {
+            "line": 9,
+            "column": 3
+          },
+          "keyword": "Background",
+          "name": "Common setup steps",
+          "description": "",
+          "steps": [
+            {
+              "id": "e6cc37b8-d2df-4c06-afe0-40d777710a39",
+              "location": {
+                "line": 10,
+                "column": 5
+              },
+              "keyword": "Given ",
+              "keywordType": "Context",
+              "text": "a common precondition"
+            },
+            {
+              "id": "649383b7-fa8e-4067-961e-c8c9beb8f451",
+              "location": {
+                "line": 11,
+                "column": 5
+              },
+              "keyword": "And ",
+              "keywordType": "Conjunction",
+              "text": "another common precondition"
+            }
+          ]
+        }
+      },
+      {
+        "scenario": {
+          "id": "b18bda58-7aad-42ac-937a-5aa485d61a4e",
+          "tags": [
+            {
+              "location": {
+                "line": 13,
+                "column": 3
+              },
+              "name": "@scenario_tag",
+              "id": "762d59d0-90ec-45bd-9c5c-ee5faa40084c"
+            }
+          ],
+          "location": {
+            "line": 14,
+            "column": 3
+          },
+          "keyword": "Scenario",
+          "name": "Basic scenario example",
+          "description": "",
+          "steps": [
+            {
+              "id": "ced49e8b-5fce-4339-8d88-98038c109cd5",
+              "location": {
+                "line": 15,
+                "column": 5
+              },
+              "keyword": "Given ",
+              "keywordType": "Context",
+              "text": "an initial context"
+            },
+            {
+              "id": "76c58037-33b5-4812-bf68-533a32756364",
+              "location": {
+                "line": 16,
+                "column": 5
+              },
+              "keyword": "When ",
+              "keywordType": "Action",
+              "text": "an action is performed"
+            },
+            {
+              "id": "c9205dec-6c4e-4650-8cc7-12180e731214",
+              "location": {
+                "line": 17,
+                "column": 5
+              },
+              "keyword": "Then ",
+              "keywordType": "Outcome",
+              "text": "a verifiable outcome is achieved"
+            }
+          ],
+          "examples": []
+        }
+      },
+      {
+        "scenario": {
+          "id": "13b238cd-d02f-416e-8bc2-0a5426d8618d",
+          "tags": [],
+          "location": {
+            "line": 19,
+            "column": 3
+          },
+          "keyword": "Scenario Outline",
+          "name": "Parameterized scenario",
+          "description": "",
+          "steps": [
+            {
+              "id": "a41be998-4c15-40d1-9b91-9d63f1cc41b6",
+              "location": {
+                "line": 20,
+                "column": 5
+              },
+              "keyword": "Given ",
+              "keywordType": "Context",
+              "text": "a precondition with <parameter>"
+            },
+            {
+              "id": "d3e37706-edcc-4dd8-8348-03e0034974d2",
+              "location": {
+                "line": 21,
+                "column": 5
+              },
+              "keyword": "When ",
+              "keywordType": "Action",
+              "text": "an action is taken with <another_parameter>"
+            },
+            {
+              "id": "103a3fa0-6278-4d8f-ae0c-c9a482cb3aa4",
+              "location": {
+                "line": 22,
+                "column": 5
+              },
+              "keyword": "Then ",
+              "keywordType": "Outcome",
+              "text": "the outcome is <expected_result>"
+            }
+          ],
+          "examples": [
+            {
+              "id": "cffd4903-dd7b-4f57-8fec-1717754caeae",
+              "tags": [],
+              "location": {
+                "line": 24,
+                "column": 5
+              },
+              "keyword": "Examples",
+              "name": "",
+              "description": "",
+              "tableHeader": {
+                "id": "0d1bee12-2c87-4a86-8bb9-4a5974705998",
+                "location": {
+                  "line": 25,
+                  "column": 7
+                },
+                "cells": [
+                  {
+                    "location": {
+                      "line": 25,
+                      "column": 9
+                    },
+                    "value": "parameter"
+                  },
+                  {
+                    "location": {
+                      "line": 25,
+                      "column": 21
+                    },
+                    "value": "another_parameter"
+                  },
+                  {
+                    "location": {
+                      "line": 25,
+                      "column": 41
+                    },
+                    "value": "expected_result"
+                  }
+                ]
+              },
+              "tableBody": [
+                {
+                  "id": "27a31b92-3520-46b4-a14e-df4074bcde92",
+                  "location": {
+                    "line": 26,
+                    "column": 7
+                  },
+                  "cells": [
+                    {
+                      "location": {
+                        "line": 26,
+                        "column": 9
+                      },
+                      "value": "value1"
+                    },
+                    {
+                      "location": {
+                        "line": 26,
+                        "column": 21
+                      },
+                      "value": "value2"
+                    },
+                    {
+                      "location": {
+                        "line": 26,
+                        "column": 41
+                      },
+                      "value": "result1"
+                    }
+                  ]
+                },
+                {
+                  "id": "00301597-8b1b-4dbd-b7b6-f9924acdc5f4",
+                  "location": {
+                    "line": 27,
+                    "column": 7
+                  },
+                  "cells": [
+                    {
+                      "location": {
+                        "line": 27,
+                        "column": 9
+                      },
+                      "value": "value3"
+                    },
+                    {
+                      "location": {
+                        "line": 27,
+                        "column": 21
+                      },
+                      "value": "value4"
+                    },
+                    {
+                      "location": {
+                        "line": 27,
+                        "column": 41
+                      },
+                      "value": "result2"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "scenario": {
+          "id": "b8ffbdf8-3680-419a-8dbe-4dd05050dc35",
+          "tags": [
+            {
+              "location": {
+                "line": 29,
+                "column": 3
+              },
+              "name": "@data_table",
+              "id": "891df95e-07b8-4928-b861-3054df8f9bbb"
+            }
+          ],
+          "location": {
+            "line": 30,
+            "column": 3
+          },
+          "keyword": "Scenario",
+          "name": "Scenario with various DataTable types",
+          "description": "",
+          "steps": [
+            {
+              "id": "084b9f00-bb2e-4b2d-9b38-9b8588dcfed9",
+              "location": {
+                "line": 31,
+                "column": 5
+              },
+              "keyword": "Given ",
+              "keywordType": "Context",
+              "text": "a list of strings:",
+              "dataTable": {
+                "location": {
+                  "line": 32,
+                  "column": 7
+                },
+                "rows": [
+                  {
+                    "id": "cd51788d-ebc4-4097-ac05-77f21b8fa225",
+                    "location": {
+                      "line": 32,
+                      "column": 7
+                    },
+                    "cells": [
+                      {
+                        "location": {
+                          "line": 32,
+                          "column": 9
+                        },
+                        "value": "Apple"
+                      }
+                    ]
+                  },
+                  {
+                    "id": "4d7388f9-e468-4be9-8241-96b1ddec8b1c",
+                    "location": {
+                      "line": 33,
+                      "column": 7
+                    },
+                    "cells": [
+                      {
+                        "location": {
+                          "line": 33,
+                          "column": 9
+                        },
+                        "value": "Banana"
+                      }
+                    ]
+                  },
+                  {
+                    "id": "badfb4fd-853b-4b0a-a78a-74e76dea9c9d",
+                    "location": {
+                      "line": 34,
+                      "column": 7
+                    },
+                    "cells": [
+                      {
+                        "location": {
+                          "line": 34,
+                          "column": 9
+                        },
+                        "value": "Cherry"
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "id": "800be78b-b4b5-4e53-bcef-8914a62d58e6",
+              "location": {
+                "line": 35,
+                "column": 5
+              },
+              "keyword": "And ",
+              "keywordType": "Conjunction",
+              "text": "a list of integers:",
+              "dataTable": {
+                "location": {
+                  "line": 36,
+                  "column": 7
+                },
+                "rows": [
+                  {
+                    "id": "f10aaa22-2eb1-49eb-a1cf-4c1fef39c9fe",
+                    "location": {
+                      "line": 36,
+                      "column": 7
+                    },
+                    "cells": [
+                      {
+                        "location": {
+                          "line": 36,
+                          "column": 9
+                        },
+                        "value": "1"
+                      }
+                    ]
+                  },
+                  {
+                    "id": "82e187d9-9b48-4485-966f-486e2b543679",
+                    "location": {
+                      "line": 37,
+                      "column": 7
+                    },
+                    "cells": [
+                      {
+                        "location": {
+                          "line": 37,
+                          "column": 9
+                        },
+                        "value": "2"
+                      }
+                    ]
+                  },
+                  {
+                    "id": "50d0f0d1-5c72-4e51-980b-7fab3fa56755",
+                    "location": {
+                      "line": 38,
+                      "column": 7
+                    },
+                    "cells": [
+                      {
+                        "location": {
+                          "line": 38,
+                          "column": 9
+                        },
+                        "value": "3"
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "id": "000db2ba-6f30-4812-9703-4f714f1f8528",
+              "location": {
+                "line": 39,
+                "column": 5
+              },
+              "keyword": "And ",
+              "keywordType": "Conjunction",
+              "text": "a map of string to string:",
+              "dataTable": {
+                "location": {
+                  "line": 40,
+                  "column": 7
+                },
+                "rows": [
+                  {
+                    "id": "c25f51d5-68e4-47da-ab34-2fa9b0d90001",
+                    "location": {
+                      "line": 40,
+                      "column": 7
+                    },
+                    "cells": [
+                      {
+                        "location": {
+                          "line": 40,
+                          "column": 9
+                        },
+                        "value": "key1"
+                      },
+                      {
+                        "location": {
+                          "line": 40,
+                          "column": 16
+                        },
+                        "value": "value1"
+                      }
+                    ]
+                  },
+                  {
+                    "id": "7db8fe8e-e830-495d-83b2-6b17c081bbc1",
+                    "location": {
+                      "line": 41,
+                      "column": 7
+                    },
+                    "cells": [
+                      {
+                        "location": {
+                          "line": 41,
+                          "column": 9
+                        },
+                        "value": "key2"
+                      },
+                      {
+                        "location": {
+                          "line": 41,
+                          "column": 16
+                        },
+                        "value": "value2"
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "id": "3b1e5917-b519-4b25-ba59-7b2550794898",
+              "location": {
+                "line": 42,
+                "column": 5
+              },
+              "keyword": "And ",
+              "keywordType": "Conjunction",
+              "text": "a list of maps:",
+              "dataTable": {
+                "location": {
+                  "line": 43,
+                  "column": 7
+                },
+                "rows": [
+                  {
+                    "id": "f90c2bf1-9291-4589-8cd9-5bb1dacde3c5",
+                    "location": {
+                      "line": 43,
+                      "column": 7
+                    },
+                    "cells": [
+                      {
+                        "location": {
+                          "line": 43,
+                          "column": 9
+                        },
+                        "value": "name"
+                      },
+                      {
+                        "location": {
+                          "line": 43,
+                          "column": 18
+                        },
+                        "value": "age"
+                      },
+                      {
+                        "location": {
+                          "line": 43,
+                          "column": 24
+                        },
+                        "value": "role"
+                      }
+                    ]
+                  },
+                  {
+                    "id": "1ae5bce7-ae75-4e21-b33c-1d4f3fe4d129",
+                    "location": {
+                      "line": 44,
+                      "column": 7
+                    },
+                    "cells": [
+                      {
+                        "location": {
+                          "line": 44,
+                          "column": 9
+                        },
+                        "value": "Alice"
+                      },
+                      {
+                        "location": {
+                          "line": 44,
+                          "column": 18
+                        },
+                        "value": "30"
+                      },
+                      {
+                        "location": {
+                          "line": 44,
+                          "column": 24
+                        },
+                        "value": "admin"
+                      }
+                    ]
+                  },
+                  {
+                    "id": "1e9af385-0fcf-4f9c-9149-6770e7d5cbad",
+                    "location": {
+                      "line": 45,
+                      "column": 7
+                    },
+                    "cells": [
+                      {
+                        "location": {
+                          "line": 45,
+                          "column": 9
+                        },
+                        "value": "Bob"
+                      },
+                      {
+                        "location": {
+                          "line": 45,
+                          "column": 18
+                        },
+                        "value": "25"
+                      },
+                      {
+                        "location": {
+                          "line": 45,
+                          "column": 24
+                        },
+                        "value": "user"
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "id": "9b270be0-fc52-4c6e-ace2-170e69bf6d79",
+              "location": {
+                "line": 46,
+                "column": 5
+              },
+              "keyword": "And ",
+              "keywordType": "Conjunction",
+              "text": "a map of string to list of string:",
+              "dataTable": {
+                "location": {
+                  "line": 47,
+                  "column": 7
+                },
+                "rows": [
+                  {
+                    "id": "96b9847b-ba6f-4996-aaba-d6b8b68ef809",
+                    "location": {
+                      "line": 47,
+                      "column": 7
+                    },
+                    "cells": [
+                      {
+                        "location": {
+                          "line": 47,
+                          "column": 9
+                        },
+                        "value": "fruits"
+                      },
+                      {
+                        "location": {
+                          "line": 47,
+                          "column": 22
+                        },
+                        "value": "Apple, Banana, Cherry"
+                      }
+                    ]
+                  },
+                  {
+                    "id": "6fbf9ca9-92fc-49f4-9d06-4d6fcc5a2c2e",
+                    "location": {
+                      "line": 48,
+                      "column": 7
+                    },
+                    "cells": [
+                      {
+                        "location": {
+                          "line": 48,
+                          "column": 9
+                        },
+                        "value": "vegetables"
+                      },
+                      {
+                        "location": {
+                          "line": 48,
+                          "column": 22
+                        },
+                        "value": "Carrot, Potato, Onion"
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "id": "af1aead6-77a2-427c-8a6f-cde9ffbbdfda",
+              "location": {
+                "line": 49,
+                "column": 5
+              },
+              "keyword": "When ",
+              "keywordType": "Action",
+              "text": "they are processed"
+            },
+            {
+              "id": "ac62fd8c-0c08-4723-bfc9-3da3398c6420",
+              "location": {
+                "line": 50,
+                "column": 5
+              },
+              "keyword": "Then ",
+              "keywordType": "Outcome",
+              "text": "the system behaves correctly"
+            }
+          ],
+          "examples": []
+        }
+      },
+      {
+        "rule": {
+          "id": "27197cd4-bf16-4fb0-b7cd-4822380ae0ae",
+          "location": {
+            "line": 53,
+            "column": 3
+          },
+          "keyword": "Rule",
+          "name": "Business rule description",
+          "description": "    This is an example of a business rule",
+          "children": [
+            {
+              "background": {
+                "id": "21c2ba8e-93ae-4e0c-b5d6-ffbb9509070e",
+                "location": {
+                  "line": 56,
+                  "column": 5
+                },
+                "keyword": "Background",
+                "name": "Rule-specific setup",
+                "description": "",
+                "steps": [
+                  {
+                    "id": "aec79176-1263-4b23-a18d-4ea6ddc6a46e",
+                    "location": {
+                      "line": 57,
+                      "column": 7
+                    },
+                    "keyword": "Given ",
+                    "keywordType": "Context",
+                    "text": "a specific rule context"
+                  },
+                  {
+                    "id": "44a81676-41ba-479a-a104-b955c1441af5",
+                    "location": {
+                      "line": 58,
+                      "column": 7
+                    },
+                    "keyword": "And ",
+                    "keywordType": "Conjunction",
+                    "text": "another specific rule context"
+                  }
+                ]
+              }
+            },
+            {
+              "scenario": {
+                "id": "f1b206fe-a60d-45f9-ab3e-ccd0ef36cf97",
+                "tags": [],
+                "location": {
+                  "line": 60,
+                  "column": 5
+                },
+                "keyword": "Example",
+                "name": "Rule example scenario",
+                "description": "",
+                "steps": [
+                  {
+                    "id": "b6d8652d-90ee-45d6-94fb-e8d154e8bedf",
+                    "location": {
+                      "line": 61,
+                      "column": 7
+                    },
+                    "keyword": "Given ",
+                    "keywordType": "Context",
+                    "text": "a specific rule context"
+                  },
+                  {
+                    "id": "fc7b88c8-805f-4312-93ae-f1ecf6cf6ee5",
+                    "location": {
+                      "line": 62,
+                      "column": 7
+                    },
+                    "keyword": "When ",
+                    "keywordType": "Action",
+                    "text": "a rule-related action occurs"
+                  },
+                  {
+                    "id": "d689bacc-e39f-4754-84b2-b00fc2c4f923",
+                    "location": {
+                      "line": 63,
+                      "column": 7
+                    },
+                    "keyword": "Then ",
+                    "keywordType": "Outcome",
+                    "text": "the rule outcome is observed"
+                  }
+                ],
+                "examples": []
+              }
+            },
+            {
+              "scenario": {
+                "id": "809bfd8e-e180-488e-9ac6-f38dcf0896c8",
+                "tags": [],
+                "location": {
+                  "line": 65,
+                  "column": 3
+                },
+                "keyword": "Scenario",
+                "name": "Also a rule example",
+                "description": "",
+                "steps": [
+                  {
+                    "id": "f304d1f7-d53a-4f5e-b4f4-91407b67c6bd",
+                    "location": {
+                      "line": 66,
+                      "column": 5
+                    },
+                    "keyword": "Given ",
+                    "keywordType": "Context",
+                    "text": "a Rule statement"
+                  },
+                  {
+                    "id": "02abe1b1-1c59-4a36-9ee3-aa3c5e72e933",
+                    "location": {
+                      "line": 67,
+                      "column": 5
+                    },
+                    "keyword": "When ",
+                    "keywordType": "Action",
+                    "text": "a scenario is below it"
+                  },
+                  {
+                    "id": "01afe11b-0880-4523-8fb3-050c6e3c553f",
+                    "location": {
+                      "line": 68,
+                      "column": 5
+                    },
+                    "keyword": "Then ",
+                    "keywordType": "Outcome",
+                    "text": "it is a child of the Rule, even if it isn't indented"
+                  }
+                ],
+                "examples": []
+              }
+            },
+            {
+              "scenario": {
+                "id": "bdbdc5fc-194e-4ba6-a3af-6ec0c576332b",
+                "tags": [
+                  {
+                    "location": {
+                      "line": 72,
+                      "column": 3
+                    },
+                    "name": "@wip",
+                    "id": "35ee67b3-9686-41a3-be62-95506a46798f"
+                  },
+                  {
+                    "location": {
+                      "line": 72,
+                      "column": 8
+                    },
+                    "name": "@skip",
+                    "id": "70020fd2-6399-45e2-8e54-917a5e3c2bd4"
+                  }
+                ],
+                "location": {
+                  "line": 73,
+                  "column": 3
+                },
+                "keyword": "Scenario",
+                "name": "Scenario with doc string",
+                "description": "",
+                "steps": [
+                  {
+                    "id": "ed3135d8-9158-4334-a551-530060514fc6",
+                    "location": {
+                      "line": 74,
+                      "column": 5
+                    },
+                    "keyword": "Given ",
+                    "keywordType": "Context",
+                    "text": "a document with the following content:",
+                    "docString": {
+                      "location": {
+                        "line": 75,
+                        "column": 7
+                      },
+                      "content": "This is a doc string.\nIt can contain multiple lines.\nUseful for specifying larger text inputs.",
+                      "delimiter": "\"\"\""
+                    }
+                  },
+                  {
+                    "id": "e5b119b7-88cd-4d6f-85b3-b46052815f65",
+                    "location": {
+                      "line": 80,
+                      "column": 5
+                    },
+                    "keyword": "When ",
+                    "keywordType": "Action",
+                    "text": "the document is processed"
+                  },
+                  {
+                    "id": "f28aaa5a-7310-4a5e-990c-5cf89ea1b98d",
+                    "location": {
+                      "line": 81,
+                      "column": 5
+                    },
+                    "keyword": "Then ",
+                    "keywordType": "Outcome",
+                    "text": "the system handles it correctly"
+                  }
+                ],
+                "examples": []
+              }
+            },
+            {
+              "scenario": {
+                "id": "348706a3-15f5-4453-ad66-14c18df95a3a",
+                "tags": [],
+                "location": {
+                  "line": 83,
+                  "column": 3
+                },
+                "keyword": "Scenario",
+                "name": "Scenario with content type doc string",
+                "description": "",
+                "steps": [
+                  {
+                    "id": "eaa92ae1-b354-4bc4-b481-b174aa867578",
+                    "location": {
+                      "line": 84,
+                      "column": 5
+                    },
+                    "keyword": "Given ",
+                    "keywordType": "Context",
+                    "text": "a document with the following Markdown content:",
+                    "docString": {
+                      "location": {
+                        "line": 85,
+                        "column": 7
+                      },
+                      "content": "Lorem Ipsum\n===============\nLorem ipsum dolor sit amet,\nconsectetur adipiscing elit.",
+                      "delimiter": "\"\"\"",
+                      "mediaType": "markdown"
+                    }
+                  }
+                ],
+                "examples": []
+              }
+            },
+            {
+              "scenario": {
+                "id": "0d06f09e-70d9-473a-b20e-b3c0e7b0a4e2",
+                "tags": [],
+                "location": {
+                  "line": 92,
+                  "column": 3
+                },
+                "keyword": "Scenario",
+                "name": "Scenario with And and But steps",
+                "description": "",
+                "steps": [
+                  {
+                    "id": "bfe4c2ad-b93e-4bae-a3f5-988824be4ee4",
+                    "location": {
+                      "line": 93,
+                      "column": 5
+                    },
+                    "keyword": "Given ",
+                    "keywordType": "Context",
+                    "text": "an initial state"
+                  },
+                  {
+                    "id": "6f963408-e4e0-4b97-b610-8afdaa2e826b",
+                    "location": {
+                      "line": 94,
+                      "column": 5
+                    },
+                    "keyword": "And ",
+                    "keywordType": "Conjunction",
+                    "text": "some additional context"
+                  },
+                  {
+                    "id": "cd5488e7-4cf0-4cc8-a778-c849ec5a9f5a",
+                    "location": {
+                      "line": 95,
+                      "column": 5
+                    },
+                    "keyword": "When ",
+                    "keywordType": "Action",
+                    "text": "an action is performed"
+                  },
+                  {
+                    "id": "45d14816-79e4-4c85-b20c-c38aa80bd8e5",
+                    "location": {
+                      "line": 96,
+                      "column": 5
+                    },
+                    "keyword": "And ",
+                    "keywordType": "Conjunction",
+                    "text": "another action is performed"
+                  },
+                  {
+                    "id": "82bdee73-5656-466c-8222-d4b747ab3e69",
+                    "location": {
+                      "line": 97,
+                      "column": 5
+                    },
+                    "keyword": "Then ",
+                    "keywordType": "Outcome",
+                    "text": "some assertion is made"
+                  },
+                  {
+                    "id": "dc555c6d-3a26-4108-ae93-e540e00dc7e9",
+                    "location": {
+                      "line": 98,
+                      "column": 5
+                    },
+                    "keyword": "But ",
+                    "keywordType": "Conjunction",
+                    "text": "some exception is also handled"
+                  }
+                ],
+                "examples": []
+              }
+            },
+            {
+              "scenario": {
+                "id": "fa9982b0-1dc7-4898-817f-c3ae363ca92e",
+                "tags": [
+                  {
+                    "location": {
+                      "line": 100,
+                      "column": 3
+                    },
+                    "name": "@failing",
+                    "id": "8a679759-f8b7-4013-95bd-e87677e391b9"
+                  }
+                ],
+                "location": {
+                  "line": 101,
+                  "column": 3
+                },
+                "keyword": "Scenario",
+                "name": "Failing scenario example",
+                "description": "",
+                "steps": [
+                  {
+                    "id": "e4bf85ea-dd9e-498c-b6ec-cee8799ec64f",
+                    "location": {
+                      "line": 102,
+                      "column": 5
+                    },
+                    "keyword": "Given ",
+                    "keywordType": "Context",
+                    "text": "a condition that will fail"
+                  },
+                  {
+                    "id": "4fc3afdc-8515-4c4e-9b90-791cd83adb4d",
+                    "location": {
+                      "line": 103,
+                      "column": 5
+                    },
+                    "keyword": "When ",
+                    "keywordType": "Action",
+                    "text": "an impossible action is attempted"
+                  },
+                  {
+                    "id": "251d9ec2-ad33-4845-99a4-901b4396d515",
+                    "location": {
+                      "line": 104,
+                      "column": 5
+                    },
+                    "keyword": "Then ",
+                    "keywordType": "Outcome",
+                    "text": "an unreachable assertion is made"
+                  }
+                ],
+                "examples": []
+              }
+            }
+          ],
+          "tags": [
+            {
+              "location": {
+                "line": 52,
+                "column": 3
+              },
+              "name": "@rule_tag",
+              "id": "a61c59f9-303d-437b-b8e9-203f9035b93b"
+            }
+          ]
+        }
+      },
+      {
+        "rule": {
+          "id": "065677dc-ef76-4962-beec-e11f5b691b50",
+          "location": {
+            "line": 106,
+            "column": 5
+          },
+          "keyword": "Rule",
+          "name": "Rules don't nest",
+          "description": "      This is a Rule that is indented under a previous Rule",
+          "children": [
+            {
+              "scenario": {
+                "id": "f2c471f8-d4e5-4aea-ba56-49e543f238ff",
+                "tags": [],
+                "location": {
+                  "line": 109,
+                  "column": 7
+                },
+                "keyword": "Example",
+                "name": "This rule doesn't nest",
+                "description": "",
+                "steps": [
+                  {
+                    "id": "eb10666e-8023-473c-bc9d-68abe5e69ea8",
+                    "location": {
+                      "line": 110,
+                      "column": 9
+                    },
+                    "keyword": "Given ",
+                    "keywordType": "Context",
+                    "text": "a Rule statement"
+                  },
+                  {
+                    "id": "ab23dd1e-15cb-45e1-a781-18c4b172f10c",
+                    "location": {
+                      "line": 111,
+                      "column": 9
+                    },
+                    "keyword": "When ",
+                    "keywordType": "Action",
+                    "text": "another Rule is indented below it"
+                  },
+                  {
+                    "id": "afa77d73-064f-4c12-a272-5a694b108cae",
+                    "location": {
+                      "line": 112,
+                      "column": 9
+                    },
+                    "keyword": "Then ",
+                    "keywordType": "Outcome",
+                    "text": "the indented Rule is NOT a child of the previous Rule"
+                  }
+                ],
+                "examples": []
+              }
+            }
+          ],
+          "tags": []
+        }
+      }
+    ]
+  },
+  "comments": [
+    {
+      "location": {
+        "line": 70,
+        "column": 1
+      },
+      "text": "  # The @wip (work in progress) and @skip tags are often used to skip some tests,"
+    },
+    {
+      "location": {
+        "line": 71,
+        "column": 1
+      },
+      "text": "  # but this depends on implementation."
+    }
+  ]
+}
