@@ -178,7 +178,7 @@ It's been almost completely rewritten in the following ways:
 Nonetheless, the brilliant ideas behind the original plugin are still present
 in the architecture of this project. Thanks Sam, your work blew my mind.
 
-![it's so simple](https://www.memecreator.org/static/images/memes/5439760.jpg)
+!["it's so simple!" - Owen Wilson from Zoolander peers over an early 2000s iMac computer, a mad glint in his eye.](https://www.memecreator.org/static/images/memes/5439760.jpg)
 
 [Vitest]: https://vitest.dev/
 [Gherkin Syntax]: https://cucumber.io/docs/gherkin/reference/
