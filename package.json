@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "changeset": "changeset",
-    "publish": "changeset publish",
-    "version": "changeset version",
+    "changeset:release": "changeset publish",
+    "changeset:version": "changeset version",
     "build": "pnpm -r build",
     "test:watch": "vitest",
     "test": "vitest --run"
