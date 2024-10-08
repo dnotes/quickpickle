@@ -1,5 +1,11 @@
 # quickpickle
 
+## 1.1.2
+
+### Patch Changes
+
+- e11bbcb: Added vitest test context to playwright as world.context.
+
 ## 1.1.1
 
 ### Patch Changes
