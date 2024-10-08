@@ -1,3 +1,4 @@
+import type { TestContext } from 'vitest'
 export interface QuickPickleWorldInterface {
   info: {
     feature: string,
@@ -7,6 +8,7 @@ export interface QuickPickleWorldInterface {
     step?: string,
     line?: number,
   }
+  context: TestContext,
   common: {
     [key: string]: any
   }
@@ -22,6 +24,10 @@ export class QuickPickleWorld implements QuickPickleWorldInterface {
     step: '',
   }
   common: QuickPickleWorldInterface['common'] = {}
+  context: TestContext
+  constructor(context:TestContext) {
+    this.context = context
+  }
   async init() {}
 }
 

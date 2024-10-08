@@ -41,7 +41,6 @@ import {
 } from 'quickpickle';
 ${imports}
 let World = getWorldConstructor()
-const worldConfig = {}
 
 const common = {};
 
@@ -70,9 +69,9 @@ export function renderFeature(feature:Feature, config:QuickPickleConfig) {
 
   // Render the initScenario function, which will be called at the beginning of each scenario
   return`
-const initScenario = async(scenario, tags) => {
-  let state = new World(worldConfig);
-  await state.init(worldConfig);
+const initScenario = async(context, scenario, tags) => {
+  let state = new World(context);
+  await state.init();
   state.common = common;
   state.info.feature = '${q(feature.keyword)}: ${q(feature.name)}';
   state.info.scenario = scenario;
@@ -123,8 +122,8 @@ function renderRule(child:FeatureChild, config:QuickPickleConfig, tags:string[],
   return `
 ${sp}describe('${q(child.rule!.keyword)}: ${q(child.rule!.name)}', () => {
 
-${sp}  const initRuleScenario = async (scenario, tags) => {
-${sp}    let state = await initScenario(scenario, tags);
+${sp}  const initRuleScenario = async (context, scenario, tags) => {
+${sp}    let state = await initScenario(context, scenario, tags);
 ${sp}    state.info.rule = '${q(child.rule!.name)}';
 ${backgroundSteps}
 ${sp}    return state;
@@ -168,8 +167,8 @@ function renderScenario(child:FeatureChild, config:QuickPickleConfig, tags:strin
     return `
 ${sp}test${attrs}.for(${JSON.stringify(paramValues)})(
 ${sp}  '${q(child.scenario?.keyword || '')}: ${describe}',
-${sp}  async ({ ${paramNames?.join(', ')} }) => {
-${sp}    let state = await ${initFn}(\`${name}\`, ['${tags.join("', '") || ''}']);
+${sp}  async ({ ${paramNames?.join(', ')} }, context) => {
+${sp}    let state = await ${initFn}(context, \`${name}\`, ['${tags.join("', '") || ''}']);
 ${child.scenario?.steps.map((step,i) => {
   let text = step.text.replace(/`/g, '\\`')
   text = replaceParamNames(text,true)
@@ -183,8 +182,8 @@ ${sp});
   }
 
   return `
-${sp}test${attrs}('${q(child.scenario!.keyword)}: ${q(child.scenario!.name)}', async () => {
-${sp}  let state = await ${initFn}('${q(child.scenario!.name)}', ['${tags.join("', '") || ''}']);
+${sp}test${attrs}('${q(child.scenario!.keyword)}: ${q(child.scenario!.name)}', async (context) => {
+${sp}  let state = await ${initFn}(context, '${q(child.scenario!.name)}', ['${tags.join("', '") || ''}']);
 ${renderSteps(child.scenario!.steps as Step[], config, sp + '  ')}
 ${sp}  await afterScenario(state);
 ${sp}});

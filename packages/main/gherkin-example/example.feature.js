@@ -10,7 +10,6 @@ import {
 } from 'quickpickle';
 
 let World = getWorldConstructor()
-const worldConfig = {}
 
 const common = {};
 
@@ -26,9 +25,9 @@ const afterScenario = async(state) => {
   await applyAfterHooks(state);
 }
 
-const initScenario = async(scenario, tags) => {
-  let state = new World(worldConfig);
-  await state.init(worldConfig);
+const initScenario = async(context, scenario, tags) => {
+  let state = new World(context);
+  await state.init();
   state.common = common;
   state.info.feature = 'Feature: QuickPickle\'s Comprehensive Gherkin Syntax Example';
   state.info.scenario = scenario;
@@ -41,8 +40,8 @@ const initScenario = async(scenario, tags) => {
 
 describe('Feature: QuickPickle\'s Comprehensive Gherkin Syntax Example', () => {
 
-  test('Scenario: Basic scenario example\'', async () => {
-    let state = await initScenario('Basic scenario example\'', ['@tag', '@multiple_tags', '@scenario_tag']);
+  test('Scenario: Basic scenario example\'', async (context) => {
+    let state = await initScenario(context, 'Basic scenario example\'', ['@tag', '@multiple_tags', '@scenario_tag']);
     await qp('an initial context\'', state, 15);
     await qp('an action is performed\'', state, 16);
     await qp('a verifiable outcome is achieved\'', state, 17);
@@ -51,8 +50,8 @@ describe('Feature: QuickPickle\'s Comprehensive Gherkin Syntax Example', () => {
 
   test.concurrent.for([{"parameter":"value1'","another_parameter":"value2'","expected_result":"result1'"},{"parameter":"value3`","another_parameter":"value4`","expected_result":"result2`"}])(
     'Scenario Outline: Parameterized scenario for $parameter, \'$another_parameter\'',
-    async ({ parameter, another_parameter, expected_result }) => {
-      let state = await initScenario(`Parameterized scenario for ${parameter}, '${another_parameter}'`, ['@tag', '@multiple_tags', '@concurrent']);
+    async ({ parameter, another_parameter, expected_result }, context) => {
+      let state = await initScenario(context, `Parameterized scenario for ${parameter}, '${another_parameter}'`, ['@tag', '@multiple_tags', '@concurrent']);
       await qp(`a 'precondition' with ${parameter}`, state, 20);
       await qp(`an 'action' is taken with ${another_parameter}`, state, 21);
       await qp(`the 'outcome' is ${expected_result}`, state, 22);
@@ -60,8 +59,8 @@ describe('Feature: QuickPickle\'s Comprehensive Gherkin Syntax Example', () => {
     }
   );
 
-  test('Scenario: Scenario with various DataTable types', async () => {
-    let state = await initScenario('Scenario with various DataTable types', ['@tag', '@multiple_tags', '@data_table']);
+  test('Scenario: Scenario with various DataTable types', async (context) => {
+    let state = await initScenario(context, 'Scenario with various DataTable types', ['@tag', '@multiple_tags', '@data_table']);
     await qp('a list of strings:', state, 31, [["Apple'"],["Banana`"],["Cherry\""]]);
     await qp('a list of integers:', state, 35, [["1"],["2"],["3"]]);
     await qp('a map of string to string:', state, 39, [["key1'","value1'"],["key2`","value2\""]]);
@@ -74,8 +73,8 @@ describe('Feature: QuickPickle\'s Comprehensive Gherkin Syntax Example', () => {
 
   describe('Rule: Business rule description\'', () => {
 
-    const initRuleScenario = async (scenario, tags) => {
-      let state = await initScenario(scenario, tags);
+    const initRuleScenario = async (context, scenario, tags) => {
+      let state = await initScenario(context, scenario, tags);
       state.info.rule = 'Business rule description\'';
     await qp('a specific rule context', state, 57);
     await qp('another specific rule context', state, 58);
@@ -83,38 +82,38 @@ describe('Feature: QuickPickle\'s Comprehensive Gherkin Syntax Example', () => {
     }
 
 
-    test('Example: Rule example scenario\'', async () => {
-      let state = await initRuleScenario('Rule example scenario\'', ['@tag', '@multiple_tags', '@rule_tag']);
+    test('Example: Rule example scenario\'', async (context) => {
+      let state = await initRuleScenario(context, 'Rule example scenario\'', ['@tag', '@multiple_tags', '@rule_tag']);
       await qp('a specific rule context', state, 61);
       await qp('a rule-related action occurs', state, 62);
       await qp('the rule outcome is observed', state, 63);
       await afterScenario(state);
     });
 
-    test('Scenario: Also a rule example\'', async () => {
-      let state = await initRuleScenario('Also a rule example\'', ['@tag', '@multiple_tags', '@rule_tag']);
+    test('Scenario: Also a rule example\'', async (context) => {
+      let state = await initRuleScenario(context, 'Also a rule example\'', ['@tag', '@multiple_tags', '@rule_tag']);
       await qp('a Rule statement', state, 66);
       await qp('a scenario is below it', state, 67);
       await qp('it is a child of the Rule, even if it isn\'t indented', state, 68);
       await afterScenario(state);
     });
 
-    test.todo.skip('Scenario: Scenario with doc string', async () => {
-      let state = await initRuleScenario('Scenario with doc string', ['@tag', '@multiple_tags', '@rule_tag', '@wip', '@skip']);
+    test.todo.skip('Scenario: Scenario with doc string', async (context) => {
+      let state = await initRuleScenario(context, 'Scenario with doc string', ['@tag', '@multiple_tags', '@rule_tag', '@wip', '@skip']);
       await qp('a document with the following content:', state, 74, {"content":"This is a doc string.\nIt can contain multiple lines.\nUseful for specifying larger text inputs."});
       await qp('the document is processed', state, 80);
       await qp('the system handles it correctly', state, 81);
       await afterScenario(state);
     });
 
-    test('Scenario: Scenario with content type doc string', async () => {
-      let state = await initRuleScenario('Scenario with content type doc string', ['@tag', '@multiple_tags', '@rule_tag']);
+    test('Scenario: Scenario with content type doc string', async (context) => {
+      let state = await initRuleScenario(context, 'Scenario with content type doc string', ['@tag', '@multiple_tags', '@rule_tag']);
       await qp('a document with the following Markdown content:', state, 84, {"content":"Lorem Ipsum\n===============\nLorem ipsum dolor sit amet,\nconsectetur adipiscing elit.","mediaType":"markdown"});
       await afterScenario(state);
     });
 
-    test.sequential('Scenario: Scenario with And and But steps', async () => {
-      let state = await initRuleScenario('Scenario with And and But steps', ['@tag', '@multiple_tags', '@rule_tag', '@sequential']);
+    test.sequential('Scenario: Scenario with And and But steps', async (context) => {
+      let state = await initRuleScenario(context, 'Scenario with And and But steps', ['@tag', '@multiple_tags', '@rule_tag', '@sequential']);
       await qp('an initial state', state, 93);
       await qp('some additional context', state, 94);
       await qp('an action is performed', state, 95);
@@ -124,8 +123,8 @@ describe('Feature: QuickPickle\'s Comprehensive Gherkin Syntax Example', () => {
       await afterScenario(state);
     });
 
-    test.fails('Scenario: Failing scenario example', async () => {
-      let state = await initRuleScenario('Failing scenario example', ['@tag', '@multiple_tags', '@rule_tag', '@fails']);
+    test.fails('Scenario: Failing scenario example', async (context) => {
+      let state = await initRuleScenario(context, 'Failing scenario example', ['@tag', '@multiple_tags', '@rule_tag', '@fails']);
       await qp('a condition that will fail', state, 102);
       await qp('an impossible action is attempted', state, 103);
       await qp('an unreachable assertion is made', state, 104);
@@ -137,16 +136,16 @@ describe('Feature: QuickPickle\'s Comprehensive Gherkin Syntax Example', () => {
 
   describe('Rule: Rules don\'t nest', () => {
 
-    const initRuleScenario = async (scenario, tags) => {
-      let state = await initScenario(scenario, tags);
+    const initRuleScenario = async (context, scenario, tags) => {
+      let state = await initScenario(context, scenario, tags);
       state.info.rule = 'Rules don\'t nest';
 
       return state;
     }
 
 
-    test('Example: This rule doesn\'t nest', async () => {
-      let state = await initRuleScenario('This rule doesn\'t nest', ['@tag', '@multiple_tags']);
+    test('Example: This rule doesn\'t nest', async (context) => {
+      let state = await initRuleScenario(context, 'This rule doesn\'t nest', ['@tag', '@multiple_tags']);
       await qp('a Rule statement', state, 110);
       await qp('another Rule is indented below it', state, 111);
       await qp('the indented Rule is NOT a child of the previous Rule', state, 112);
