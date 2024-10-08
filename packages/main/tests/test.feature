@@ -66,3 +66,18 @@ Feature: Basic Test
         | 5    | 8    | 13  |
         | 8    | 13   | 21  |
         | 13   | 21   | 34  |
+
+  Rule: Vitest "todo", "skip", "fails" should work out of the box
+
+    @todo
+    Example: I haven't written this test yet
+
+    @skip
+    Example: This is a skipped test
+      Given I run the tests
+      Then the tests should pass
+
+    @fails
+    Example: This is a failing test
+      Given I run the tests
+      Then the tests should fail

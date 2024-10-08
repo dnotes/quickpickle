@@ -3,7 +3,7 @@ import type { QuickPickleConfig } from '.'
 
 import * as Gherkin from '@cucumber/gherkin';
 import * as Messages from '@cucumber/messages';
-import { fromPairs, pick } from "lodash-es";
+import { fromPairs, intersection, pick } from "lodash-es";
 import fg from 'fast-glob'
 import path from 'path'
 
@@ -140,6 +140,13 @@ function renderScenario(child:FeatureChild, config:QuickPickleConfig, tags:strin
   let initFn = sp.length > 2 ? 'initRuleScenario' : 'initScenario'
   tags = [...tags, ...child.scenario!.tags.map(t => t.name)]
 
+  let todo = (intersection(config.todoTags, tags).length > 0) ? '.todo' : ''
+  let skip = (intersection(config.skipTags, tags).length > 0) ? '.skip' : ''
+  let fails = (intersection(config.failTags, tags).length > 0) ? '.fails' : ''
+  let concurrent = (intersection(config.concurrentTags, tags).length > 0) ? '.concurrent' : ''
+  let sequential = (intersection(config.sequentialTags, tags).length > 0) ? '.sequential' : ''
+  let attrs = todo + skip + fails + concurrent + sequential
+
   // For Scenario Outlines with examples
   if (child.scenario!.examples?.[0]?.tableHeader && child.scenario!.examples?.[0]?.tableBody) {
 
@@ -159,7 +166,7 @@ function renderScenario(child:FeatureChild, config:QuickPickleConfig, tags:strin
     let name = replaceParamNames(child.scenario?.name ?? '', true).replace(/`/g, '\`')
 
     return `
-${sp}test.for(${JSON.stringify(paramValues)})(
+${sp}test${attrs}.for(${JSON.stringify(paramValues)})(
 ${sp}  '${q(child.scenario?.keyword || '')}: ${describe}',
 ${sp}  async ({ ${paramNames?.join(', ')} }) => {
 ${sp}    let state = await ${initFn}(\`${name}\`, ['${tags.join("', '") || ''}']);
@@ -176,7 +183,7 @@ ${sp});
   }
 
   return `
-${sp}test('${q(child.scenario!.keyword)}: ${q(child.scenario!.name)}', async () => {
+${sp}test${attrs}('${q(child.scenario!.keyword)}: ${q(child.scenario!.name)}', async () => {
 ${sp}  let state = await ${initFn}('${q(child.scenario!.name)}', ['${tags.join("', '") || ''}']);
 ${renderSteps(child.scenario!.steps as Step[], config, sp + '  ')}
 ${sp}  await afterScenario(state);

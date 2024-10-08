@@ -15,7 +15,7 @@ Feature: QuickPickle's Comprehensive Gherkin Syntax Example
     Given an initial context'
     When an action is performed'
     Then a verifiable outcome is achieved'
-
+  @concurrent
   Scenario Outline: Parameterized scenario for <parameter>, '<another_parameter>'
     Given a 'precondition' with <parameter>
     When an 'action' is taken with <another_parameter>
@@ -88,7 +88,7 @@ Feature: QuickPickle's Comprehensive Gherkin Syntax Example
       Lorem ipsum dolor sit amet,
       consectetur adipiscing elit.
       """
-
+  @sequential
   Scenario: Scenario with And and But steps
     Given an initial state
     And some additional context
@@ -97,7 +97,7 @@ Feature: QuickPickle's Comprehensive Gherkin Syntax Example
     Then some assertion is made
     But some exception is also handled
 
-  @failing
+  @fails
   Scenario: Failing scenario example
     Given a condition that will fail
     When an impossible action is attempted

@@ -10,7 +10,11 @@ Then("the tests should pass", () => {
   expect(true).to.be.true;
 })
 
-Given('I have a number {int}', (world, int) => {
+Then("the tests should fail", () => {
+  expect(true).to.be.false;
+})
+
+Given('(I have )a number {int}', (world, int) => {
   if (!world.numbers) world.numbers = [int]
   else world.numbers.push(int)
 })

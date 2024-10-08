@@ -49,10 +49,10 @@ describe('Feature: QuickPickle\'s Comprehensive Gherkin Syntax Example', () => {
     await afterScenario(state);
   });
 
-  test.for([{"parameter":"value1'","another_parameter":"value2'","expected_result":"result1'"},{"parameter":"value3`","another_parameter":"value4`","expected_result":"result2`"}])(
+  test.concurrent.for([{"parameter":"value1'","another_parameter":"value2'","expected_result":"result1'"},{"parameter":"value3`","another_parameter":"value4`","expected_result":"result2`"}])(
     'Scenario Outline: Parameterized scenario for $parameter, \'$another_parameter\'',
     async ({ parameter, another_parameter, expected_result }) => {
-      let state = await initScenario(`Parameterized scenario for ${parameter}, '${another_parameter}'`, ['@tag', '@multiple_tags']);
+      let state = await initScenario(`Parameterized scenario for ${parameter}, '${another_parameter}'`, ['@tag', '@multiple_tags', '@concurrent']);
       await qp(`a 'precondition' with ${parameter}`, state, 20);
       await qp(`an 'action' is taken with ${another_parameter}`, state, 21);
       await qp(`the 'outcome' is ${expected_result}`, state, 22);
@@ -99,7 +99,7 @@ describe('Feature: QuickPickle\'s Comprehensive Gherkin Syntax Example', () => {
       await afterScenario(state);
     });
 
-    test('Scenario: Scenario with doc string', async () => {
+    test.todo.skip('Scenario: Scenario with doc string', async () => {
       let state = await initRuleScenario('Scenario with doc string', ['@tag', '@multiple_tags', '@rule_tag', '@wip', '@skip']);
       await qp('a document with the following content:', state, 74, {"content":"This is a doc string.\nIt can contain multiple lines.\nUseful for specifying larger text inputs."});
       await qp('the document is processed', state, 80);
@@ -113,8 +113,8 @@ describe('Feature: QuickPickle\'s Comprehensive Gherkin Syntax Example', () => {
       await afterScenario(state);
     });
 
-    test('Scenario: Scenario with And and But steps', async () => {
-      let state = await initRuleScenario('Scenario with And and But steps', ['@tag', '@multiple_tags', '@rule_tag']);
+    test.sequential('Scenario: Scenario with And and But steps', async () => {
+      let state = await initRuleScenario('Scenario with And and But steps', ['@tag', '@multiple_tags', '@rule_tag', '@sequential']);
       await qp('an initial state', state, 93);
       await qp('some additional context', state, 94);
       await qp('an action is performed', state, 95);
@@ -124,8 +124,8 @@ describe('Feature: QuickPickle\'s Comprehensive Gherkin Syntax Example', () => {
       await afterScenario(state);
     });
 
-    test('Scenario: Failing scenario example', async () => {
-      let state = await initRuleScenario('Failing scenario example', ['@tag', '@multiple_tags', '@rule_tag', '@failing']);
+    test.fails('Scenario: Failing scenario example', async () => {
+      let state = await initRuleScenario('Failing scenario example', ['@tag', '@multiple_tags', '@rule_tag', '@fails']);
       await qp('a condition that will fail', state, 102);
       await qp('an impossible action is attempted', state, 103);
       await qp('an unreachable assertion is made', state, 104);

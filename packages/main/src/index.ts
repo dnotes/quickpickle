@@ -80,9 +80,14 @@ export const qp = async (step: string, state: any, line: number, data?: any): Pr
 
 export type QuickPickleConfig = {
   import: string|string[]
+  todoTags: string|string[]
+  skipTags: string|string[]
+  failTags: string|string[]
+  concurrentTags: string|string[]
+  sequentialTags: string|string[]
 };
 
-const defaultConfig: QuickPickleConfig = {
+export const defaultConfig: QuickPickleConfig = {
 
   /**
    * @deprecated -- use the Vitest config test.setupFiles insetad
@@ -93,7 +98,32 @@ const defaultConfig: QuickPickleConfig = {
   import: [
     '{features,test,tests}/**/*.steps.{ts,js,mjs}',
     '{features,test,tests}/**/*.world.{ts,js,mjs}'
-  ]
+  ],
+
+  /**
+   * Tags to mark as todo, using Vitest's `test.todo` implementation.
+   */
+  todoTags: ['@todo','@wip'],
+
+  /**
+   * Tags to skip, using Vitest's `test.skip` implementation.
+   */
+  skipTags: ['@skip'],
+
+  /**
+   * Tags to mark as failing, using Vitest's `test.failing` implementation.
+   */
+  failTags: ['@fails'],
+
+  /**
+   * Tags to run in parallel, using Vitest's `test.concurrent` implementation.
+   */
+  concurrentTags: ['@concurrent'],
+
+  /**
+   * Tags to run sequentially, using Vitest's `test.sequential` implementation.
+   */
+  sequentialTags: ['@sequential'],
 
 }
 
@@ -101,6 +131,11 @@ interface ResolvedConfig {
   test?: {
     quickpickle?: Partial<QuickPickleConfig>;
   };
+}
+
+function normalizeTags(tags:string|string[]):string[] {
+  tags = Array.isArray(tags) ? tags : [tags]
+  return tags.filter(Boolean).map(tag => tag.startsWith('@') ? tag : `@${tag}`)
 }
 
 export const quickpickle = function() {
@@ -113,6 +148,8 @@ export const quickpickle = function() {
         defaultConfig,
         get(resolvedConfig, 'test.quickpickle')
       ) as QuickPickleConfig;
+      config.skipTags = normalizeTags(config.skipTags)
+      config.failTags = normalizeTags(config.failTags)
     },
     transform: async (src: string, id: string): Promise<string | undefined> => {
       if (featureRegex.test(id)) {
