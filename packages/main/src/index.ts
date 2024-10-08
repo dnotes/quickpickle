@@ -133,8 +133,8 @@ interface ResolvedConfig {
   };
 }
 
-function normalizeTags(tags:string|string[]):string[] {
-  tags = Array.isArray(tags) ? tags : [tags]
+export function normalizeTags(tags:string|string[]):string[] {
+  tags = Array.isArray(tags) ? tags : tags.split(/\s*,\s*/g)
   return tags.filter(Boolean).map(tag => tag.startsWith('@') ? tag : `@${tag}`)
 }
 
@@ -148,8 +148,11 @@ export const quickpickle = function() {
         defaultConfig,
         get(resolvedConfig, 'test.quickpickle')
       ) as QuickPickleConfig;
+      config.todoTags = normalizeTags(config.todoTags)
       config.skipTags = normalizeTags(config.skipTags)
       config.failTags = normalizeTags(config.failTags)
+      config.concurrentTags = normalizeTags(config.concurrentTags)
+      config.sequentialTags = normalizeTags(config.sequentialTags)
     },
     transform: async (src: string, id: string): Promise<string | undefined> => {
       if (featureRegex.test(id)) {
