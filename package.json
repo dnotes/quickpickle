@@ -7,8 +7,9 @@
     "changeset": "changeset",
     "publish": "changeset publish",
     "version": "changeset version",
-    "build": "pnpm run build --workspace-root",
-    "test": "pnpm run test --workspace-root"
+    "build": "pnpm -r build",
+    "test:watch": "vitest",
+    "test": "vitest --run"
   },
   "keywords": [
     "BDD",
@@ -26,7 +27,8 @@
   "author": "David Hunt",
   "license": "MIT",
   "devDependencies": {
-    "pnpm": "^9.12.0"
+    "pnpm": "^9.12.0",
+    "vitest": "^2.1.2"
   },
   "dependencies": {
     "@changesets/cli": "^2.27.9"
