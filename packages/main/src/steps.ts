@@ -1,7 +1,7 @@
 import { ExpressionFactory, ParameterTypeRegistry, Expression } from '@cucumber/cucumber-expressions';
 
 interface StepDefinition {
-  expression: string;
+  expression: string|RegExp;
   f: (state: any, ...args: any[]) => any;
   cucumberExpression: Expression;
 }
@@ -29,7 +29,7 @@ const typeName: Record<string, string> = {
 
 const expressionFactory = new ExpressionFactory(new ParameterTypeRegistry());
 
-export const addStepDefinition = (expression: string, f: (state: any, ...args: any[]) => any): void => {
+export const addStepDefinition = (expression: string|RegExp, f: (state: any, ...args: any[]) => any): void => {
   const cucumberExpression = expressionFactory.createExpression(expression);
   steps.push({ expression, f, cucumberExpression });
 };
