@@ -37,37 +37,49 @@ npm install --save-dev quickpickle vitest
 
 ## Configuration
 
-Add the quickpickle plugin to your Vitest configuration in vite.config.ts (or .js, etc.):
+Add the quickpickle plugin to your Vitest configuration in vite.config.ts (or .js, etc.).
+Also add the configuration to get the feature files, step definitions, world file, etc.
 
 ```ts
 // vite.config.ts
 import { quickpickle } from 'quickpickle';
 
-const qpConfig:Partial<QuickPickleConfig> = { // <-- Optional configuration (defaults shown)
-
-  /**
-   * The files to be imported for each Feature.
-   * All step definitions, hooks, world constructor, etc. must be listed.
-   * The value can be a glob pattern or an array of glob patterns.
-   */
-  import: [
-    '{features,test,tests}/**/*.steps.{ts,js,mjs}',
-    '{features,test,tests}/**/*.world.{ts,js,mjs}'
-  ]
-
-}
-
 export default {
   plugins: [
-    quickpickle(qpConfig) // <-- Add the quickpickle plugin
+    quickpickle() // <-- Add the quickpickle plugin
   ],
   test: {
     include : [
       'features/*.feature', // <-- Add Gherkin feature files into "test" configuration
       // (you'll probably want other test files too, for unit tests etc.)
     ],
+    setupFiles: ['./tests/tests.steps.ts'] // <-- specify each setupfile here
   },
 };
+```
+
+If you have multiple configurations, you can also add the test settings in vitest.workspace.ts.
+This is also where you could set up separate configurations for components vs. application,
+different browser environments, different world constructors, etc.
+
+```ts
+// vitest.workspace.ts
+import { defineWorkspace } from 'vitest/config';
+
+export default defineWorkspace([
+  { // configuration for feature files
+    extends: './vite.config.ts',
+    test: {
+      include : [ 'tests/*.feature' ],
+      setupFiles: [ 'tests/tests.steps.ts' ],
+    },
+  },
+  { // configuration for unit tests
+    test: {
+      include : [ 'tests/*.test.ts' ],
+    }
+  }
+])
 ```
 
 ## Usage
@@ -100,11 +112,11 @@ npx vitest --run
 ### Write step definitions
 
 Write your step definitions in a typescript or javascript file as configured
-in the "import" declaration of the qpConfig object above.
+in the "setupFiles" declaration in your vitest config.
 
 These files will be imported into the Vitest test runner, and the code for
 `Given`, `When`, `Then` will register each of the step definitions with quickpickle.
-These step definitions should run on import, i.e. at the top level of the script,
+These step definitions should run immediately, i.e. at the top level of the script,
 not as exported functions like a normal node module would do.
 
 ```ts

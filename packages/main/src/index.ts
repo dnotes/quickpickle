@@ -85,6 +85,7 @@ export type QuickPickleConfig = {
 const defaultConfig: QuickPickleConfig = {
 
   /**
+   * @deprecated -- use the Vitest config test.setupFiles insetad
    * The files to be imported for each Feature.
    * All step definitions, hooks, world constructor, etc. must be listed.
    * The value can be a glob pattern or an array of glob patterns.
@@ -98,7 +99,7 @@ const defaultConfig: QuickPickleConfig = {
 
 interface ResolvedConfig {
   test?: {
-    cucumber?: Partial<QuickPickleConfig>;
+    quickpickle?: Partial<QuickPickleConfig>;
   };
 }
 
@@ -110,7 +111,7 @@ export const quickpickle = function() {
     configResolved: (resolvedConfig: ResolvedConfig) => {
       config = defaults(
         defaultConfig,
-        get(resolvedConfig, 'test.cucumber')
+        get(resolvedConfig, 'test.quickpickle')
       ) as QuickPickleConfig;
     },
     transform: async (src: string, id: string): Promise<string | undefined> => {
