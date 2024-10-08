@@ -37,6 +37,6 @@ export function getWorldConstructor() {
   return worldConstructor
 }
 
-export function setWorldConstructor(constructor: new () => QuickPickleWorldInterface) {
+export function setWorldConstructor(constructor: new (context:TestContext) => QuickPickleWorldInterface) {
   worldConstructor = constructor
 }
