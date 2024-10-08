@@ -36,8 +36,6 @@ export default {
     '@cucumber/gherkin',
     '@cucumber/messages',
     '@cucumber/tag-expressions',
-    'fast-glob',
     'lodash-es',
-    'path',
-  ] // Add any external libraries that you do not want to bundle here
+  ]
 };
