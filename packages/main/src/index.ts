@@ -79,7 +79,6 @@ export const qp = async (step: string, state: any, line: number, data?: any): Pr
 };
 
 export type QuickPickleConfig = {
-  import: string|string[]
   todoTags: string|string[]
   skipTags: string|string[]
   failTags: string|string[]
@@ -88,17 +87,6 @@ export type QuickPickleConfig = {
 };
 
 export const defaultConfig: QuickPickleConfig = {
-
-  /**
-   * @deprecated -- use the Vitest config test.setupFiles insetad
-   * The files to be imported for each Feature.
-   * All step definitions, hooks, world constructor, etc. must be listed.
-   * The value can be a glob pattern or an array of glob patterns.
-   */
-  import: [
-    '{features,test,tests}/**/*.steps.{ts,js,mjs}',
-    '{features,test,tests}/**/*.world.{ts,js,mjs}'
-  ],
 
   /**
    * Tags to mark as todo, using Vitest's `test.todo` implementation.
