@@ -1,6 +1,6 @@
 import { addStepDefinition, findStepDefinitionMatch } from './steps';
 import { get, defaults } from 'lodash-es';
-import { tagsFunction } from './tags';
+import { Plugin, ResolvedConfig as ViteResolvedConfig } from 'vite'
 import {
   BeforeAll, applyBeforeAllHooks,
   Before, applyBeforeHooks,
@@ -53,7 +53,7 @@ interface StepDefinitionMatch {
 }
 
 export const qp = async (step: string, state: any, line: number, data?: any): Promise<any> => {
-  const stepDefinitionMatch = findStepDefinitionMatch(step);
+  const stepDefinitionMatch: StepDefinitionMatch = findStepDefinitionMatch(step);
 
   // Set the state info
   state.info.step = step
@@ -78,13 +78,13 @@ export const qp = async (step: string, state: any, line: number, data?: any): Pr
   }
 };
 
-export type QuickPickleConfig = {
+export type QuickPickleConfig<T = {[key:string]:any}> = {
   todoTags: string|string[]
   skipTags: string|string[]
   failTags: string|string[]
   concurrentTags: string|string[]
   sequentialTags: string|string[]
-  worldConfig: {[key:string]:any}
+  worldConfig: T
 };
 
 export const defaultConfig: QuickPickleConfig = {
@@ -123,10 +123,8 @@ export const defaultConfig: QuickPickleConfig = {
 
 }
 
-interface ResolvedConfig {
-  test?: {
-    quickpickle?: Partial<QuickPickleConfig>;
-  };
+interface ResolvedConfig extends ViteResolvedConfig {
+  quickpickle?: Partial<QuickPickleConfig>;
 }
 
 export function normalizeTags(tags?:string|string[]|undefined):string[] {
@@ -135,15 +133,16 @@ export function normalizeTags(tags?:string|string[]|undefined):string[] {
   return tags.filter(Boolean).map(tag => tag.startsWith('@') ? tag : `@${tag}`)
 }
 
-export const quickpickle = function() {
+export const quickpickle = (passedConfig:Partial<QuickPickleConfig> = {}): Plugin => {
   let config: QuickPickleConfig;
 
   return {
     name: 'quickpickle-transform',
-    configResolved: (resolvedConfig: ResolvedConfig) => {
+    configResolved(resolvedConfig: ResolvedConfig) {
       config = defaults(
         defaultConfig,
-        get(resolvedConfig, 'test.quickpickle')
+        passedConfig,
+        get(resolvedConfig, 'quickpickle'),
       ) as QuickPickleConfig;
       config.todoTags = normalizeTags(config.todoTags)
       config.skipTags = normalizeTags(config.skipTags)
@@ -151,7 +150,7 @@ export const quickpickle = function() {
       config.concurrentTags = normalizeTags(config.concurrentTags)
       config.sequentialTags = normalizeTags(config.sequentialTags)
     },
-    transform: async (src: string, id: string): Promise<string | undefined> => {
+    async transform(src: string, id: string) {
       if (featureRegex.test(id)) {
         return renderGherkin(src, config, id.match(/\.md$/) ? true : false)
       }
