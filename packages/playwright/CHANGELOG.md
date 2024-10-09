@@ -1,5 +1,11 @@
 # @quickpickle/playwright
 
+## 0.9.3
+
+### Patch Changes
+
+- cf2fd4d: fixed worldConfig options headless and slowMo
+
 ## 0.9.2
 
 ### Patch Changes
