@@ -19,6 +19,18 @@ importers:
         specifier: ^2.1.2
         version: 2.1.2(@types/node@22.7.4)(@vitest/browser@2.1.2)(jsdom@25.0.1)(msw@2.4.9(typescript@5.6.2))(terser@5.34.1)
 
+  packages/browser:
+    devDependencies:
+      '@vitest/browser':
+        specifier: ^2.1.2
+        version: 2.1.2(@vitest/spy@2.1.2)(playwright@1.48.0)(typescript@5.6.2)(vite@5.4.8(@types/node@22.7.4)(terser@5.34.1))(vitest@2.1.2)
+      quickpickle:
+        specifier: ^1.1.2
+        version: 1.1.2
+      vitest:
+        specifier: ^2.1.2
+        version: 2.1.2(@types/node@22.7.4)(@vitest/browser@2.1.2)(jsdom@25.0.1)(msw@2.4.9(typescript@5.6.2))(terser@5.34.1)
+
   packages/main:
     dependencies:
       '@cucumber/cucumber':
@@ -1718,6 +1730,9 @@ packages:
   queue-microtask@1.2.3:
     resolution: {integrity: sha512-NuaNSa6flKT5JaSYQzJok04JzTL1CA6aGhv5rfLW3PgqA+M2ChpZQnAC8h8i4ZFkBS8X5RqkDBHA7r4hej3K9A==}
 
+  quickpickle@1.1.2:
+    resolution: {integrity: sha512-S5lqcMq+6vUhwdNyBDg2MEjT7OY8G1Xd5iN7PYLiDV/t5OMgTp4Jo8YvnFvDIFehZCo8hn0bVo30jStqPRLe5A==}
+
   randombytes@2.1.0:
     resolution: {integrity: sha512-vYl3iOX+4CKUWuxGi9Ukhie6fsqXqS9FE2Zaic4tNFD2N2QQaXOMFbuKK4QmDHC0JO6B1Zp41J0LpT0oR68amQ==}
 
@@ -2520,7 +2535,7 @@ snapshots:
       '@cucumber/ci-environment': 10.0.1
       '@cucumber/cucumber-expressions': 17.1.0
       '@cucumber/gherkin': 28.0.0
-      '@cucumber/gherkin-streams': 5.0.1(@cucumber/gherkin@28.0.0)(@cucumber/message-streams@4.0.1(@cucumber/messages@22.0.0))(@cucumber/messages@24.1.0)
+      '@cucumber/gherkin-streams': 5.0.1(@cucumber/gherkin@28.0.0)(@cucumber/message-streams@4.0.1(@cucumber/messages@24.1.0))(@cucumber/messages@24.1.0)
       '@cucumber/gherkin-utils': 9.0.0
       '@cucumber/html-formatter': 21.6.0(@cucumber/messages@24.1.0)
       '@cucumber/message-streams': 4.0.1(@cucumber/messages@24.1.0)
@@ -2560,7 +2575,7 @@ snapshots:
       yaml: 2.5.1
       yup: 1.2.0
 
-  '@cucumber/gherkin-streams@5.0.1(@cucumber/gherkin@28.0.0)(@cucumber/message-streams@4.0.1(@cucumber/messages@22.0.0))(@cucumber/messages@24.1.0)':
+  '@cucumber/gherkin-streams@5.0.1(@cucumber/gherkin@28.0.0)(@cucumber/message-streams@4.0.1(@cucumber/messages@24.1.0))(@cucumber/messages@24.1.0)':
     dependencies:
       '@cucumber/gherkin': 28.0.0
       '@cucumber/message-streams': 4.0.1(@cucumber/messages@24.1.0)
@@ -3049,7 +3064,6 @@ snapshots:
       - typescript
       - utf-8-validate
       - vite
-    optional: true
 
   '@vitest/expect@2.1.2':
     dependencies:
@@ -3942,6 +3956,16 @@ snapshots:
   querystringify@2.2.0: {}
 
   queue-microtask@1.2.3: {}
+
+  quickpickle@1.1.2:
+    dependencies:
+      '@cucumber/cucumber': 11.0.1
+      '@cucumber/cucumber-expressions': 16.1.2
+      '@cucumber/gherkin': 29.0.0
+      '@cucumber/messages': 22.0.0
+      '@cucumber/tag-expressions': 6.1.0
+      fast-glob: 3.3.2
+      lodash-es: 4.17.21
 
   randombytes@2.1.0:
     dependencies:

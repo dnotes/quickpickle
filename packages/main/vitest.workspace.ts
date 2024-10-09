@@ -12,5 +12,5 @@ export default defineWorkspace([
     test: {
       include : [ './tests/*.test.ts' ],
     }
-  }
+  },
 ])
