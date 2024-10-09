@@ -36,7 +36,7 @@ jobs:
         run: pnpm build
 
       - name: Run Tests
-        run: pnpm -w run tests
+        run: pnpm -w run test
 
       - name: Create Release Pull Request or Publish to npm
         id: changesets
