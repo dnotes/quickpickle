@@ -1,6 +1,6 @@
 {
   "name": "@quickpickle/playwright",
-  "version": "0.9.0",
+  "version": "0.9.1",
   "description": "Support files for running tests with Playwright using QuickPickle (Gherkin in Vitest).",
   "keywords": [
     "BDD",

@@ -1,5 +1,11 @@
 # quickpickle
 
+## 1.2.0
+
+### Minor Changes
+
+- 8f5f661: Release playwright extension, and many fixes to make it work.
+
 ## 1.1.2
 
 ### Patch Changes
