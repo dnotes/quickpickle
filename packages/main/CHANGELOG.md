@@ -1,5 +1,11 @@
 # quickpickle
 
+## 1.2.1
+
+### Patch Changes
+
+- e23b37b: Fixed types and config passing for vite plugin
+
 ## 1.2.0
 
 ### Minor Changes
