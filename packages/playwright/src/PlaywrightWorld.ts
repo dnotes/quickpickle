@@ -32,7 +32,10 @@ export class PlaywrightWorld extends QuickPickleWorld {
   }
 
   async init() {
-    this.browser = await chromium.launch()
+    this.browser = await chromium.launch({
+      headless: this.playwrightConfig.headless,
+      slowMo: this.playwrightConfig.slowMo,
+    })
     this.browserContext = await this.browser.newContext({
       serviceWorkers: 'block',
       javaScriptEnabled: intersection(this.info.tags, this.playwrightConfig.nojsTags)?.length ? false : true,
