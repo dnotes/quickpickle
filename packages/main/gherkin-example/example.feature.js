@@ -26,7 +26,7 @@ const afterScenario = async(state) => {
 }
 
 const initScenario = async(context, scenario, tags) => {
-  let state = new World(context);
+  let state = new World(context, { feature:'Feature: QuickPickle\'s Comprehensive Gherkin Syntax Example', scenario, tags }, {});
   await state.init();
   state.common = common;
   state.info.feature = 'Feature: QuickPickle\'s Comprehensive Gherkin Syntax Example';

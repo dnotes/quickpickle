@@ -15,5 +15,9 @@ export default defineWorkspace([
     test: {
       include : [ 'tests/*.test.ts' ],
     }
+  },
+  {
+    root: './packages/playwright',
+    extends: './packages/playwright/vite.config.ts',
   }
 ])

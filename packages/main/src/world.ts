@@ -20,23 +20,28 @@ export class QuickPickleWorld implements QuickPickleWorldInterface {
     feature: '',
     scenario: '',
     tags: [],
-    rule: '',
-    step: '',
   }
   common: QuickPickleWorldInterface['common'] = {}
   context: TestContext
-  constructor(context:TestContext) {
+  constructor(context:TestContext, info?:QuickPickleWorldInterface['info']) {
     this.context = context
+    if (info) this.info = {...info}
   }
   async init() {}
 }
 
-let worldConstructor = QuickPickleWorld
+export type WorldConstructor = new (
+  context: TestContext,
+  info?: QuickPickleWorldInterface['info'],
+  worldConfig?: any
+) => QuickPickleWorldInterface;
+
+let worldConstructor:WorldConstructor = QuickPickleWorld
 
 export function getWorldConstructor() {
   return worldConstructor
 }
 
-export function setWorldConstructor(constructor: new (context:TestContext) => QuickPickleWorldInterface) {
+export function setWorldConstructor(constructor: WorldConstructor) {
   worldConstructor = constructor
 }

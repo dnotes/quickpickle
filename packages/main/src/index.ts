@@ -13,7 +13,7 @@ import { renderGherkin } from './render';
 import { DataTable } from '@cucumber/cucumber';
 import { DocString } from './models/DocString';
 
-export { setWorldConstructor, getWorldConstructor } from './world';
+export { setWorldConstructor, getWorldConstructor, QuickPickleWorld, QuickPickleWorldInterface } from './world';
 export { DocString, DataTable }
 
 const featureRegex = /\.feature(?:\.md)?$/;
@@ -84,6 +84,7 @@ export type QuickPickleConfig = {
   failTags: string|string[]
   concurrentTags: string|string[]
   sequentialTags: string|string[]
+  worldConfig: {[key:string]:any}
 };
 
 export const defaultConfig: QuickPickleConfig = {
@@ -101,7 +102,7 @@ export const defaultConfig: QuickPickleConfig = {
   /**
    * Tags to mark as failing, using Vitest's `test.failing` implementation.
    */
-  failTags: ['@fails'],
+  failTags: ['@fails', '@failing'],
 
   /**
    * Tags to run in parallel, using Vitest's `test.concurrent` implementation.
@@ -113,6 +114,13 @@ export const defaultConfig: QuickPickleConfig = {
    */
   sequentialTags: ['@sequential'],
 
+  /**
+   * The config for the World class. Must be serializable with JSON.stringify.
+   * Not used by the default World class, but may be used by plugins or custom
+   * implementations, like @quickpickle/playwright.
+   */
+  worldConfig: {}
+
 }
 
 interface ResolvedConfig {
@@ -121,7 +129,8 @@ interface ResolvedConfig {
   };
 }
 
-export function normalizeTags(tags:string|string[]):string[] {
+export function normalizeTags(tags?:string|string[]|undefined):string[] {
+  if (!tags) return []
   tags = Array.isArray(tags) ? tags : tags.split(/\s*,\s*/g)
   return tags.filter(Boolean).map(tag => tag.startsWith('@') ? tag : `@${tag}`)
 }

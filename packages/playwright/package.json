@@ -1,0 +1,74 @@
+{
+  "name": "@quickpickle/playwright",
+  "version": "0.9.0",
+  "description": "Support files for running tests with Playwright using QuickPickle (Gherkin in Vitest).",
+  "keywords": [
+    "BDD",
+    "testing",
+    "behavioral",
+    "cucumber",
+    "gherkin",
+    "vitest",
+    "playwright",
+    "react",
+    "svelte",
+    "vue",
+    "angular"
+  ],
+  "homepage": "https://github.com/dnotes/quickpickle#readme",
+  "bugs": {
+    "url": "https://github.com/dnotes/quickpickle/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dnotes/quickpickle.git"
+  },
+  "license": "MIT",
+  "type": "module",
+  "main": "./dist/PlaywrightWorld.cjs",
+  "module": "./dist/PlaywrightWorld.esm.js",
+  "types": "./dist/PlaywrightWorld.d.ts",
+  "exports": {
+    ".": {
+      "require": "./dist/world.cjs",
+      "import": "./dist/world.esm.js",
+      "types": "./dist/world.d.ts"
+    },
+    "./actions": {
+      "require": "./dist/actions.steps.cjs",
+      "import": "./dist/actions.steps.esm.js",
+      "types": "./dist/actions.steps.d.ts"
+    },
+    "./outcomes": {
+      "require": "./dist/outcomes.steps.cjs",
+      "import": "./dist/outcomes.steps.esm.js",
+      "types": "./dist/outcomes.steps.d.ts"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "rollup -c",
+    "type-check": "tsc --noEmit",
+    "test:watch": "vitest",
+    "test": "vitest --run"
+  },
+  "author": "David Hunt",
+  "dependencies": {
+    "@playwright/test": "^1.48.0",
+    "lodash-es": "^4.17.21",
+    "playwright": "^1.48.0",
+    "quickpickle": "workspace:^",
+    "vite": "^5.0.11"
+  },
+  "devDependencies": {
+    "@rollup/plugin-replace": "^6.0.1",
+    "@rollup/plugin-typescript": "^12.1.0",
+    "@types/lodash-es": "^4.17.12",
+    "fast-glob": "^3.3.2",
+    "rollup": "^3.20.7",
+    "typescript": "^5.6.2",
+    "vitest": "^2.1.2"
+  }
+}

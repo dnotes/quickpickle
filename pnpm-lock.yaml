@@ -74,11 +74,14 @@ importers:
         specifier: ^2.1.2
         version: 2.1.2(@types/node@18.19.54)(@vitest/browser@2.1.2)(jsdom@25.0.1)(msw@2.4.9(typescript@5.6.2))(terser@5.34.1)
 
-  packages/steps-playwright:
+  packages/playwright:
     dependencies:
       '@playwright/test':
         specifier: ^1.48.0
         version: 1.48.0
+      lodash-es:
+        specifier: ^4.17.21
+        version: 4.17.21
       playwright:
         specifier: ^1.48.0
         version: 1.48.0
@@ -88,6 +91,28 @@ importers:
       vite:
         specifier: ^5.0.11
         version: 5.4.8(@types/node@22.7.4)(terser@5.34.1)
+    devDependencies:
+      '@rollup/plugin-replace':
+        specifier: ^6.0.1
+        version: 6.0.1(rollup@3.29.5)
+      '@rollup/plugin-typescript':
+        specifier: ^12.1.0
+        version: 12.1.0(rollup@3.29.5)(tslib@2.7.0)(typescript@5.6.2)
+      '@types/lodash-es':
+        specifier: ^4.17.12
+        version: 4.17.12
+      fast-glob:
+        specifier: ^3.3.2
+        version: 3.3.2
+      rollup:
+        specifier: ^3.20.7
+        version: 3.29.5
+      typescript:
+        specifier: ^5.6.2
+        version: 5.6.2
+      vitest:
+        specifier: ^2.1.2
+        version: 2.1.2(@types/node@22.7.4)(@vitest/browser@2.1.2)(jsdom@25.0.1)(msw@2.4.9(typescript@5.6.2))(terser@5.34.1)
 
   packages/svelte:
     dependencies:

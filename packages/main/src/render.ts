@@ -60,13 +60,15 @@ export function renderFeature(feature:Feature, config:QuickPickleConfig) {
   // Get the background stes and all the scenarios
   let { backgroundSteps, children } = renderChildren(feature.children as FeatureChild[], config, tags)
 
+  let featureName = `${q(feature.keyword)}: ${q(feature.name)}`
+
   // Render the initScenario function, which will be called at the beginning of each scenario
   return`
 const initScenario = async(context, scenario, tags) => {
-  let state = new World(context);
+  let state = new World(context, { feature:'${featureName}', scenario, tags }, ${JSON.stringify(config.worldConfig || {})});
   await state.init();
   state.common = common;
-  state.info.feature = '${q(feature.keyword)}: ${q(feature.name)}';
+  state.info.feature = '${featureName}';
   state.info.scenario = scenario;
   state.info.tags = [...tags];
   await applyBeforeHooks(state);
