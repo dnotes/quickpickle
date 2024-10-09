@@ -26,22 +26,32 @@
   "license": "MIT",
   "type": "module",
   "main": "./dist/PlaywrightWorld.cjs",
-  "module": "./dist/PlaywrightWorld.esm.js",
+  "module": "./dist/PlaywrightWorld.mjs",
   "types": "./dist/PlaywrightWorld.d.ts",
   "exports": {
     ".": {
+      "require": "./dist/PlaywrightWorld.cjs",
+      "import": "./dist/PlaywrightWorld.mjs",
+      "types": "./dist/PlaywrightWorld.d.ts"
+    },
+    "./PlaywrightWorld": {
+      "require": "./dist/PlaywrightWorld.cjs",
+      "import": "./dist/PlaywrightWorld.mjs",
+      "types": "./dist/PlaywrightWorld.d.ts"
+    },
+    "./world": {
       "require": "./dist/world.cjs",
-      "import": "./dist/world.esm.js",
+      "import": "./dist/world.mjs",
       "types": "./dist/world.d.ts"
     },
     "./actions": {
       "require": "./dist/actions.steps.cjs",
-      "import": "./dist/actions.steps.esm.js",
+      "import": "./dist/actions.steps.mjs",
       "types": "./dist/actions.steps.d.ts"
     },
     "./outcomes": {
       "require": "./dist/outcomes.steps.cjs",
-      "import": "./dist/outcomes.steps.esm.js",
+      "import": "./dist/outcomes.steps.mjs",
       "types": "./dist/outcomes.steps.d.ts"
     }
   },

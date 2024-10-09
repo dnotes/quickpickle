@@ -26,7 +26,7 @@ export default {
       format: 'esm',
       sourcemap: true,
       exports: 'named',
-      entryFileNames: '[name].esm.js'
+      entryFileNames: '[name].mjs'
     }
   ],
   plugins: [
