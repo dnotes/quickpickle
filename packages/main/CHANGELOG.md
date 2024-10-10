@@ -1,5 +1,12 @@
 # quickpickle
 
+## 1.2.2
+
+### Patch Changes
+
+- b3f2ba4: Fixed config inheritance
+- 3eacaac: allow "exploding" tags (tags that make multiple tests for each combination)
+
 ## 1.2.1
 
 ### Patch Changes
