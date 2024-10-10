@@ -1,5 +1,5 @@
 import type { Feature, FeatureChild, GherkinDocument, RuleChild, Step } from "@cucumber/messages";
-import type { QuickPickleConfig } from '.'
+import { explodeTags, type QuickPickleConfig } from '.'
 
 import * as Gherkin from '@cucumber/gherkin';
 import * as Messages from '@cucumber/messages';
@@ -141,6 +141,10 @@ function renderScenario(child:FeatureChild, config:QuickPickleConfig, tags:strin
   let sequential = (intersection(config.sequentialTags, tags).length > 0) ? '.sequential' : ''
   let attrs = todo + skip + fails + concurrent + sequential
 
+  // Deal with exploding tags
+  let taglists = explodeTags(config.explodeTags as string[][], tags)
+  return taglists.map(tags => {
+
   // For Scenario Outlines with examples
   if (child.scenario!.examples?.[0]?.tableHeader && child.scenario!.examples?.[0]?.tableBody) {
 
@@ -183,6 +187,7 @@ ${renderSteps(child.scenario!.steps as Step[], config, sp + '  ')}
 ${sp}  await afterScenario(state);
 ${sp}});
 `
+  }).join('\n\n')
 }
 
 function renderSteps(steps:Step[], config:QuickPickleConfig, sp = '  ') {
