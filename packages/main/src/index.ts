@@ -133,16 +133,19 @@ export function normalizeTags(tags?:string|string[]|undefined):string[] {
   return tags.filter(Boolean).map(tag => tag.startsWith('@') ? tag : `@${tag}`)
 }
 
-export const quickpickle = (passedConfig:Partial<QuickPickleConfig> = {}): Plugin => {
-  let config: QuickPickleConfig;
+export const quickpickle = (conf:Partial<QuickPickleConfig> = {}):Plugin => {
+  let config:QuickPickleConfig
+  let passedConfig = {...conf}
 
   return {
     name: 'quickpickle-transform',
     configResolved(resolvedConfig: ResolvedConfig) {
-      config = defaults(
+      config = Object.assign(
+        {},
         defaultConfig,
         passedConfig,
-        get(resolvedConfig, 'quickpickle'),
+        get(resolvedConfig, 'quickpickle') || {},
+        get(resolvedConfig, 'test.quickpickle') || {},
       ) as QuickPickleConfig;
       config.todoTags = normalizeTags(config.todoTags)
       config.skipTags = normalizeTags(config.skipTags)
@@ -154,7 +157,7 @@ export const quickpickle = (passedConfig:Partial<QuickPickleConfig> = {}): Plugi
       if (featureRegex.test(id)) {
         return renderGherkin(src, config, id.match(/\.md$/) ? true : false)
       }
-    }
+    },
   };
 }
 
