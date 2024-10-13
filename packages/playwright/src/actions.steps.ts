@@ -6,21 +6,21 @@ import url from 'node:url'
 export const projectRoot = path.resolve(path.dirname(url.fileURLToPath(import.meta.url)), '..')
 
 Given('I am on {string}', async function (world:PlaywrightWorld, path) {
-  let url = new URL(path, 'http://localhost:5173')
+  let url = new URL(path, world.baseUrl)
   await world.page.goto(url.href)
-  await world.page.waitForTimeout(80)
 })
 When(`I visit {string}`, async function (world:PlaywrightWorld, path) {
-  let url = new URL(path, 'http://localhost:5173')
+  let url = new URL(path, world.baseUrl)
   await world.page.goto(url.href)
-  await world.page.waitForTimeout(80)
 })
 When(`I navigate/go to {string}`, async function (world:PlaywrightWorld, path) {
-  let url = new URL(path, 'http://localhost:5173')
+  let url = new URL(path, world.baseUrl)
   await world.page.goto(url.href)
-  await world.page.waitForTimeout(80)
 })
 
+When('I load the file {string}', async (world:PlaywrightWorld, path) => {
+  await world.page.goto(`file://${projectRoot}/${path}`)
+})
 
 When('I click/press/tap/touch (on ){string}', async function (world:PlaywrightWorld, identifier) {
   let locator = await world.page.getByText(identifier).or(world.page.locator(identifier))
@@ -100,12 +100,9 @@ When(/^I go (back|forwards?)$/, async function (world:PlaywrightWorld, direction
   else await world.page.goForward()
 })
 
-Then('(I )take (a )screenshot', async function (world:PlaywrightWorld, str:string) {
-  await world.page.waitForTimeout(50)
-  await world.page.screenshot({ path: `${projectRoot}/screenshots/${world.info.scenario}__${world.info.line}.png`.replace(/\/\//g,'/') })
+Then('(I )take (a )screenshot', async function (world:PlaywrightWorld) {
+  await world.page.screenshot({ path: `${projectRoot}/${world.playwrightConfig.screenshotDir}/${world.info.rule ? world.info.rule + '__' + world.info.scenario : world.info.scenario}__${world.info.line}.png`.replace(/\/\//g,'/') })
 })
-Then('(I )take (a )screenshot #{int} in (the folder ){string}', async function (world:PlaywrightWorld, dir:string) {
-  await world.page.waitForTimeout(50)
-  await world.page.screenshot({ path: `${projectRoot}/${dir}/${world.info.scenario}__${world.info.line}.png`.replace(/\/\//g,'/') })
+Then('(I )take (a )screenshot named {string}', async function (world:PlaywrightWorld, name:string) {
+  await world.page.screenshot({ path: `${projectRoot}/${world.playwrightConfig.screenshotDir}/${name}.png`.replace(/\/\//g,'/') })
 })
-

@@ -67,7 +67,9 @@
   "author": "David Hunt",
   "dependencies": {
     "@playwright/test": "^1.48.0",
+    "jest-image-snapshot": "^6.4.0",
     "lodash-es": "^4.17.21",
+    "pixelmatch": "^6.0.0",
     "playwright": "^1.48.0",
     "quickpickle": "workspace:^",
     "vite": "^5.0.11"
@@ -75,8 +77,13 @@
   "devDependencies": {
     "@rollup/plugin-replace": "^6.0.1",
     "@rollup/plugin-typescript": "^12.1.0",
+    "@types/jest-image-snapshot": "^6.4.0",
     "@types/lodash-es": "^4.17.12",
+    "@types/pixelmatch": "^5.2.6",
+    "@types/pngjs": "^6.0.5",
     "fast-glob": "^3.3.2",
+    "playwright-core": "^1.48.0",
+    "pngjs": "^7.0.0",
     "rollup": "^3.20.7",
     "typescript": "^5.6.2",
     "vitest": "^2.1.2"

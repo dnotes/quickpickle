@@ -1,4 +1,4 @@
-import { defineWorkspace, defineProject } from 'vitest/config';
+import { defineWorkspace } from 'vitest/config'
 
 export default defineWorkspace([
   {
@@ -19,5 +19,11 @@ export default defineWorkspace([
   {
     root: './packages/playwright',
     extends: './packages/playwright/vite.config.ts',
+    // @ts-ignore
+    quickpickle: {
+      worldConfig: {
+        screenshotDir: 'packages/playwright/screenshots',
+      }
+    }
   }
 ])
