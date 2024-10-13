@@ -1,13 +1,20 @@
 @concurrent
 Feature: Basic tests of Playwright browser and steps
 
-  Scenario: I can get a page on the internet
+  Scenario: Getting a remote page
     Given I go to "https://xkcd.com/2928/"
     Then I should see "Software Testing Day"
 
-  Scenario: I can get a page locally
+  Scenario: Getting a local page
     Given I load the file "tests/examples/example.html"
     Then I should see an "h1" element with text "HTML Test Page"
+
+  Scenario: Clicking on links
+    Given I load the file "tests/examples/example.html"
+    When I click on the "Form" link
+    Then the url should contain "#form"
+    When I click on "Message:"
+    Then the active element should be a "textarea"
 
   @concurrent
   Rule: Playwright should support testing with multiple browsers
