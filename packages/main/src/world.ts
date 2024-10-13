@@ -1,4 +1,5 @@
 import type { TestContext } from 'vitest'
+import { tagsMatch } from './render'
 export interface QuickPickleWorldInterface {
   info: {
     feature: string,
@@ -13,6 +14,7 @@ export interface QuickPickleWorldInterface {
     [key: string]: any
   }
   init: () => Promise<void>
+  tagsMatch(tags: string[]): boolean
 }
 
 export class QuickPickleWorld implements QuickPickleWorldInterface {
@@ -28,6 +30,9 @@ export class QuickPickleWorld implements QuickPickleWorldInterface {
     if (info) this.info = {...info}
   }
   async init() {}
+  tagsMatch(tags: string[]): boolean {
+    return tagsMatch(tags, this.info.tags)
+  }
 }
 
 export type WorldConstructor = new (

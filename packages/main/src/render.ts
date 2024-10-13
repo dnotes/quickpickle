@@ -1,5 +1,5 @@
 import type { Feature, FeatureChild, GherkinDocument, RuleChild, Step } from "@cucumber/messages";
-import { explodeTags, type QuickPickleConfig } from '.'
+import { type QuickPickleConfig } from '.'
 
 import * as Gherkin from '@cucumber/gherkin';
 import * as Messages from '@cucumber/messages';
@@ -134,16 +134,17 @@ function renderScenario(child:FeatureChild, config:QuickPickleConfig, tags:strin
   let initFn = sp.length > 2 ? 'initRuleScenario' : 'initScenario'
   tags = [...tags, ...child.scenario!.tags.map(t => t.name)]
 
-  let todo = (intersection(config.todoTags, tags).length > 0) ? '.todo' : ''
-  let skip = (intersection(config.skipTags, tags).length > 0) ? '.skip' : ''
-  let fails = (intersection(config.failTags, tags).length > 0) ? '.fails' : ''
-  let concurrent = (intersection(config.concurrentTags, tags).length > 0) ? '.concurrent' : ''
-  let sequential = (intersection(config.sequentialTags, tags).length > 0) ? '.sequential' : ''
+  let todo = tagsMatch(config.todoTags, tags) ? '.todo' : ''
+  let skip = tagsMatch(config.skipTags, tags) ? '.skip' : ''
+  let fails = tagsMatch(config.failTags, tags) ? '.fails' : ''
+  let sequential = tagsMatch(config.sequentialTags, tags) ? '.sequential' : ''
+  let concurrent = (!sequential && tagsMatch(config.concurrentTags, tags)) ? '.concurrent' : ''
   let attrs = todo + skip + fails + concurrent + sequential
 
   // Deal with exploding tags
   let taglists = explodeTags(config.explodeTags as string[][], tags)
-  return taglists.map(tags => {
+  let isExploded = taglists.length > 1 ? true : false
+  return taglists.map((tags,explodedIdx) => {
 
   // For Scenario Outlines with examples
   if (child.scenario!.examples?.[0]?.tableHeader && child.scenario!.examples?.[0]?.tableBody) {
@@ -171,7 +172,7 @@ ${sp}    let state = await ${initFn}(context, \`${name}\`, ['${tags.join("', '")
 ${child.scenario?.steps.map((step,i) => {
   let text = step.text.replace(/`/g, '\\`')
   text = replaceParamNames(text,true)
-  return `${sp}    await qp(\`${text}\`, state, ${step.location.line});`
+  return `${sp}    await qp(\`${text}\`, state, ${step.location.line}${isExploded ? '.' + explodedIdx : ''});`
 }).join('\n')
 }
 ${sp}    await afterScenario(state);
@@ -183,29 +184,111 @@ ${sp});
   return `
 ${sp}test${attrs}('${q(child.scenario!.keyword)}: ${q(child.scenario!.name)}', async (context) => {
 ${sp}  let state = await ${initFn}(context, '${q(child.scenario!.name)}', ['${tags.join("', '") || ''}']);
-${renderSteps(child.scenario!.steps as Step[], config, sp + '  ')}
+${renderSteps(child.scenario!.steps as Step[], config, sp + '  ', isExploded ? `.${explodedIdx}` : '')}
 ${sp}  await afterScenario(state);
 ${sp}});
 `
   }).join('\n\n')
 }
 
-function renderSteps(steps:Step[], config:QuickPickleConfig, sp = '  ') {
+function renderSteps(steps:Step[], config:QuickPickleConfig, sp = '  ', explodedText = '') {
   return steps.map(step => {
 
     if (step.dataTable) {
       let data = JSON.stringify(step.dataTable.rows.map(r => {
         return r.cells.map(c => c.value)
       }))
-      return `${sp}await qp('${q(step.text)}', state, ${step.location.line}, ${data});`
+      return `${sp}await qp('${q(step.text)}', state, ${step.location.line}${explodedText}, ${data});`
     }
     else if (step.docString) {
       let data = JSON.stringify(pick(step.docString, ['content','mediaType']))
-      return `${sp}await qp('${q(step.text)}', state, ${step.location.line}, ${data});`
+      return `${sp}await qp('${q(step.text)}', state, ${step.location.line}${explodedText}, ${data});`
     }
 
-    return `${sp}await qp('${q(step.text)}', state, ${step.location.line});`
+    return `${sp}await qp('${q(step.text)}', state, ${step.location.line}${explodedText});`
   }).join('\n')
 }
 
+/**
+ * Escapes quotation marks in a string for the purposes of this rendering function.
+ * @param t string
+ * @returns string
+ */
 const q = (t:string) => (t.replace(/'/g, "\\'"))
+
+/**
+ * Creates a 2d array of all possible combinations of the items in the input array
+ * @param arr Array
+ * @returns A 2d array of all possible combinations of the items in the input array
+ */
+function explodeArray(arr: string[][]): string[][] {
+  if (arr.length === 0) return [[]];
+
+  const [first, ...rest] = arr;
+  const subCombinations = explodeArray(rest);
+
+  return first.flatMap(item =>
+    subCombinations.map(subCombo => [item, ...subCombo])
+  );
+}
+
+/**
+ * This function "explodes" any tags in the "explodeTags" setting and returns all possible
+ * combinations of all the tags. The theory is that it allows you to write one Scenario that
+ * runs multiple times in different ways; e.g. with and without JS or in different browsers.
+ *
+ * To take this case as an example, if the explodeTags are:
+ * ```
+ * [
+ *   ['nojs', 'js'],
+ *   ['firefox', 'chromium', 'webkit'],
+ * ]
+ * ```
+ *
+ * And the testTags are:
+ * ```
+ * ['nojs', 'js', 'snapshot']
+ * ```
+ *
+ * Then the function will return:
+ * ```
+ * [
+ *   ['nojs', 'snapshot'],
+ *   ['js', 'snapshot'],
+ * ]
+ * ```
+ *
+ * In that case, the test will be run twice.
+ *
+ * @param explodeTags the 2d array of tags that should be exploded
+ * @param testTags the tags to test against
+ * @returns a 2d array of all possible combinations of tags
+ */
+export function explodeTags(explodeTags:string[][], testTags:string[]):string[][] {
+  if (!explodeTags.length) return [testTags]
+  let tagsToTest = [...testTags]
+
+  // gather a 2d array of items that are shared between tags and each array in explodeTags
+  // and then remove those items from the tags array
+  const sharedTags = explodeTags.map(tagList => {
+    let items = tagList.filter(tag => tagsToTest.includes(tag))
+    if (items.length) items.forEach(item => tagsToTest.splice(tagsToTest.indexOf(item), 1))
+    return items
+  })
+
+  // then, build a 2d array of all possible combinations of the shared tags
+  let combined = explodeArray(sharedTags)
+
+  // finally, return the list
+  return combined.length ? combined.map(arr => [...tagsToTest, ...arr]) : [testTags]
+}
+
+/**
+ *
+ * @param confTags string[]
+ * @param testTags string[]
+ * @returns boolean
+ */
+export function tagsMatch(confTags:string[], testTags:string[]) {
+  return intersection(confTags.map(t => t.toLowerCase()), testTags.map(t => t.toLowerCase()))?.length ? true : false
+}

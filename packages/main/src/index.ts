@@ -1,5 +1,5 @@
 import { addStepDefinition, findStepDefinitionMatch } from './steps';
-import { get, defaults } from 'lodash-es';
+import { get, defaultsDeep } from 'lodash-es';
 import { Plugin, ResolvedConfig as ViteResolvedConfig } from 'vite'
 import {
   BeforeAll, applyBeforeAllHooks,
@@ -9,12 +9,13 @@ import {
   BeforeStep, applyBeforeStepHooks,
   AfterStep, applyAfterStepHooks,
 } from './hooks';
-import { renderGherkin } from './render';
+import { explodeTags, tagsMatch, renderGherkin } from './render';
 import { DataTable } from '@cucumber/cucumber';
 import { DocString } from './models/DocString';
 
 export { setWorldConstructor, getWorldConstructor, QuickPickleWorld, QuickPickleWorldInterface } from './world';
 export { DocString, DataTable }
+export { explodeTags, tagsMatch }
 
 const featureRegex = /\.feature(?:\.md)?$/;
 
@@ -78,14 +79,24 @@ export const qp = async (step: string, state: any, line: number, data?: any): Pr
   }
 };
 
-export type QuickPickleConfig<T = {[key:string]:any}> = {
+export type QuickPickleConfigSetting<T = {[key:string]:any}> = Partial<{
   todoTags: string|string[]
   skipTags: string|string[]
   failTags: string|string[]
   concurrentTags: string|string[]
   sequentialTags: string|string[]
   explodeTags: string|string[]|string[][]
-  worldConfig: T
+  worldConfig: Partial<T>
+}>;
+
+export type QuickPickleConfig<T = {[key:string]:any}> = {
+  todoTags: string[]
+  skipTags: string[]
+  failTags: string[]
+  concurrentTags: string[]
+  sequentialTags: string[]
+  explodeTags: string[][]
+  worldConfig: Partial<T>
 };
 
 export const defaultConfig: QuickPickleConfig = {
@@ -143,50 +154,19 @@ function is3d(arr:string|string[]|string[][]):arr is string[][] {
   return Array.isArray(arr) && arr.every(item => Array.isArray(item))
 }
 
-function explodeArray(arr: string[][]): string[][] {
-  if (arr.length === 0) return [[]];
-
-  const [first, ...rest] = arr;
-  const subCombinations = explodeArray(rest);
-
-  return first.flatMap(item =>
-    subCombinations.map(subCombo => [item, ...subCombo])
-  );
-}
-
-export function explodeTags(explodeTags:string[][], testTags:string[]):string[][] {
-  if (!explodeTags.length) return [testTags]
-  let tagsToTest = [...testTags]
-
-  // gather a 3d array of items that are shared between tags and each array in explodeTags
-  // and then remove those items from the tags array
-  const sharedTags = explodeTags.map(tagList => {
-    let items = tagList.filter(tag => tagsToTest.includes(tag))
-    if (items.length) items.forEach(item => tagsToTest.splice(tagsToTest.indexOf(item), 1))
-    return items
-  })
-
-  // then, build a 3d array of all possible combinations of the remaining tags
-  let combined = explodeArray(sharedTags)
-
-  // finally, return the list
-  return combined.length ? combined.map(arr => [...tagsToTest, ...arr]) : [testTags]
-}
-
-export const quickpickle = (conf:Partial<QuickPickleConfig> = {}):Plugin => {
+export const quickpickle = (conf:Partial<QuickPickleConfigSetting> = {}):Plugin => {
   let config:QuickPickleConfig
-  let passedConfig = {...conf}
+  let passedConfig:QuickPickleConfigSetting = {...conf}
 
   return {
     name: 'quickpickle-transform',
     configResolved(resolvedConfig: ResolvedConfig) {
-      config = Object.assign(
-        {},
-        defaultConfig,
-        passedConfig,
-        get(resolvedConfig, 'quickpickle') || {},
+      config = defaultsDeep(
         get(resolvedConfig, 'test.quickpickle') || {},
-      ) as QuickPickleConfig;
+        get(resolvedConfig, 'quickpickle') || {},
+        passedConfig,
+        defaultConfig,
+      );
       config.todoTags = normalizeTags(config.todoTags)
       config.skipTags = normalizeTags(config.skipTags)
       config.failTags = normalizeTags(config.failTags)
