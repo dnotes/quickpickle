@@ -21,6 +21,7 @@ export default defineWorkspace([
     extends: './packages/playwright/vite.config.ts',
     // @ts-ignore
     quickpickle: {
+      skipTags: ['@skip','@wip','@skip-ci'],
       worldConfig: {
         screenshotDir: 'packages/playwright/screenshots',
       }

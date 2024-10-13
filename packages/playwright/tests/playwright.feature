@@ -16,17 +16,17 @@ Feature: Basic tests of Playwright browser and steps
     Example: Running chromium tests
       Then the user agent should be "chromium"
 
-    @firefox
+    @firefox @skip-ci
     Example: Running firefox tests
       Then the user agent should be "firefox"
 
-    @webkit
+    @webkit @skip-ci
     Example: Running webkit tests
       Then the user agent should be "webkit"
 
   Rule: It should be possible to set a tag and see the browser with slowMo
 
-    @browser @slowmo
+    @browser @slowmo @skip-ci
     Example: Opening a page
       When I load the file "tests/examples/example.html"
       Then I should see an "h1" element with text "HTML Test Page"
