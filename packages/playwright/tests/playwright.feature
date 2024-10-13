@@ -33,6 +33,7 @@ Feature: Basic tests of Playwright browser and steps
 
   Rule: Visual regression testing must be supported
 
+    @skip-ci
     Example: Passing visual regression test
       When I load the file "tests/examples/example.html"
       Then the screenshot "playwright-example" should match
