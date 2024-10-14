@@ -1,5 +1,11 @@
 # @quickpickle/playwright
 
+## 0.9.6
+
+### Patch Changes
+
+- 24428ba: Reorganization of outcomes steps.
+
 ## 0.9.5
 
 ### Patch Changes
