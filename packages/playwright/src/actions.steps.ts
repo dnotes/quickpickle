@@ -80,6 +80,10 @@ When('I wait for {string} to be attached/detatched/visible/hidden', async functi
   await locator.waitFor({ state })
 })
 
+When('I wait for {int}ms', async function (world:PlaywrightWorld, num) {
+  await world.page.waitForTimeout(num)
+})
+
 When('I scroll down/up/left/right', async function (world:PlaywrightWorld) {
   let direction = world.info.step?.match(/(down|up|left|right)$/)![0] as 'down'|'up'|'left'|'right'
   let num = 100
