@@ -45,7 +45,38 @@ Then('I should not see a(n)/the {string} {word}', async function (world:Playwrig
   await expect(locator).not.toBeVisible()
 })
 
-
+Then('a/an/the {string} should be disabled', async function (world:PlaywrightWorld, identifier) {
+  let locator = await getLocator(world.page, identifier, 'element')
+  await expect(locator).toBeDisabled()
+})
+Then('a/an/the {string} should be enabled', async function (world:PlaywrightWorld, identifier) {
+  let locator = await getLocator(world.page, identifier, 'element')
+  await expect(locator).toBeEnabled()
+})
+Then('a/an/the {string} should be checked', async function (world:PlaywrightWorld, identifier) {
+  let locator = await getLocator(world.page, identifier, 'element')
+  await expect(locator).toBeChecked()
+})
+Then('a/an/the {string} should be unchecked', async function (world:PlaywrightWorld, identifier) {
+  let locator = await getLocator(world.page, identifier, 'element')
+  await expect(locator).not.toBeChecked()
+})
+Then('a/an/the {string} should be focused/active', async function (world:PlaywrightWorld, identifier) {
+  let locator = await getLocator(world.page, identifier, 'element')
+  await expect(locator).toBeFocused()
+})
+Then('a/an/the {string} should be unfocused/blurred', async function (world:PlaywrightWorld, identifier) {
+  let locator = await getLocator(world.page, identifier, 'element')
+  await expect(locator).not.toBeFocused()
+})
+Then('a/an/the {string} should be visible', async function (world:PlaywrightWorld, identifier) {
+  let locator = await getLocator(world.page, identifier, 'element')
+  await expect(locator).toBeVisible()
+})
+Then('a/an/the {string} should be hidden/invisible', async function (world:PlaywrightWorld, identifier) {
+  let locator = await getLocator(world.page, identifier, 'element')
+  await expect(locator).not.toBeVisible()
+})
 Then('a/an/the {string} {word} should be disabled', async function (world:PlaywrightWorld, identifier, role) {
   let locator = await getLocator(world.page, identifier, role)
   await expect(locator).toBeDisabled()
@@ -58,7 +89,7 @@ Then('a/an/the {string} {word} should be checked', async function (world:Playwri
   let locator = await getLocator(world.page, identifier, role)
   await expect(locator).toBeChecked()
 })
-Then('a/an/the  {string} {word} should be unchecked', async function (world:PlaywrightWorld, identifier, role) {
+Then('a/an/the {string} {word} should be unchecked', async function (world:PlaywrightWorld, identifier, role) {
   let locator = await getLocator(world.page, identifier, role)
   await expect(locator).not.toBeChecked()
 })
