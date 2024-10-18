@@ -7,9 +7,11 @@ by parsing them with the official [Gherkin Parser] and running them as Vitest te
 ## Features
 
 - Seamless integration of Gherkin Feature files into Vitest testing workflow
-- Parses Gherkin Feature files using the official [Gherkin Parser]
+- Full support for Gherkin 6, using the official [Gherkin Parser]
 - Full typescript and javascript support (because it's really just Vitest)
-- Full support for Gherkin 6 Syntax
+- Supports Vitest-native test extensions concurrent, sequential, skip, todo, and fails
+- Supports multiple test environments with vitest.workspace configurations
+- Supports custom world constructors, similar to CucumberJS
 
 ### Benefits of Gherkin
 
@@ -27,7 +29,7 @@ by parsing them with the official [Gherkin Parser] and running them as Vitest te
 
 ### When NOT to use Gherkin
 
-- For unit tests, it's usually better to use plain Vitest or another testing framework.
+For unit tests, it's usually better to use plain Vitest or another testing framework.
 
 ## Installation
 
@@ -36,6 +38,16 @@ npm install --save-dev quickpickle vitest
 ```
 
 ## Configuration
+
+To get QuickPickle working you'll need to do three things:
+
+1.  configure Vitest to use QuickPickle, in vite.config.ts or vitest.workspace.ts
+2.  create a step definition file to
+    - import or create your step definitions
+    -
+3.  install & configure VSCode Cucumber plugin (optional)
+
+### QuickPickle configuration in Vitest
 
 Add the quickpickle plugin to your Vitest configuration in vite.config.ts (or .js, etc.).
 Also add the configuration to get the feature files, step definitions, world file, etc.
@@ -80,6 +92,41 @@ export default defineWorkspace([
     }
   }
 ])
+```
+
+### Step definition file
+
+You'll always need a step definition file, to set up the step defintions and potentially the world
+variable constructor. Here is an exmaple if you want to use @quickpickle/playwright to test web sites:
+
+```ts
+// tests/example.steps.ts
+import '@quickpickle/playwright/actions' // <-- import action step definitions from @quickpickle/playwright
+import '@quickpickle/playwright/outcomes' // <-- import outcome step definitions from @quickpickle/playwright
+
+import '@quickpickle/playwright/world' // <-- use the playwright world variable (optional)
+
+import { Given, When, Then } from 'quickpickle' // <-- the functions to write step definitions
+
+// Custom step definitions
+Given('a/another number {int}', async (world) => {
+  if (!world.numbers) world.numbers = []
+  world.numbers.push(int)
+})
+```
+
+### Cucumber plugin for VSCode
+
+If you use VSCode, you'll want a cucumber plugin for code completion when
+writing gherkin features. Try the official "Cucumber" plugin, by "Cucumber".
+You'll also need to configure it so that it sees your step definitions.
+
+```json
+// VSCode settings.json
+"cucumber.glue": [
+    "**/*.steps.{ts,js,mjs}",
+    "**/steps/*.{ts,js,mjs}"
+],
 ```
 
 ## Usage
@@ -133,9 +180,51 @@ Then('the sum should be {int}', (world, int) => {
 })
 ```
 
-### Define a custom "world" variable
+### Define a custom "world" variable constructor
 
-...instructions coming soon! :)
+To define a custom world variable constructor in QuickPickle, you can use the `setWorldConstructor`
+function exported from the package. This allows you to create a custom World class that extends the
+QuickPickleWorld interface, enabling you to add your own properties and methods to the world object.
+By setting up a custom world constructor, you can initialize specific data or services that will be
+available to all your step definitions throughout the test execution.
+
+Each Scenario will receive a new instance of the world variable based on this class. If you need
+to write asynchronous code, you can write it inside an "init" function. Here is an example that
+should set up a sqlite database and initiate it with a "users" table:
+
+```ts
+import { setWorldConstructor, QuickPickleWorld, QuickPickleWorldInterface } from 'quickpickle'
+import sqlite3 from 'sqlite3'
+import { Database, open } from 'sqlite'
+
+class CustomWorld extends QuickPickleWorld {
+  db?: Database;
+
+  constructor(context: TestContext, info?: QuickPickleWorldInterface['info']) {
+    super(context, info)
+  }
+
+  async init() {
+    await super.init()
+    this.db = await this.setupDatabase()
+  }
+
+  private async setupDatabase(): Promise<Database> {
+    const db = await open({
+      filename: ':memory:',
+      driver: sqlite3.Database
+    })
+
+    await db.exec(`CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY, name TEXT)`)
+
+    return db
+  }
+}
+
+setWorldConstructor(CustomWorld)
+```
+
+For a real world example of a custom world constructor, see [PlaywrightWorld.ts].
 
 ## Differences from CucumberJS
 
@@ -146,7 +235,7 @@ and test running while maintaining functional parity with the original.
 Nonetheless, there are differences. Here are the important ones that have
 come to notice:
 
-- Each step definition MUST have the "world" variable as its first parameter:
+- **Each step definition MUST have the "world" variable as its first parameter:**
 
   ```ts
   // QuickPickle step definition
@@ -171,7 +260,7 @@ come to notice:
   - When using a custom world, you would have to add `(this:CustomWorldType, ...params)`
     in typescript files or else you wouldn't get the right types.
 
-- The default "world" variable contains information about the current step.
+- **The default "world" variable contains different information about the current step.**
 
   In CucumberJS, the default "world" variable contains information about the
   test *suite*, but not the *current step*. It's the opposite in QuickPickle;
@@ -195,6 +284,21 @@ come to notice:
         And the property "info.line" should include "23"
   ```
 
+- **Some tags have special meanings by default**
+
+  In Gherkin, the meanings of tags are determined by the implementation, there are no defaults.
+  Since quickpickle uses Vitest, some tags have been given default meanings:
+
+  * `@todo` / `@wip`: Marks scenarios as "todo" using Vitest's test.todo implementation
+  * `@skip`: Skips scenarios using Vitest's test.skip implementation
+  * `@fails` / `@failing`: Ensures that a scenario fails using Vitest's test.fails implementation
+  * `@concurrent`: Runs scenarios in parallel using Vitest's test.concurrent implementation
+  * `@sequential`: Runs scenarios sequentially using Vitest's test.sequential implementation
+
+  The relevant tags can be configured. Plugins may also have default tag implementations; for example,
+  @quickpickle/playwright has `@nojs` to disable javascript, and `@chromium`, `@firefox`, and `@webkit`
+  to run a scenario on a particular browser.
+
 ## Acknowledgements
 
 This project started out as a fork of [vitest-cucumber-plugin] by Sam Ziegler.
@@ -209,8 +313,13 @@ in the architecture of this project. Thanks Sam, your work blew my mind.
 
 !["it's so simple!" - Owen Wilson from Zoolander peers over an early 2000s iMac computer, a mad glint in his eye.](https://www.memecreator.org/static/images/memes/5439760.jpg)
 
+
+
+
 [Vitest]: https://vitest.dev/
 [Gherkin Syntax]: https://cucumber.io/docs/gherkin/reference/
 [Gherkin Parser]: https://www.npmjs.com/package/@cucumber/gherkin
 [CucumberJS]: https://github.com/cucumber/cucumber-js
 [vitest-cucumber-plugin]: https://github.com/samuel-ziegler/vitest-cucumber-plugin
+[PlaywrightWorld.ts]: https://github.com/dnotes/quickpickle/blob/main/packages/playwright/src/PlaywrightWorld.ts
+[@quickpickle/playwright]: https://github.com/dnotes/quickpickle/tree/main/packages/playwright
