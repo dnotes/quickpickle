@@ -12,7 +12,9 @@
   "license": "ISC",
   "devDependencies": {
     "@vitest/browser": "^2.1.2",
-    "quickpickle": "^1.1.2",
     "vitest": "^2.1.2"
+  },
+  "dependencies": {
+    "quickpickle": "^1.2.3"
   }
 }
