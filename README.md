@@ -27,9 +27,56 @@ by parsing them with the official [Gherkin Parser] and running them as Vitest te
   as possible, but functionality changes all the time. A small library of reusable step
   definitions is much easier to maintain than a large corpus of test code.
 
-### When NOT to use Gherkin
+### Goals of QuickPickle
 
-For unit tests, it's usually better to use plain Vitest or another testing framework.
+1.  Support the main technical ideas behind Gherkin / Cucumber
+
+    - Natural language for features
+    - Discrete, re-usable step definitions
+
+2.  Make Gherkin tests easy to set up and use in Javascript projects
+
+    - [x] Run tests with Vitest, to avoid painful snafus from js/ts/esm/commonjs issues.
+    - [x] Provide a plugin for testing web applications. (completed with [packages/playwright])
+    - [ ] Provide a plugin for testing components. (in progress with [packages/components])
+
+3.  Experiment with means of supporting open-source projects
+
+    - [ ] Provide a Svelte component exposing Gherkin steps, so that end users can potentially
+      write bug reports and feature requests in the form of Gherkin scenarios. (in progress with
+      [packages/svelte])
+    - [ ] Provide a GitHub actions and/or bots that interface with AI to:
+      - write Gherkin scenarios based on issue reports
+      - write code based on Gherkin scenarios
+
+4.  Experiment with Gherkin for unsanctioned testing purposes
+
+    **Note:** These ideas do NOT align with Cucumber best practices; use at your own risk
+    (of being ridiculed on reddit, etc.)
+
+    - [ ] **Develop a library of common step definitions that could be used across projects to test
+      UI interaction:** Gherkin scenarios and steps should generally be written with domain-specific
+      language instead of focusing on the user interface (see the "Lots of user interface details"
+      section of [Cucumber Anti-Patterns]). However:
+
+      1.  The browser is a specific domain that is nonetheless common across all web projects;
+          most will need an "I navigate to {string}" step.
+      2.  There may be a benefit to having a well-written set of Gherkin steps for UI testing
+          that is re-usable across a wide range of projects.
+      3.  This would make it _really_ easy for people to get started, even without writing any
+          step definitions.
+
+      (in progress with [packages/playwright])
+
+    - [ ] **Develop a library of common step definitions that could be used across projects for
+      "unit testing" components:** Gherkin is meant for testing the behavior of an application,
+      not the code, and in most cases it is not a good tool for unit testing. However:
+
+      1.  In some ways components represent units of behavior, often containing minimal code.
+      2.  It might be beneficial to have a library of well-written Gherkin steps for testing
+          every type of interaction that it supports.
+
+      (in progress with [packages/components])
 
 ## Installation
 
@@ -44,8 +91,8 @@ To get QuickPickle working you'll need to do three things:
 1.  configure Vitest to use QuickPickle, in vite.config.ts or vitest.workspace.ts
 2.  create a step definition file to
     - import or create your step definitions
-    -
-3.  install & configure VSCode Cucumber plugin (optional)
+    - set a different world variable constructor (optional)
+3.  install & configure VSCode Cucumber plugin (optional but highly recommended)
 
 ### QuickPickle configuration in Vitest
 
@@ -79,11 +126,18 @@ different browser environments, different world constructors, etc.
 import { defineWorkspace } from 'vitest/config';
 
 export default defineWorkspace([
-  { // configuration for feature files
+  { // configuration for feature files testing the application
     extends: './vite.config.ts',
     test: {
       include : [ 'tests/*.feature' ],
       setupFiles: [ 'tests/tests.steps.ts' ],
+    },
+  },
+  { // a second configuration for feature files testing components
+    extends: './vite.config.ts',
+    test: {
+      include : [ 'src/lib/*.feature' ],
+      setupFiles: [ 'tests/components.steps.ts' ],
     },
   },
   { // configuration for unit tests
@@ -226,6 +280,14 @@ setWorldConstructor(CustomWorld)
 
 For a real world example of a custom world constructor, see [PlaywrightWorld.ts].
 
+### Run Gherkin tests in your CI workflow
+
+If Vite is properly configured, Gherkin tests should run the same on local environments
+as it does in your CI workflow. If you use browser testing tools like Playwright, you
+may need to take a step to set it up first.
+
+See quickpickle's [release.yml] for an example.
+
 ## Differences from CucumberJS
 
 The main library for Gherkin in the JS ecosystem is [CucumberJS],
@@ -255,10 +317,14 @@ come to notice:
   })
   ```
 
-  "this" led to some sub-optimal usage, including:
-  - Arrow functions couldn't be used, because "this" doesn't work with them.
+  Aside from the fact that a passed variable is much easier to think about for a compiler
+  than custom bindings, `this` led to some sub-optimal usage in modern Javascript, including:
+
+  - Arrow functions couldn't be used in step definitions, or `this` wouldn't work.
   - When using a custom world, you would have to add `(this:CustomWorldType, ...params)`
     in typescript files or else you wouldn't get the right types.
+
+  Passing a variable is cleaner, easier, clearer, and provides better support for modern JS.
 
 - **The default "world" variable contains different information about the current step.**
 
@@ -323,3 +389,7 @@ in the architecture of this project. Thanks Sam, your work blew my mind.
 [vitest-cucumber-plugin]: https://github.com/samuel-ziegler/vitest-cucumber-plugin
 [PlaywrightWorld.ts]: https://github.com/dnotes/quickpickle/blob/main/packages/playwright/src/PlaywrightWorld.ts
 [@quickpickle/playwright]: https://github.com/dnotes/quickpickle/tree/main/packages/playwright
+[packages/playwright]: https://github.com/dnotes/quickpickle/tree/main/packages/playwright
+[packages/components]: https://github.com/dnotes/quickpickle/tree/main/packages/components
+[packages/svelte]: https://github.com/dnotes/quickpickle/tree/main/packages/svelte
+[release.yml]: https://github.com/dnotes/quickpickle/blob/main/.github/workflows/release.yml
