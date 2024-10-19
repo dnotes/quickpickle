@@ -61,6 +61,9 @@
     "typescript": "^5.6.2",
     "vitest": "^2.1.2"
   },
+  "peerDependencies": {
+    "vitest": "^1.0.0 || >=2.0.0"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/dnotes/quickpickle.git"
