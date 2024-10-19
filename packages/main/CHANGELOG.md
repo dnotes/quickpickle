@@ -1,5 +1,11 @@
 # quickpickle
 
+## 1.2.4
+
+### Patch Changes
+
+- aa3d7f3: Added vitest as peer dependency
+
 ## 1.2.3
 
 ### Patch Changes
