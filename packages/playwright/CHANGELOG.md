@@ -1,5 +1,13 @@
 # @quickpickle/playwright
 
+## 0.9.7
+
+### Patch Changes
+
+- 920abb4: fixed dependencies and added documentation
+- Updated dependencies [aa3d7f3]
+  - quickpickle@1.2.4
+
 ## 0.9.6
 
 ### Patch Changes
