@@ -7,15 +7,15 @@ import { defaultsDeep } from 'lodash-es'
 const browsers = { chromium, firefox, webkit }
 
 export type PlaywrightWorldConfigSetting = Partial<{
-  host: string,
-  port: number,
-  screenshotDir: string,
-  nojsTags: string|string[]
-  showBrowserTags: string|string[]
-  slowMoTags: string|string[]
-  headless: boolean
-  slowMo: boolean|number
-  slowMoMs: number
+  host: string, // default host, including protocol (default: http://localhost)
+  port: number, // port to which the browser should connect (default: undefined)
+  screenshotDir: string, // directory in which to save screenshots (default: "screenshots")
+  nojsTags: string|string[] // tags for scenarios to run without javascript (default: @nojs, @noscript)
+  showBrowserTags: string|string[] // tags for scenarios to run with browser visible (default: @browser, @show-browser, @showbrowser)
+  slowMoTags: string|string[] // tags for scenarios to be run with slow motion enabled (default: @slowmo)
+  headless: boolean // whether to run the browser in headless mode (default true)
+  slowMo: boolean|number // whether to run the browser with slow motion enabled (default false)
+  slowMoMs: number // the number of milliseconds to slow down the browser by (default 500)
 }>
 
 export const defaultPlaywrightWorldConfig = {
