@@ -4,6 +4,29 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HTML Test Page</title>
+    <style>
+        .hidden { display:none; }
+        .invisible { visibility:hidden; }
+
+        .faq-item:has(input:checked) .faq-answer {
+            display: block;
+            max-height: 200px; /* Adjust this value based on your content */
+            transition: max-height 0.5s ease-in;
+        }
+        .faq-toggle { cursor: pointer;}
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+        .faq-question {
+            cursor: pointer;
+        }
+        .faq-item input[type="checkbox"] {
+            display: none;
+        }
+
+    </style>
 </head>
 <body>
     <header>
@@ -14,6 +37,7 @@
                 <li><a href="#lists">Lists</a></li>
                 <li><a href="#table">Table</a></li>
                 <li><a href="#form">Form</a></li>
+                <li><a href="#faq">FAQ</a></li>
                 <li><a href="#image">Image</a></li>
             </ul>
         </nav>
@@ -40,6 +64,8 @@
                 <li>First item</li>
                 <li>Second item</li>
                 <li>Third item</li>
+                <li class="hidden">Hidden item</li>
+                <li class="invisible">Invisible item</li>
             </ol>
         </section>
 
@@ -77,8 +103,39 @@
                 <label for="message">Message:</label><br>
                 <textarea id="message" name="message" rows="4" cols="50"></textarea><br><br>
 
+                <label for="from">From:</label>
+                <input type="text" id="from" name="from" disabled value="example@example.com"><br><br>
+
+                <label for="date">Date:</label>
+                <input type="date" id="date" name="date" value="2024-10-19"><br><br>
+
+                <div>Send this message:</div>
+                <input type="radio" name="sendtime" id="sendtime-now" value="now" checked>
+                <label for="sendtime-now">Now</label>
+                <input type="radio" name="sendtime" id="sendtime-later" value="later">
+                <label for="sendtime-later">Later</label><br><br>
+
+                <input type="checkbox" name="tnc" id="tnc">
+                <label for="tnc">I agree to the terms and conditions</label><br><br>
+
                 <input type="submit" value="Submit">
             </form>
+        </section>
+
+        <section id="faq">
+            <h2>FAQ</h2>
+            <div class="faq-item">
+                <label for="faq-1" class="faq-toggle">
+                    <input type="checkbox" id="faq-1" class="faq-toggle">
+                    <h3>Do CSS transitions affect Playwright awaits?</h3>
+                </label>
+                <p class="faq-answer">
+                    AI says: "CSS transitions can affect Playwright awaits if not handled properly.
+                    Playwright's default waiting mechanism might not account for CSS transitions,
+                    potentially leading to flaky tests. It's important to use appropriate waiting
+                    strategies or disable transitions in test environments to ensure consistency."
+                </p>
+            </div>
         </section>
 
         <section id="image">
