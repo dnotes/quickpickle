@@ -193,18 +193,33 @@ Feature: Actions step definitions on a static page
     @todo
     Scenario: Scrolling a particular div
 
-
+  @skip-ci
   Rule: Screenshots must be supported
 
-    @todo
     Scenario: Taking a default screenshot
-      Then I take a screenshot
-      And the file "screenshots/Screenshots must be supported__Taking a default screenshot__200.png" should exist (delete it)
+      When I take a screenshot
+      Then the file "screenshots/Feature: Actions step definitions on a static page_Taking a default screenshot_01.png" should exist--delete it
 
-    @todo
     Scenario: Taking a named screenshot
-      Then I take a screenshot named "pickles"
-      And the file "screenshots/pickles.png" should exist (delete it)
+      When I take a screenshot named "pickles"
+      Then the file "screenshots/pickles.png" should exist--delete it
+
+    @nojs @js @sequential
+    Scenario: Taking a default screenshot with exploded tags
+      When I take a screenshot
+
+    @webkit @mobile @desktop @nojs @js @slowmo @sequential
+    Scenario: Taking a screenshot with lots of exploded tags
+      When I take a screenshot named "temp"
+
+    @sequential
+    Scenario: Cleaning up the screenshots with exploded tags
+      Then the file "screenshots/Feature: Actions step definitions on a static page_Taking a default screenshot with exploded tags (@concurrent,@skip-ci,@sequential,@js)_01.png" should exist--delete it
+      And the file "screenshots/Feature: Actions step definitions on a static page_Taking a default screenshot with exploded tags (@concurrent,@skip-ci,@sequential,@nojs)_01.png" should exist--delete it
+      And the file "screenshots/temp_(@concurrent,@skip-ci,@slowmo,@sequential,@nojs,@webkit,@mobile).png" should exist--delete it
+      And the file "screenshots/temp_(@concurrent,@skip-ci,@slowmo,@sequential,@nojs,@webkit,@desktop).png" should exist--delete it
+      And the file "screenshots/temp_(@concurrent,@skip-ci,@slowmo,@sequential,@js,@webkit,@mobile).png" should exist--delete it
+      And the file "screenshots/temp_(@concurrent,@skip-ci,@slowmo,@sequential,@js,@webkit,@desktop).png" should exist--delete it
 
   @skip-ci
   Rule: Different browser sizes must be supported

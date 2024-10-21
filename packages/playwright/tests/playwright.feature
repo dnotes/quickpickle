@@ -38,14 +38,23 @@ Feature: Basic tests of Playwright browser and steps
       When I load the file "tests/examples/example.html"
       Then I should see an "h1" element with text "HTML Test Page"
 
+  @skip-ci @sequential
   Rule: Visual regression testing must be supported
 
-    @skip-ci
     Example: Passing visual regression test
+      When I load the file "tests/examples/simple.html"
+      Then the screenshot should match
+
+    Example: Passing named visual regression test
       When I load the file "tests/examples/example.html"
       Then the screenshot "playwright-example" should match
 
     @fails
     Example: Failing visual regression test
       When I load the file "tests/examples/simple.html"
-      Then the screenshot "playwright-example" should match
+      Then the file "screenshots/playwright-example.png.diff.png" should not exist
+      And the screenshot "playwright-example" should match
+
+    Scenario: Delete the visual regression failure file
+      Then the file "screenshots/playwright-example.png.diff.png" should not exist
+      And the file "screenshots/playwright-example.png.actual.png" should exist--delete it

@@ -2,7 +2,7 @@ import { Then } from "quickpickle";
 import type { PlaywrightWorld } from "./PlaywrightWorld";
 import { expect, Locator, Page } from '@playwright/test'
 import './snapshotMatcher'
-import { getLocator, testMetatag } from "./helpers";
+import { defaultScreenshotPath, getLocator, testMetatag } from "./helpers";
 
 // ================
 // Text on page
@@ -256,7 +256,7 @@ Then('the meta( )tag {string} should not/NOT contain/include/be/equal {string}',
 
 // Visual regression testing
 Then('(the )screenshot should match', async function (world:PlaywrightWorld) {
-  await expect(world.page).toMatchScreenshot(`${world.playwrightConfig.screenshotDir}/${world.info.rule ? world.info.rule + '__' + world.info.scenario : world.info.scenario}__${world.info.line}.png`)
+  await expect(world.page).toMatchScreenshot(`${world.playwrightConfig.screenshotDir}/${defaultScreenshotPath(world)}`)
 })
 Then('(the )screenshot {string} should match', async function (world:PlaywrightWorld, name:string) {
   await expect(world.page).toMatchScreenshot(`${world.playwrightConfig.screenshotDir}/${name}.png`)

@@ -1,7 +1,7 @@
 import { Given, When, Then, DataTable } from "quickpickle";
 import type { PlaywrightWorld } from "./PlaywrightWorld";
 import { expect } from "@playwright/test";
-import { getLocator, sanitizeFilepath, setValue } from "./helpers";
+import { defaultScreenshotPath, getLocator, sanitizeFilepath, setValue } from "./helpers";
 
 import path from 'node:path'
 import url from 'node:url'
@@ -164,11 +164,12 @@ When('I scroll down/up/left/right {int}(px)( pixels)', async function (world:Pla
 // Screenshots
 
 Then('(I )take (a )screenshot', async function (world:PlaywrightWorld) {
-  let path = sanitizeFilepath(`${projectRoot}/${world.playwrightConfig.screenshotDir}/${world.info.rule ? world.info.rule + '__' + world.info.scenario : world.info.scenario}__${world.info.line}.png`)
+  let path = sanitizeFilepath(`${projectRoot}/${defaultScreenshotPath(world)}`)
   await world.page.screenshot({ path })
 })
 Then('(I )take (a )screenshot named {string}', async function (world:PlaywrightWorld, name:string) {
-  let path = sanitizeFilepath(`${projectRoot}/${world.playwrightConfig.screenshotDir}/${name}.png`)
+  let explodedTags = world.info.explodedIdx ? `_(${world.info.tags.join(',')})` : ''
+  let path = sanitizeFilepath(`${projectRoot}/${world.playwrightConfig.screenshotDir}/${name}${explodedTags}.png`)
   await world.page.screenshot({ path })
 })
 

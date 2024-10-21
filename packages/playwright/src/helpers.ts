@@ -1,4 +1,5 @@
 import { Locator, Page } from "playwright-core"
+import { PlaywrightWorld } from "./PlaywrightWorld"
 
 // Locator helper function
 export async function getLocator(el:Locator|Page, identifier:string, role:string, text:string|null=null) {
@@ -37,4 +38,8 @@ export async function testMetatag(page:Page, name:string, expected:string, exact
 
 export function sanitizeFilepath(filepath:string) {
   return filepath.replace(/\/\/+/g, '/').replace(/\/[\.~]+\//g, '/')
+}
+
+export function defaultScreenshotPath(world:PlaywrightWorld) {
+  return `${world.playwrightConfig.screenshotDir}/${world.toString().replace(/^.+?Feature: /, 'Feature: ').replace(' ' + world.info.step, '')}.png`
 }
