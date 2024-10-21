@@ -16,6 +16,8 @@ export type PlaywrightWorldConfigSetting = Partial<{
   headless: boolean // whether to run the browser in headless mode (default true)
   slowMo: boolean|number // whether to run the browser with slow motion enabled (default false)
   slowMoMs: number // the number of milliseconds to slow down the browser by (default 500)
+  keyboardDelay: number // the number of milliseconds between key presses
+  defaultBrowser: 'chromium'|'firefox'|'webkit' // the default browser to use
 }>
 
 export const defaultPlaywrightWorldConfig = {
@@ -27,6 +29,8 @@ export const defaultPlaywrightWorldConfig = {
   headless: true,
   slowMo: false,
   slowMoMs: 500,
+  keyboardDelay: 20,
+  defaultBrowser: 'chromium'
 }
 
 export type PlaywrightWorldConfig = typeof defaultPlaywrightWorldConfig & { port?:number }
@@ -39,25 +43,11 @@ export class PlaywrightWorld extends QuickPickleWorld {
 
   constructor(context:TestContext, info:QuickPickleWorldInterface['info']|undefined, worldConfig:PlaywrightWorldConfigSetting = {}) {
     super(context, info)
-    let newConfig = defaultsDeep(worldConfig || {}, defaultPlaywrightWorldConfig, )
-    newConfig.nojsTags = normalizeTags(newConfig.nojsTags)
-    newConfig.showBrowserTags = normalizeTags(newConfig.showBrowserTags)
-    newConfig.slowMoTags = normalizeTags(newConfig.slowMoTags)
-    if (typeof newConfig.slowMo === 'number') {
-      newConfig.slowMoMs = newConfig.slowMo
-      newConfig.slowMo = newConfig.slowMoMs > 0
-    }
-    this.playwrightConfig = newConfig
+    this.setConfig(worldConfig)
   }
 
   async init() {
-    let browserName = this.info.tags.find(t => t.match(
-      /^@(?:chromium|firefox|webkit)$/
-    ))?.replace(/^@/, '') as 'chromium'|'firefox'|'webkit' ?? 'chromium'
-    this.browser = await browsers[browserName].launch({
-      headless: this.tagsMatch(this.playwrightConfig.showBrowserTags) ? false : this.playwrightConfig.headless,
-      slowMo: (this.playwrightConfig.slowMo || this.tagsMatch(this.playwrightConfig.slowMoTags)) ? this.playwrightConfig.slowMoMs : 0
-    })
+    await this.startBrowser()
     this.browserContext = await this.browser.newContext({
       serviceWorkers: 'block',
       javaScriptEnabled: this.tagsMatch(this.playwrightConfig.nojsTags) ? false : true,
@@ -65,9 +55,40 @@ export class PlaywrightWorld extends QuickPickleWorld {
     this.page = await this.browserContext.newPage()
   }
 
-  async reset() {
+  get browserName() {
+    return this.info.tags.find(t => t.match(
+      /^@(?:chromium|firefox|webkit)$/
+    ))?.replace(/^@/, '') as 'chromium'|'firefox'|'webkit' ?? this.playwrightConfig.defaultBrowser ?? 'chromium'
+  }
+
+  setConfig(worldConfig:PlaywrightWorldConfigSetting) {
+    let newConfig = defaultsDeep(worldConfig || {}, defaultPlaywrightWorldConfig )
+    newConfig.nojsTags = normalizeTags(newConfig.nojsTags)
+    newConfig.showBrowserTags = normalizeTags(newConfig.showBrowserTags)
+    newConfig.slowMoTags = normalizeTags(newConfig.slowMoTags)
+    if (!['chromium','firefox','webkit'].includes(newConfig.defaultBrowser)) newConfig.defaultBrowser = 'chromium'
+    if (typeof newConfig.slowMo === 'number') {
+      newConfig.slowMoMs = newConfig.slowMo
+      newConfig.slowMo = newConfig.slowMoMs > 0
+    }
+    this.playwrightConfig = newConfig
+  }
+
+  async startBrowser() {
+    this.browser = await browsers[this.browserName].launch({
+      headless: this.tagsMatch(this.playwrightConfig.showBrowserTags) ? false : this.playwrightConfig.headless,
+      slowMo: (this.playwrightConfig.slowMo || this.tagsMatch(this.playwrightConfig.slowMoTags)) ? this.playwrightConfig.slowMoMs : 0
+    })
+  }
+
+  async reset(conf?:PlaywrightWorldConfigSetting) {
     await this.page?.close()
     await this.browserContext?.close()
+    if (conf) {
+      await this.browser.close()
+      await this.setConfig(conf)
+      await this.startBrowser()
+    }
     this.browserContext = await this.browser.newContext({
       serviceWorkers: 'block'
     })

@@ -109,6 +109,17 @@
                 <label for="date">Date:</label>
                 <input type="date" id="date" name="date" value="2024-10-19"><br><br>
 
+                <label for="number">Number:</label>
+                <input type="number" id="number" name="number"><br><br>
+
+                <label for="color">Color:</label>
+                <select id="color" name="color">
+                    <option value="">- none -</option>
+                    <option value="red">Red</option>
+                    <option value="green">Green</option>
+                    <option value="blue">Blue</option>
+                </select><br><br>
+
                 <div>Send this message:</div>
                 <input type="radio" name="sendtime" id="sendtime-now" value="now" checked>
                 <label for="sendtime-now">Now</label>
@@ -124,7 +135,7 @@
 
         <section id="faq">
             <h2>FAQ</h2>
-            <div class="faq-item">
+            <div class="faq-item" id="faq-item-1">
                 <label for="faq-1" class="faq-toggle">
                     <input type="checkbox" id="faq-1" class="faq-toggle">
                     <h3>Do CSS transitions affect Playwright awaits?</h3>

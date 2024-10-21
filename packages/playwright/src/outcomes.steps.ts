@@ -2,7 +2,7 @@ import { Then } from "quickpickle";
 import type { PlaywrightWorld } from "./PlaywrightWorld";
 import { expect, Locator, Page } from '@playwright/test'
 import './snapshotMatcher'
-import { getLocator } from "./helpers";
+import { getLocator, testMetatag } from "./helpers";
 
 // ================
 // Text on page
@@ -172,51 +172,86 @@ Then('a/an/the {string} (element )with (the )(text ){string} should be unfocused
   await expect(locator).not.toBeFocused()
 })
 
-// Forms
-Then('a/an/the value in/of/for (the ){string} {word} should contain/include/be/equal {string}', async function (world:PlaywrightWorld, identifier, role, expected) {
-  let exact = world.info.step?.match(/ should (?:be|equal) ['"]/) ? true : false
+// in viewport / out of viewport
+Then('a/an/the {string} should be in(side) (of )the viewport', async function (world:PlaywrightWorld, identifier) {
+  let locator = await getLocator(world.page, identifier, 'element')
+  await expect(locator).toBeInViewport()
+})
+Then('a/an/the {string} should be out(side) (of )the viewport', async function (world:PlaywrightWorld, identifier) {
+  let locator = await getLocator(world.page, identifier, 'element')
+  await expect(locator).not.toBeInViewport()
+})
+Then('a/an/the {string} {word} should be in(side) (of )the viewport', async function (world:PlaywrightWorld, identifier, role) {
   let locator = await getLocator(world.page, identifier, role)
+  await expect(locator).toBeInViewport()
+})
+Then('a/an/the {string} {word} should be out(side) (of )the viewport', async function (world:PlaywrightWorld, identifier, role) {
+  let locator = await getLocator(world.page, identifier, role)
+  await expect(locator).not.toBeInViewport()
+})
+Then('a/an/the {string} (element )with (the )(text ){string} should be in(side) (of )the viewport', async function (world:PlaywrightWorld, identifier, text) {
+  let locator = await getLocator(world.page, identifier, 'element', text)
+  await expect(locator).toBeInViewport()
+})
+Then('a/an/the {string} (element )with (the )(text ){string} should be out(side) (of )the viewport', async function (world:PlaywrightWorld, identifier, text) {
+  let locator = await getLocator(world.page, identifier, 'element', text)
+  await expect(locator).not.toBeInViewport()
+})
+
+
+// Values
+Then('a/an/the (value of ){string} should contain/include/be/equal {string}', async function (world:PlaywrightWorld, identifier, expected) {
+  let exact = world.info.step?.match(/ should (?:be|equal) ['"]/) ? true : false
+  let locator = await getLocator(world.page, identifier, 'input')
   if (exact) await expect(locator).toHaveValue(expected)
   else {
     let actual = await locator.inputValue()
     await expect(actual).toContain(expected)
   }
 })
-Then('a/an/the value in/of/for (the ){string} {word} should not/NOT contain/include/be/equal {string}', async function (world:PlaywrightWorld, identifier, role, expected) {
+Then('a/an/the (value of )(the ){string} {word} should contain/include/be/equal {string}', async function (world:PlaywrightWorld, identifier, role, expected) {
+  let exact = world.info.step?.match(/ should (?:be|equal) ['"]/) ? true : false
+  if (role === 'metatag') await expect(await testMetatag(world.page, identifier, expected, exact)).toBe(true)
+  else {
+    let locator = await getLocator(world.page, identifier, role)
+    if (exact) await expect(locator).toHaveValue(expected)
+    else {
+      let actual = await locator.inputValue()
+      await expect(actual).toContain(expected)
+    }
+  }
+})
+
+Then('a/an/the (value of )(the ){string} should not/NOT contain/include/be/equal {string}', async function (world:PlaywrightWorld, identifier, expected) {
   let exact = world.info.step?.match(/ should (?:not|NOT) (?:be|equal) ['"]/) ? true : false
-  let locator = await getLocator(world.page, identifier, role)
+  let locator = await getLocator(world.page, identifier, 'input')
   if (exact) await expect(locator).not.toHaveValue(expected)
   else {
     let actual = await locator.inputValue()
     await expect(actual).not.toContain(expected)
   }
 })
-
+Then('a/an/the (value of )(the ){string} {word} should not/NOT contain/include/be/equal {string}', async function (world:PlaywrightWorld, identifier, role, expected) {
+  let exact = world.info.step?.match(/ should (?:not|NOT) (?:be|equal) ['"]/) ? true : false
+  if (role === 'metatag') await expect(await testMetatag(world.page, identifier, expected, exact)).toBe(false)
+  else {
+    let locator = await getLocator(world.page, identifier, role)
+    if (exact) await expect(locator).not.toHaveValue(expected)
+    else {
+      let actual = await locator.inputValue()
+      await expect(actual).not.toContain(expected)
+    }
+  }
+})
 
 // Metatags
-Then('the {string} metatag should contain/include/be/equal {string}', async function (world:PlaywrightWorld, name, expected) {
+Then('the meta( )tag {string} should contain/include/be/equal {string}', async function (world:PlaywrightWorld, name, expected) {
   let exact = world.info.step?.match(/ should (?:be|equal) ['"]/) ? true : false
-
-  let actual:string|null
-
-  if (name === 'title') actual = await world.page.title()
-  else actual = await (await world.page.locator(`meta[name="${name}"]`)).getAttribute('content')
-
-  if (expected === "") await expect(actual).toBeNull()
-  else if (exact) await expect(expected).toBe(actual)
-  else await expect(actual).toContain(expected)
+  await expect(await testMetatag(world.page, name, expected, exact)).toBe(true)
 })
-Then('the {string} metatag should not/NOT contain/include/be/equal {string}', async function (world:PlaywrightWorld, name, expected) {
+Then('the meta( )tag {string} should not/NOT contain/include/be/equal {string}', async function (world:PlaywrightWorld, name, expected) {
   let exact = world.info.step?.match(/ should (?:not|NOT) (?:be|equal) ['"]/) ? true : false
-
-  let actual:string|null
-
-  if (name === 'title') actual = await world.page.title()
-  else actual = await (await world.page.locator(`meta[name="${name}"]`)).getAttribute('content')
-
-  if (expected === "") await expect(actual).not.toBeNull()
-  else if (exact) await expect(expected).not.toBe(actual)
-  else await expect(actual).not.toContain(expected)
+  await expect(await testMetatag(world.page, name, expected, exact)).toBe(false)
 })
 
 // Visual regression testing

@@ -16,6 +16,11 @@ export default defineConfig({
     include: [
       'tests/**/*.feature'
     ],
-    setupFiles: ['./src/world.ts', './src/actions.steps.ts','./src/outcomes.steps.ts'],
+    setupFiles: [
+      './src/world.ts',
+      './src/actions.steps.ts',
+      './src/outcomes.steps.ts',
+      './tests/playwright.steps.ts'
+    ],
   },
 });

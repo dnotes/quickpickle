@@ -1,10 +1,14 @@
 import { Given, When, Then, DataTable } from "quickpickle";
 import type { PlaywrightWorld } from "./PlaywrightWorld";
+import { expect } from "@playwright/test";
+import { getLocator, sanitizeFilepath, setValue } from "./helpers";
+
 import path from 'node:path'
 import url from 'node:url'
-import type { Locator } from "playwright/test";
-
 export const projectRoot = path.resolve(path.dirname(url.fileURLToPath(import.meta.url)), '..')
+
+// ================
+// Navigation
 
 Given('I am on {string}', async function (world:PlaywrightWorld, path) {
   let url = new URL(path, world.baseUrl)
@@ -23,66 +27,124 @@ When('I load the file {string}', async (world:PlaywrightWorld, path) => {
   await world.page.goto(`file://${projectRoot}/${path}`)
 })
 
-When('I click/press/tap/touch (on ){string}', async function (world:PlaywrightWorld, identifier) {
-  await world.page.getByText(identifier, { exact:true }).click()
+When('I go back/forward/forwards', async function (world:PlaywrightWorld) {
+  let direction = world.info.step?.match(/(back|forwards?)$/)![0] as 'back'|'forwards'
+  if (direction === 'back') await world.page.goBack()
+  else await world.page.goForward()
 })
 
+// ================
+// Interaction
+
+When('I click/press/tap/touch (on ){string}', async function (world:PlaywrightWorld, identifier) {
+  let locator = world.page.getByText(identifier, { exact:true })
+  await expect(locator).toBeVisible({ timeout:1000 })
+  await locator.click()
+})
 When('I click/press/tap/touch (on )the {string} {word}', async function (world:PlaywrightWorld, identifier, role) {
-  let locator:Locator
-  if (role === 'element') locator = await world.page.getByText(identifier, { exact:true }).or(world.page.locator(identifier))
-  else locator = await world.page.getByRole(role, { name: identifier })
+  let locator = await getLocator(world.page, identifier, role)
+  await expect(locator).toBeVisible({ timeout:1000 })
   await locator.click()
 })
 
 When('I focus/select/activate (on ){string}', async function (world:PlaywrightWorld, identifier) {
-  let locator = await world.page.getByText(identifier, { exact:true }).or(world.page.locator(identifier))
+  let locator = await world.page.getByText(identifier, { exact:true })
+  await expect(locator).toBeVisible({ timeout:1000 })
   await locator.focus()
 })
-
 When('I focus/select/activate (on )the {string} {word}', async function (world:PlaywrightWorld, identifier, role) {
-  let locator:Locator
-  if (role === 'element') locator = await world.page.getByText(identifier, { exact:true }).or(world.page.locator(identifier))
-  else locator = await world.page.getByRole(role, { name: identifier })
+  let locator = await getLocator(world.page, identifier, role)
+  await expect(locator).toBeVisible({ timeout:1000 })
   await locator.focus()
 })
 
-When("for (the ){string} I enter/fill (in ){string}", async function (world:PlaywrightWorld, identifier, text) {
-  let locator = await world.page.getByLabel(identifier).or(world.page.getByPlaceholder(identifier)).or(world.page.locator(identifier))
-  await locator.fill(text)
+// ================
+// Typing
+
+When("for/in/on (the ){string} I type {string}", async function (world:PlaywrightWorld, identifier, value) {
+  let locator = await getLocator(world.page, identifier, 'input')
+  await locator.pressSequentially(value)
 })
-When("for (the ){string} I enter/fill (in )the following( text):", async function (world:PlaywrightWorld, identifier, text) {
-  let locator = await world.page.getByLabel(identifier).or(world.page.getByPlaceholder(identifier)).or(world.page.locator(identifier))
-  await locator.fill(text)
+When("for/in/on (the ){string} {word} I type {string}", async function (world:PlaywrightWorld, identifier, role, value) {
+  let locator = await getLocator(world.page, identifier, role)
+  await locator.pressSequentially(value)
 })
 
+When('I type the following keys: {}', async function (world:PlaywrightWorld, keys:string) {
+  let keyPresses = keys.split(' ')
+  for (let key of keyPresses) await world.page.keyboard.press(key, { delay:world.playwrightConfig.keyboardDelay })
+})
+When("for/in/on (the ){string} I type the following keys: {}", async function (world:PlaywrightWorld, identifier, keys) {
+  let locator = await getLocator(world.page, identifier, 'input')
+  for (let key of keys) await locator.press(key, { delay:world.playwrightConfig.keyboardDelay })
+})
+When("for/in/on (the ){string} {word} I type the following keys: {}", async function (world:PlaywrightWorld, identifier, role, keys) {
+  let locator = await getLocator(world.page, identifier, role)
+  for (let key of keys) await locator.press(key, { delay:world.playwrightConfig.keyboardDelay })
+})
+
+// ================
+// Forms
+
+When("for/in/on (the ){string} I enter/fill/select (in ){string}", async function (world:PlaywrightWorld, identifier, value) {
+  let locator = await getLocator(world.page, identifier, 'input')
+  await setValue(locator, value)
+})
+When("for/in/on (the ){string} {word} I enter/fill/select (in ){string}", async function (world:PlaywrightWorld, identifier, role, value) {
+  let locator = await getLocator(world.page, identifier, role)
+  await setValue(locator, value)
+})
+When("for/in/on (the ){string} I enter/fill/select (in )the following( text):", async function (world:PlaywrightWorld, identifier, value) {
+  let locator = await getLocator(world.page, identifier, 'input')
+  await setValue(locator, value.toString())
+})
+When("for/in/on (the ){string} {word} I enter/fill/select (in )the following( text):", async function (world:PlaywrightWorld, identifier, role, value) {
+  let locator = await getLocator(world.page, identifier, role)
+  await setValue(locator, value.toString())
+})
 When('I enter/fill (in )the following( fields):', async function (world:PlaywrightWorld, table:DataTable) {
+  let rows = table.raw()
+  let hasRole = rows[0].length === 3
   for (let row of table.raw()) {
-    let [identifier, text] = row
-    let locator = await world.page.getByLabel(identifier).or(world.page.getByPlaceholder(identifier)).or(world.page.locator(identifier))
-    let tag = await locator.evaluate(e => e.tagName.toLowerCase())
-    let type = await locator.getAttribute('type')
-    if (tag === 'select') {
-      await locator.selectOption(text)
+    let [identifier, role, value] = row
+    if (!hasRole) {
+      value = role
+      role = 'input'
     }
-    else if (type === 'checkbox' || type === 'radio') {
-      let checked:boolean = (['','false','no','unchecked','null','undefined','0']).includes(text.toLowerCase()) ? false : true
-      await locator.setChecked(checked)
-    }
-    else {
-      await locator.fill(text)
-    }
+    let locator = await getLocator(world.page, identifier, role)
+    await setValue(locator, value)
   }
 })
 
-When('I wait for {string} to be attached/detatched/visible/hidden', async function (world:PlaywrightWorld, identifier) {
+When('I check (the ){string}( radio)( checkbox)( box)', async function (world:PlaywrightWorld, indentifier) {
+  let locator = await getLocator(world.page, indentifier, 'input')
+  await locator.check()
+})
+When('I uncheck (the ){string}( checkbox)( box)', async function (world:PlaywrightWorld, indentifier) {
+  let locator = await getLocator(world.page, indentifier, 'input')
+  await locator.uncheck()
+})
+
+// ================
+// Waiting
+
+When('I wait for {string} to be attached/detatched/visible/hidden', async function (world:PlaywrightWorld, text) {
   let state = world.info.step?.match(/(attached|detatched|visible|hidden)$/)![0] as 'attached'|'detached'|'visible'|'hidden'
-  let locator = await world.page.getByText(identifier, { exact:true }).or(world.page.getByLabel(identifier)).or(world.page.locator(identifier))
-  await locator.waitFor({ state })
+  let locator = world.page.getByText(text)
+  await locator.waitFor({ state, timeout:5000 })
+})
+When('I wait for a/an/the {string} {word} to be attached/detatched/visible/hidden', async function (world:PlaywrightWorld, identifier, role) {
+  let state = world.info.step?.match(/(attached|detatched|visible|hidden)$/)![0] as 'attached'|'detached'|'visible'|'hidden'
+  let locator = await getLocator(world.page, identifier, role)
+  await locator.waitFor({ state, timeout:5000 })
 })
 
 When('I wait for {int}ms', async function (world:PlaywrightWorld, num) {
   await world.page.waitForTimeout(num)
 })
+
+// ================
+// Scrolling
 
 When('I scroll down/up/left/right', async function (world:PlaywrightWorld) {
   let direction = world.info.step?.match(/(down|up|left|right)$/)![0] as 'down'|'up'|'left'|'right'
@@ -98,22 +160,14 @@ When('I scroll down/up/left/right {int}(px)( pixels)', async function (world:Pla
   await world.page.mouse.wheel(0, direction === 'down' ? num : -num)
 })
 
-When('I type the following keys: {}', async function (world:PlaywrightWorld, keys:string) {
-  let keyPresses = keys.split(' ')
-  for (let key of keyPresses) {
-    await world.page.keyboard.press(key)
-  }
-})
-
-When('I go back/forwards?', async function (world:PlaywrightWorld) {
-  let direction = world.info.step?.match(/(back|forwards?)$/)![0] as 'back'|'forwards'
-  if (direction === 'back') await world.page.goBack()
-  else await world.page.goForward()
-})
+// ================
+// Screenshots
 
 Then('(I )take (a )screenshot', async function (world:PlaywrightWorld) {
-  await world.page.screenshot({ path: `${projectRoot}/${world.playwrightConfig.screenshotDir}/${world.info.rule ? world.info.rule + '__' + world.info.scenario : world.info.scenario}__${world.info.line}.png`.replace(/\/\//g,'/') })
+  let path = sanitizeFilepath(`${projectRoot}/${world.playwrightConfig.screenshotDir}/${world.info.rule ? world.info.rule + '__' + world.info.scenario : world.info.scenario}__${world.info.line}.png`)
+  await world.page.screenshot({ path })
 })
 Then('(I )take (a )screenshot named {string}', async function (world:PlaywrightWorld, name:string) {
-  await world.page.screenshot({ path: `${projectRoot}/${world.playwrightConfig.screenshotDir}/${name}.png`.replace(/\/\//g,'/') })
+  let path = sanitizeFilepath(`${projectRoot}/${world.playwrightConfig.screenshotDir}/${name}.png`)
+  await world.page.screenshot({ path })
 })

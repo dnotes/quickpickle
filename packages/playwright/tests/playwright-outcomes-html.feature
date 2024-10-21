@@ -120,6 +120,8 @@ Feature: Outcome step definitions on a static page
       And the value of the "From" textbox should contain "example"
       And the value of the "From" textbox should not include "FWAH!"
       And the value of the "From" textbox should NOT be "example"
+      And the value of "From" should contain "example"
+      And the value of "From" should NOT be "example"
 
     Scenario: date values
       Then the value of the "Date" textbox should be "2024-10-19"
@@ -130,9 +132,13 @@ Feature: Outcome step definitions on a static page
   Rule: Testing for metatags should be possible
 
     Scenario: testing the page title
+      Then the metatag "title" should be "HTML Test Page"
+      And the metatag "title" should not contain "FWAH!"
       Then the "title" metatag should be "HTML Test Page"
       And the "title" metatag should not contain "FWAH!"
 
     Scenario: testing the meta:viewport
+      Then the meta tag "viewport" should contain "width=device-width"
+      And the meta tag "viewport" should NOT be "width=device-width"
       Then the "viewport" metatag should contain "width=device-width"
       And the "viewport" metatag should NOT be "width=device-width"
