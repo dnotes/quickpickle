@@ -1,5 +1,21 @@
 # @quickpickle/playwright
 
+## 0.9.8
+
+### Patch Changes
+
+- f1167dc: fixed outcomes step definitions and tests for static HTML page
+- f350d15: - changed tagsMatch API for QuickPickleWorldInterface -- it now returns string[] or null,
+  which makes it easier for other plugins to get matching tags from a list.
+
+  - added browser sizes to PlaywrightWorld; they can be chosen with tags or set via a Gherkin step.
+
+- 07920cd: fixed all action step definitions, with tests
+- c85e2c0: Fixed file paths for default screenshots
+- Updated dependencies [f350d15]
+- Updated dependencies [94902af]
+  - quickpickle@1.3.0
+
 ## 0.9.7
 
 ### Patch Changes
