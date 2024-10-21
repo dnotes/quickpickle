@@ -171,3 +171,12 @@ Then('(I )take (a )screenshot named {string}', async function (world:PlaywrightW
   let path = sanitizeFilepath(`${projectRoot}/${world.playwrightConfig.screenshotDir}/${name}.png`)
   await world.page.screenshot({ path })
 })
+
+// ================
+// Browser size
+Given('the browser size is (set to ){word}', async function (world:PlaywrightWorld, browserSizeTag:string) {
+  await world.setViewportSize(browserSizeTag)
+})
+Given('the browser size is (set to ){int} x {int}', async function (world:PlaywrightWorld, width:number, height:number) {
+  await world.page.setViewportSize({ width, height })
+})

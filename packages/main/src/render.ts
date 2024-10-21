@@ -290,5 +290,6 @@ export function explodeTags(explodeTags:string[][], testTags:string[]):string[][
  * @returns boolean
  */
 export function tagsMatch(confTags:string[], testTags:string[]) {
-  return intersection(confTags.map(t => t.toLowerCase()), testTags.map(t => t.toLowerCase()))?.length ? true : false
+  let tags = intersection(confTags.map(t => t.toLowerCase()), testTags.map(t => t.toLowerCase()))
+  return tags?.length ? tags : null
 }

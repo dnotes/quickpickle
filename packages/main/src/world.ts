@@ -14,7 +14,7 @@ export interface QuickPickleWorldInterface {
     [key: string]: any
   }
   init: () => Promise<void>
-  tagsMatch(tags: string[]): boolean
+  tagsMatch(tags: string[]): string[]|null
 }
 
 export class QuickPickleWorld implements QuickPickleWorldInterface {
@@ -30,7 +30,7 @@ export class QuickPickleWorld implements QuickPickleWorldInterface {
     if (info) this.info = {...info}
   }
   async init() {}
-  tagsMatch(tags: string[]): boolean {
+  tagsMatch(tags: string[]) {
     return tagsMatch(tags, this.info.tags)
   }
 }

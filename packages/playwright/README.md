@@ -119,6 +119,7 @@ export default {
       explodeTags: [
         ['nojs','js'],
         ['chromium','firefox','webkit'],
+        ['mobile','tablet','desktop','widescreen'],
       ],
 
       // PlaywrightWorld configuration
@@ -140,6 +141,7 @@ export default {
       explodeTags: [
         ['nojs','js'],
         ['chromium','firefox','webkit'],
+        ['mobile','tablet','desktop','widescreen'],
       ],
 
       // PlaywrightWorld configuration
@@ -165,6 +167,11 @@ export type PlaywrightWorldConfigSetting = Partial<{
   headless: boolean // whether to run the browser in headless mode (default true)
   slowMo: boolean|number // whether to run the browser with slow motion enabled (default false)
   slowMoMs: number // the number of milliseconds to slow down the browser by (default 500)
+  keyboardDelay: number // the number of milliseconds between key presses (default:20)
+  defaultBrowser: 'chromium'|'firefox'|'webkit' // the default browser to use (default: chromium)
+  browserSizes: Record<string,string> // the default browser sizes to use, in the form "widthxheight"
+  // (default: { mobile: "480x640", tablet: "1024x768", desktop: "1920x1080", widescreen: "3440x1440" })
+  defaultBrowserSize: string // the default browser size to use (default: desktop)
 }>
 ```
 

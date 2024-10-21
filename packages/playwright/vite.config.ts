@@ -6,6 +6,11 @@ export default defineConfig({
   plugins: [
     // @ts-ignore
     quickpickle({
+      explodeTags: [
+        ['nojs','js'],
+        ['chromium','firefox','webkit'],
+        ['mobile','tablet','desktop','widescreen'],
+      ],
       worldConfig: {
         slowMoMs: 500,
       }

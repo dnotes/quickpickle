@@ -16,8 +16,11 @@ export type PlaywrightWorldConfigSetting = Partial<{
   headless: boolean // whether to run the browser in headless mode (default true)
   slowMo: boolean|number // whether to run the browser with slow motion enabled (default false)
   slowMoMs: number // the number of milliseconds to slow down the browser by (default 500)
-  keyboardDelay: number // the number of milliseconds between key presses
-  defaultBrowser: 'chromium'|'firefox'|'webkit' // the default browser to use
+  keyboardDelay: number // the number of milliseconds between key presses (default:20)
+  defaultBrowser: 'chromium'|'firefox'|'webkit' // the default browser to use (default: chromium)
+  browserSizes: Record<string,string> // the default browser sizes to use, in the form "widthxheight"
+  // (default: { mobile: "480x640", tablet: "1024x768", desktop: "1920x1080", widescreen: "3440x1440" })
+  defaultBrowserSize: string // the default browser size to use (default: desktop)
 }>
 
 export const defaultPlaywrightWorldConfig = {
@@ -30,10 +33,20 @@ export const defaultPlaywrightWorldConfig = {
   slowMo: false,
   slowMoMs: 500,
   keyboardDelay: 20,
-  defaultBrowser: 'chromium'
+  defaultBrowser: 'chromium',
+  browserSizes: {
+    mobile: '480x640',
+    tablet: '1024x768',
+    desktop: '1920x1080',
+    widescreen: '3440x1440',
+  },
+  defaultBrowserSize: 'desktop',
 }
 
-export type PlaywrightWorldConfig = typeof defaultPlaywrightWorldConfig & { port?:number }
+export type PlaywrightWorldConfig = typeof defaultPlaywrightWorldConfig & {
+  port?:number,
+  browserSizes: Record<string,string>
+}
 
 export class PlaywrightWorld extends QuickPickleWorld {
   browser!: Browser
@@ -53,12 +66,26 @@ export class PlaywrightWorld extends QuickPickleWorld {
       javaScriptEnabled: this.tagsMatch(this.playwrightConfig.nojsTags) ? false : true,
     })
     this.page = await this.browserContext.newPage()
+    await this.setViewportSize()
   }
 
   get browserName() {
     return this.info.tags.find(t => t.match(
       /^@(?:chromium|firefox|webkit)$/
     ))?.replace(/^@/, '') as 'chromium'|'firefox'|'webkit' ?? this.playwrightConfig.defaultBrowser ?? 'chromium'
+  }
+
+  get browserSize() {
+    let tag = this.tagsMatch(this.browserSizeTags)?.[0]?.replace(/^@/, '')
+    let sizeStr = (tag
+      ? this.playwrightConfig.browserSizes[tag.replace(/^@/,'')]
+      : this.playwrightConfig.browserSizes[this.playwrightConfig.defaultBrowserSize]
+    ) ?? '1920x1080'
+    return getDimensions(sizeStr)
+  }
+
+  get browserSizeTags() {
+    return Object.keys(this.playwrightConfig.browserSizes).map(k => `@${k}`)
   }
 
   setConfig(worldConfig:PlaywrightWorldConfigSetting) {
@@ -72,6 +99,22 @@ export class PlaywrightWorld extends QuickPickleWorld {
       newConfig.slowMo = newConfig.slowMoMs > 0
     }
     this.playwrightConfig = newConfig
+  }
+
+  async setViewportSize(size?:string) {
+    if (size) {
+      size = size.replace(/^['"]/, '').replace(/['"]$/, '')
+      if (this.playwrightConfig.browserSizes[size]) {
+        await this.page.setViewportSize(getDimensions(this.playwrightConfig.browserSizes[size]))
+      }
+      else if (size.match(/^\d+x\d+$/)) {
+        await this.page.setViewportSize(getDimensions(size))
+      }
+      else throw new Error(`Invalid browser size: ${size}
+        (found: ${this.playwrightConfig.browserSizes[size]})
+        (available: ${Object.keys(this.playwrightConfig.browserSizes).join(', ')})`)
+    }
+    else await this.page.setViewportSize(this.browserSize)
   }
 
   async startBrowser() {
@@ -103,6 +146,11 @@ export class PlaywrightWorld extends QuickPickleWorld {
     if (this.playwrightConfig.port) return new URL(`${this.playwrightConfig.host}:${this.playwrightConfig.port}`)
     else return new URL(this.playwrightConfig.host)
   }
+}
+
+function getDimensions(size:string) {
+  let [width,height] = size.split('x').map(Number)
+  return {width,height}
 }
 
 After(async (world:PlaywrightWorld) => {

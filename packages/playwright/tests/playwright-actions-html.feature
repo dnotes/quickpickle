@@ -205,3 +205,33 @@ Feature: Actions step definitions on a static page
     Scenario: Taking a named screenshot
       Then I take a screenshot named "pickles"
       And the file "screenshots/pickles.png" should exist (delete it)
+
+  Rule: Different browser sizes must be supported
+
+    Background: load the simple file
+      When I load the file "tests/examples/simple.html"
+
+    @mobile
+    Scenario: viewport size mobile
+      Then the screenshot "viewport-size-mobile" should match
+
+    @tablet
+    Scenario: viewport size tablet
+      When the browser size is "tablet"
+      Then the screenshot "viewport-size-tablet" should match
+
+    @desktop
+    Scenario: viewport size desktop
+      Then the screenshot "viewport-size-desktop" should match
+
+    Scenario: viewport size widescreen
+      When the browser size is widescreen
+      Then the screenshot "viewport-size-widescreen" should match
+
+    Scenario: viewport size custom 200x800
+      When the browser size is 200 x 800
+      Then the screenshot "viewport-size-200x800" should match
+
+    Scenario: viewport size custom 500x800
+      When the browser size is 500x800
+      Then the screenshot "viewport-size-500x800" should match
