@@ -53,12 +53,14 @@ interface StepDefinitionMatch {
   parameters: any[];
 }
 
-export const qp = async (step: string, state: any, line: number, data?: any): Promise<any> => {
+export const gherkinStep = async (step: string, state: any, line: number, stepIdx:number, explodeIdx?:number, data?:any): Promise<any> => {
   const stepDefinitionMatch: StepDefinitionMatch = findStepDefinitionMatch(step);
 
   // Set the state info
   state.info.step = step
   state.info.line = line
+  state.info.stepIdx = stepIdx
+  state.info.explodedIdx = explodeIdx
 
   // Sort out the DataTable or DocString
   if (Array.isArray(data)) {

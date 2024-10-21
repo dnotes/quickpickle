@@ -110,3 +110,15 @@ Feature: QuickPickle's Comprehensive Gherkin Syntax Example
         Given a Rule statement
         When another Rule is indented below it
         Then the indented Rule is NOT a child of the previous Rule
+
+  @1a @1b
+  Scenario: Exploded tags make multiple tests
+    Given an explodedTags config of [[ '@1a','@1b' ], [ '@2a','@2b' ]]
+    When this Scenario is run
+    Then it should be split into 2 tests
+
+  @1a @1b @2a @2b @tag3
+  Scenario: More tags make more tests
+    Given an explodedTags config of [[ '@1a','@1b' ], [ '@2a','@2b' ]]
+    When this Scenario is run
+    Then it should be split into 4 tests

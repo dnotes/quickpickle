@@ -21,6 +21,8 @@ Feature: Basic Test
       And the property "info.tags" should include "@tag-test"
       And the property "info.step" should include "FWAH!!! (or really whatever you write here, since it's part of the step)"
       And the property "info.line" should include "23"
+      And the typeof "info.explodeIdx" should be "undefined"
+      And the property "info.stepIdx" should include "9"
 
   Rule: DataTables and DocStrings must work like in @cucumber/cucumber
     Because why re-invent what is pretty good

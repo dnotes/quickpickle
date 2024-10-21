@@ -8,6 +8,8 @@ export interface QuickPickleWorldInterface {
     rule?: string,
     step?: string,
     line?: number,
+    explodedIdx?: number,
+    stepIdx?: number,
   }
   context: TestContext,
   common: {
@@ -32,6 +34,15 @@ export class QuickPickleWorld implements QuickPickleWorldInterface {
   async init() {}
   tagsMatch(tags: string[]) {
     return tagsMatch(tags, this.info.tags)
+  }
+  toString() {
+    let parts = [
+      this.constructor.name,
+      this.info.feature,
+      this.info.scenario + (this.info.explodedIdx ? ` (${this.info.tags.join(',')})` : ''),
+      `${this.info.stepIdx?.toString().padStart(2,'0')} ${this.info.step}`,
+    ]
+    return parts.join('_')
   }
 }
 
