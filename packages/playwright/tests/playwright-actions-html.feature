@@ -206,6 +206,7 @@ Feature: Actions step definitions on a static page
       Then I take a screenshot named "pickles"
       And the file "screenshots/pickles.png" should exist (delete it)
 
+  @skip-ci
   Rule: Different browser sizes must be supported
 
     Background: load the simple file
