@@ -379,8 +379,21 @@ in the architecture of this project. Thanks Sam, your work blew my mind.
 
 !["it's so simple!" - Owen Wilson from Zoolander peers over an early 2000s iMac computer, a mad glint in his eye.](https://www.memecreator.org/static/images/memes/5439760.jpg)
 
+## Media and Tutorials
 
+* [Behavioral testing with Gherkin and SvelteKit](https://www.youtube.com/watch?v=fAPFsRP-mbc&t=1080s): The Svelte Summit presentation from 19 October 2024.
 
+  * What is Gherkin / Cucumber and why should you use it
+  * Comparing Gherkin to straight Playwright code
+  * Testing the Svelte "Sverdle" app that ships with the demo site
+  * Adding a new feature using Behavior Driven Development assisted by AI
+
+* [QuickPickle dev vlog 27 Oct. 2024](https://www.youtube.com/watch?v=aNRq3MXlTJQ):
+  A near-real-time exploration of QuickPickle for beginners, highlighting Playwright functionality.
+
+  * How to set up QuickPickle for testing websites with Playwright
+  * Testing with and without Javascript, in multiple browsers, at multiple resolutions
+  * Using QuickPickle's `explodeTags` to minimize test verbiage
 
 [Vitest]: https://vitest.dev/
 [Gherkin Syntax]: https://cucumber.io/docs/gherkin/reference/
