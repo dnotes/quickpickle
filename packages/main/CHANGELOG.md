@@ -1,5 +1,11 @@
 # quickpickle
 
+## 1.4.0
+
+### Minor Changes
+
+- 4e4a90f: feat: add tags to test names for Vitest readouts
+
 ## 1.3.0
 
 ### Minor Changes
