@@ -146,6 +146,8 @@ function renderScenario(child:FeatureChild, config:QuickPickleConfig, tags:strin
   let isExploded = taglists.length > 1 ? true : false
   return taglists.map((tags,explodedIdx) => {
 
+  let tagTextForVitest = tags.length ? ` (${tags.join(' ')})` : ''
+
   // For Scenario Outlines with examples
   if (child.scenario!.examples?.[0]?.tableHeader && child.scenario!.examples?.[0]?.tableBody) {
 
@@ -166,7 +168,7 @@ function renderScenario(child:FeatureChild, config:QuickPickleConfig, tags:strin
 
     return `
 ${sp}test${attrs}.for(${JSON.stringify(paramValues)})(
-${sp}  '${q(child.scenario?.keyword || '')}: ${describe}',
+${sp}  '${q(child.scenario?.keyword || '')}: ${describe}${tagTextForVitest}',
 ${sp}  async ({ ${paramNames?.join(', ')} }, context) => {
 ${sp}    let state = await ${initFn}(context, \`${name}\`, ['${tags.join("', '") || ''}']);
 ${child.scenario?.steps.map((step,idx) => {
@@ -182,7 +184,7 @@ ${sp});
   }
 
   return `
-${sp}test${attrs}('${q(child.scenario!.keyword)}: ${q(child.scenario!.name)}', async (context) => {
+${sp}test${attrs}('${q(child.scenario!.keyword)}: ${q(child.scenario!.name)}${tagTextForVitest}', async (context) => {
 ${sp}  let state = await ${initFn}(context, '${q(child.scenario!.name)}', ['${tags.join("', '") || ''}']);
 ${renderSteps(child.scenario!.steps as Step[], config, sp + '  ', isExploded ? `${explodedIdx+1}` : '')}
 ${sp}  await afterScenario(state);
