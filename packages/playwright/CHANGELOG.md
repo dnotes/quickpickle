@@ -1,5 +1,12 @@
 # @quickpickle/playwright
 
+## 0.9.9
+
+### Patch Changes
+
+- Updated dependencies [4e4a90f]
+  - quickpickle@1.4.0
+
 ## 0.9.8
 
 ### Patch Changes
