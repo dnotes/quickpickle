@@ -211,7 +211,7 @@ Then('a/an/the (value of ){string} should contain/include/be/equal {string}', as
 })
 Then('a/an/the (value of )(the ){string} {word} should contain/include/be/equal {string}', async function (world:PlaywrightWorld, identifier, role, expected) {
   let exact = world.info.step?.match(/ should (?:be|equal) ['"]/) ? true : false
-  if (role === 'metatag') await expect(await testMetatag(world.page, identifier, expected, exact)).toBe(true)
+  if (role === 'metatag') await testMetatag(world.page, identifier, expected, exact)
   else {
     let locator = await getLocator(world.page, identifier, role)
     if (exact) await expect(locator).toHaveValue(expected)
@@ -233,7 +233,7 @@ Then('a/an/the (value of )(the ){string} should not/NOT contain/include/be/equal
 })
 Then('a/an/the (value of )(the ){string} {word} should not/NOT contain/include/be/equal {string}', async function (world:PlaywrightWorld, identifier, role, expected) {
   let exact = world.info.step?.match(/ should (?:not|NOT) (?:be|equal) ['"]/) ? true : false
-  if (role === 'metatag') await expect(await testMetatag(world.page, identifier, expected, exact)).toBe(false)
+  if (role === 'metatag') await testMetatag(world.page, identifier, expected, exact, false)
   else {
     let locator = await getLocator(world.page, identifier, role)
     if (exact) await expect(locator).not.toHaveValue(expected)
@@ -247,11 +247,11 @@ Then('a/an/the (value of )(the ){string} {word} should not/NOT contain/include/b
 // Metatags
 Then('the meta( )tag {string} should contain/include/be/equal {string}', async function (world:PlaywrightWorld, name, expected) {
   let exact = world.info.step?.match(/ should (?:be|equal) ['"]/) ? true : false
-  await expect(await testMetatag(world.page, name, expected, exact)).toBe(true)
+  await testMetatag(world.page, name, expected, exact)
 })
 Then('the meta( )tag {string} should not/NOT contain/include/be/equal {string}', async function (world:PlaywrightWorld, name, expected) {
   let exact = world.info.step?.match(/ should (?:not|NOT) (?:be|equal) ['"]/) ? true : false
-  await expect(await testMetatag(world.page, name, expected, exact)).toBe(false)
+  await testMetatag(world.page, name, expected, exact, false)
 })
 
 // Visual regression testing

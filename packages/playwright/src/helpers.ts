@@ -27,13 +27,19 @@ export async function setValue(locator:Locator, value:string|any) {
   }
 }
 
-export async function testMetatag(page:Page, name:string, expected:string, exact:boolean) {
+export async function testMetatag(page:Page, name:string, expected:string, exact:boolean, expectMatching = true) {
   let actual:string|null
 
   if (name === 'title') actual = await page.title()
   else actual = await (await page.locator(`meta[name="${name}"]`)).getAttribute('content')
 
-  return exact ?  actual === expected : actual?.includes(expected)
+  let matches = exact ?  actual === expected : actual?.includes(expected)
+
+  if (matches !== expectMatching) {
+    let word = exact ? 'exactly match' : 'contain'
+    let not = expectMatching ? '' : 'not '
+    throw new Error(`Expected ${name} metatag ${not }to ${word} '${expected}' but got '${actual}'`)
+  }
 }
 
 export function sanitizeFilepath(filepath:string) {
