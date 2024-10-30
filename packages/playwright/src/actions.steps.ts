@@ -72,15 +72,15 @@ When("for/in/on (the ){string} {word} I type {string}", async function (world:Pl
 
 When('I type the following keys: {}', async function (world:PlaywrightWorld, keys:string) {
   let keyPresses = keys.split(' ')
-  for (let key of keyPresses) await world.page.keyboard.press(key, { delay:world.playwrightConfig.keyboardDelay })
+  for (let key of keyPresses) await world.page.keyboard.press(key, { delay:world.worldConfig.keyboardDelay })
 })
 When("for/in/on (the ){string} I type the following keys: {}", async function (world:PlaywrightWorld, identifier, keys) {
   let locator = await getLocator(world.page, identifier, 'input')
-  for (let key of keys) await locator.press(key, { delay:world.playwrightConfig.keyboardDelay })
+  for (let key of keys) await locator.press(key, { delay:world.worldConfig.keyboardDelay })
 })
 When("for/in/on (the ){string} {word} I type the following keys: {}", async function (world:PlaywrightWorld, identifier, role, keys) {
   let locator = await getLocator(world.page, identifier, role)
-  for (let key of keys) await locator.press(key, { delay:world.playwrightConfig.keyboardDelay })
+  for (let key of keys) await locator.press(key, { delay:world.worldConfig.keyboardDelay })
 })
 
 // ================
@@ -169,7 +169,7 @@ Then('(I )take (a )screenshot', async function (world:PlaywrightWorld) {
 })
 Then('(I )take (a )screenshot named {string}', async function (world:PlaywrightWorld, name:string) {
   let explodedTags = world.info.explodedIdx ? `_(${world.info.tags.join(',')})` : ''
-  let path = sanitizeFilepath(`${projectRoot}/${world.playwrightConfig.screenshotDir}/${name}${explodedTags}.png`)
+  let path = sanitizeFilepath(`${projectRoot}/${world.worldConfig.screenshotDir}/${name}${explodedTags}.png`)
   await world.page.screenshot({ path })
 })
 

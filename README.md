@@ -328,26 +328,33 @@ come to notice:
 
 - **The default "world" variable contains different information about the current step.**
 
-  In CucumberJS, the default "world" variable contains information about the
-  test *suite*, but not the *current step*. It's the opposite in QuickPickle;
-  the "world" variable passed to each test step contains an "info" property
-  with data about the current feature, rule, scenario or example, step, and line:
+  In CucumberJS, the default world variable contains information about the test *suite*,
+  but not the *current step*. In QuickPickle, the "world" variable passed to each test step
+  contains an "info" property with the data about the Scenario.
 
-  ```gherkin
-  Feature: Basic Test
-
-    Rule: Every step must have access to information about itself
-      This is so we can know what is happening when writing step definitions
-
-      @tag-test
-      Example: The world has info
-        Given I run the tests
-        Then the property "info.feature" should include "Basic Test"
-        And the property "info.rule" should include "Every step must have access to information about itself"
-        And the property "info.scenario" should include "The world has info"
-        And the property "info.tags" should include "@tag-test"
-        And the property "info.step" should include "FWAH!!! (or really whatever you write here, since it's part of the step)"
-        And the property "info.line" should include "23"
+  ```ts
+  export interface QuickPickleWorldInterface {
+    info: {
+      config: QuickPickleConfig   // the configuration for QuickPickle
+      feature: string             // the Feature name (not file name)
+      scenario: string            // the Scenario name
+      tags: string[]              // the tags for the Scenario, including tags for the Feature and/or Rule
+      steps: string[]             // an array of all Steps in the current Scenario
+      stepIdx?: number            // the index of the current Step, starting from 1 (not 0)
+      rule?: string               // the Rule name, if any
+      step?: string               // the current Step
+      line?: number               // the line number, in the file, of the current Step
+      explodedIdx?: number        // the index of the test case, if exploded, starting from 1 (not 0)
+      errors: any[]               // an array of errors that have occurred, if the Scenario is tagged for soft failure
+    }
+    context: TestContext,         // the Vitest context
+    isComplete: boolean           // (read only) whether the Scenario is on the last step
+    config: QuickPickleConfig                       // (read only) configuration for QuickPickle
+    worldConfig: QuickPickleConfig['worldConfig']   // (read only) configuration for the World
+    common: {[key: string]: any}                    // Common data shared across tests --- USE SPARINGLY
+    init: () => Promise<void>                       // function called by QuickPickle when the world is created
+    tagsMatch(tags: string[]): string[]|null        // function to check if the Scenario tags match the given tags
+  }
   ```
 
 - **Some tags have special meanings by default**

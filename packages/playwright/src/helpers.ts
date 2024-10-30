@@ -47,5 +47,5 @@ export function sanitizeFilepath(filepath:string) {
 }
 
 export function defaultScreenshotPath(world:PlaywrightWorld) {
-  return `${world.playwrightConfig.screenshotDir}/${world.toString().replace(/^.+?Feature: /, 'Feature: ').replace(' ' + world.info.step, '')}.png`
+  return `${world.worldConfig.screenshotDir}/${world.toString().replace(/^.+?Feature: /, 'Feature: ').replace(' ' + world.info.step, '')}.png`
 }

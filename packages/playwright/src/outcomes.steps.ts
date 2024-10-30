@@ -256,10 +256,10 @@ Then('the meta( )tag {string} should not/NOT contain/include/be/equal {string}',
 
 // Visual regression testing
 Then('(the )screenshot should match', async function (world:PlaywrightWorld) {
-  await expect(world.page).toMatchScreenshot(`${world.playwrightConfig.screenshotDir}/${defaultScreenshotPath(world)}`)
+  await expect(world.page).toMatchScreenshot(`${world.worldConfig.screenshotDir}/${defaultScreenshotPath(world)}`)
 })
 Then('(the )screenshot {string} should match', async function (world:PlaywrightWorld, name:string) {
-  await expect(world.page).toMatchScreenshot(`${world.playwrightConfig.screenshotDir}/${name}.png`)
+  await expect(world.page).toMatchScreenshot(`${world.worldConfig.screenshotDir}/${name}.png`)
 })
 
 // Browser context

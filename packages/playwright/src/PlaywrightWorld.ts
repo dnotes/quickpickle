@@ -52,18 +52,17 @@ export class PlaywrightWorld extends QuickPickleWorld {
   browser!: Browser
   browserContext!: BrowserContext
   page!: Page
-  playwrightConfig:PlaywrightWorldConfig = defaultPlaywrightWorldConfig
 
-  constructor(context:TestContext, info:QuickPickleWorldInterface['info']|undefined, worldConfig:PlaywrightWorldConfigSetting = {}) {
+  constructor(context:TestContext, info:QuickPickleWorldInterface['info']) {
     super(context, info)
-    this.setConfig(worldConfig)
+    this.setConfig(info.config.worldConfig)
   }
 
   async init() {
     await this.startBrowser()
     this.browserContext = await this.browser.newContext({
       serviceWorkers: 'block',
-      javaScriptEnabled: this.tagsMatch(this.playwrightConfig.nojsTags) ? false : true,
+      javaScriptEnabled: this.tagsMatch(this.worldConfig.nojsTags) ? false : true,
     })
     this.page = await this.browserContext.newPage()
     await this.setViewportSize()
@@ -72,20 +71,20 @@ export class PlaywrightWorld extends QuickPickleWorld {
   get browserName() {
     return this.info.tags.find(t => t.match(
       /^@(?:chromium|firefox|webkit)$/
-    ))?.replace(/^@/, '') as 'chromium'|'firefox'|'webkit' ?? this.playwrightConfig.defaultBrowser ?? 'chromium'
+    ))?.replace(/^@/, '') as 'chromium'|'firefox'|'webkit' ?? this.worldConfig.defaultBrowser ?? 'chromium'
   }
 
   get browserSize() {
     let tag = this.tagsMatch(this.browserSizeTags)?.[0]?.replace(/^@/, '')
     let sizeStr = (tag
-      ? this.playwrightConfig.browserSizes[tag.replace(/^@/,'')]
-      : this.playwrightConfig.browserSizes[this.playwrightConfig.defaultBrowserSize]
+      ? this.worldConfig.browserSizes[tag.replace(/^@/,'')]
+      : this.worldConfig.browserSizes[this.worldConfig.defaultBrowserSize]
     ) ?? '1920x1080'
     return getDimensions(sizeStr)
   }
 
   get browserSizeTags() {
-    return Object.keys(this.playwrightConfig.browserSizes).map(k => `@${k}`)
+    return Object.keys(this.worldConfig.browserSizes).map(k => `@${k}`)
   }
 
   setConfig(worldConfig:PlaywrightWorldConfigSetting) {
@@ -98,29 +97,29 @@ export class PlaywrightWorld extends QuickPickleWorld {
       newConfig.slowMoMs = newConfig.slowMo
       newConfig.slowMo = newConfig.slowMoMs > 0
     }
-    this.playwrightConfig = newConfig
+    this.info.config.worldConfig = newConfig
   }
 
   async setViewportSize(size?:string) {
     if (size) {
       size = size.replace(/^['"]/, '').replace(/['"]$/, '')
-      if (this.playwrightConfig.browserSizes[size]) {
-        await this.page.setViewportSize(getDimensions(this.playwrightConfig.browserSizes[size]))
+      if (this.worldConfig.browserSizes[size]) {
+        await this.page.setViewportSize(getDimensions(this.worldConfig.browserSizes[size]))
       }
       else if (size.match(/^\d+x\d+$/)) {
         await this.page.setViewportSize(getDimensions(size))
       }
       else throw new Error(`Invalid browser size: ${size}
-        (found: ${this.playwrightConfig.browserSizes[size]})
-        (available: ${Object.keys(this.playwrightConfig.browserSizes).join(', ')})`)
+        (found: ${this.worldConfig.browserSizes[size]})
+        (available: ${Object.keys(this.worldConfig.browserSizes).join(', ')})`)
     }
     else await this.page.setViewportSize(this.browserSize)
   }
 
   async startBrowser() {
     this.browser = await browsers[this.browserName].launch({
-      headless: this.tagsMatch(this.playwrightConfig.showBrowserTags) ? false : this.playwrightConfig.headless,
-      slowMo: (this.playwrightConfig.slowMo || this.tagsMatch(this.playwrightConfig.slowMoTags)) ? this.playwrightConfig.slowMoMs : 0
+      headless: this.tagsMatch(this.worldConfig.showBrowserTags) ? false : this.worldConfig.headless,
+      slowMo: (this.worldConfig.slowMo || this.tagsMatch(this.worldConfig.slowMoTags)) ? this.worldConfig.slowMoMs : 0
     })
   }
 
@@ -143,9 +142,15 @@ export class PlaywrightWorld extends QuickPickleWorld {
   }
 
   get baseUrl() {
-    if (this.playwrightConfig.port) return new URL(`${this.playwrightConfig.host}:${this.playwrightConfig.port}`)
-    else return new URL(this.playwrightConfig.host)
+    if (this.worldConfig.port) return new URL(`${this.worldConfig.host}:${this.worldConfig.port}`)
+    else return new URL(this.worldConfig.host)
   }
+
+  get playwrightConfig() {
+    console.warn('playwrightConfig is deprecated. Use worldConfig instead.')
+    return this.worldConfig
+  }
+
 }
 
 function getDimensions(size:string) {

@@ -25,8 +25,8 @@ const afterScenario = async(state) => {
   await applyAfterHooks(state);
 }
 
-const initScenario = async(context, scenario, tags) => {
-  let state = new World(context, { feature:'Feature: QuickPickle\'s Comprehensive Gherkin Syntax Example', scenario, tags }, {});
+const initScenario = async(context, scenario, tags, steps) => {
+  let state = new World(context, { feature:'Feature: QuickPickle\'s Comprehensive Gherkin Syntax Example', scenario, tags, steps, config:{"todoTags":["@todo","@wip"],"skipTags":["@skip"],"failTags":["@fail","@fails"],"softFailTags":["@soft","@softfail"],"concurrentTags":["@concurrent"],"sequentialTags":["@sequential"],"explodeTags":[["@1a","@1b"],["@2a","@2b"]],"worldConfig":{}}}, {});
   await state.init();
   state.common = common;
   state.info.feature = 'Feature: QuickPickle\'s Comprehensive Gherkin Syntax Example';
@@ -41,7 +41,7 @@ const initScenario = async(context, scenario, tags) => {
 describe('Feature: QuickPickle\'s Comprehensive Gherkin Syntax Example', () => {
 
   test('Scenario: Basic scenario example\' (@tag @multiple_tags @scenario_tag)', async (context) => {
-    let state = await initScenario(context, 'Basic scenario example\'', ['@tag', '@multiple_tags', '@scenario_tag']);
+    let state = await initScenario(context, 'Basic scenario example\'', ['@tag', '@multiple_tags', '@scenario_tag'], [`an initial context'`,`an action is performed'`,`a verifiable outcome is achieved'`]);
     await gherkinStep('an initial context\'', state, 15, 1);
     await gherkinStep('an action is performed\'', state, 16, 2);
     await gherkinStep('a verifiable outcome is achieved\'', state, 17, 3);
@@ -51,7 +51,7 @@ describe('Feature: QuickPickle\'s Comprehensive Gherkin Syntax Example', () => {
   test.concurrent.for([{"parameter":"value1'","another_parameter":"value2'","expected_result":"result1'"},{"parameter":"value3`","another_parameter":"value4`","expected_result":"result2`"}])(
     'Scenario Outline: Parameterized scenario for $parameter, \'$another_parameter\' (@tag @multiple_tags @concurrent)',
     async ({ parameter, another_parameter, expected_result }, context) => {
-      let state = await initScenario(context, `Parameterized scenario for ${parameter}, '${another_parameter}'`, ['@tag', '@multiple_tags', '@concurrent']);
+      let state = await initScenario(context, `Parameterized scenario for ${parameter}, '${another_parameter}'`, ['@tag', '@multiple_tags', '@concurrent'], [`a 'precondition' with ${parameter}`,`an 'action' is taken with ${another_parameter}`,`the 'outcome' is ${expected_result}`]);
       await gherkinStep(`a 'precondition' with ${parameter}`, state, 20, 1);
       await gherkinStep(`an 'action' is taken with ${another_parameter}`, state, 21, 2);
       await gherkinStep(`the 'outcome' is ${expected_result}`, state, 22, 3);
@@ -60,7 +60,7 @@ describe('Feature: QuickPickle\'s Comprehensive Gherkin Syntax Example', () => {
   );
 
   test('Scenario: Scenario with various DataTable types (@tag @multiple_tags @data_table)', async (context) => {
-    let state = await initScenario(context, 'Scenario with various DataTable types', ['@tag', '@multiple_tags', '@data_table']);
+    let state = await initScenario(context, 'Scenario with various DataTable types', ['@tag', '@multiple_tags', '@data_table'], [`a list of strings:`,`a list of integers:`,`a map of string to string:`,`a list of maps:`,`a map of string to list of string:`,`they are processed`,`the system behaves correctly`]);
     await gherkinStep('a list of strings:', state, 31, 1, undefined, [["Apple'"],["Banana`"],["Cherry\""]]);
     await gherkinStep('a list of integers:', state, 35, 2, undefined, [["1"],["2"],["3"]]);
     await gherkinStep('a map of string to string:', state, 39, 3, undefined, [["key1'","value1'"],["key2`","value2\""]]);
@@ -73,8 +73,8 @@ describe('Feature: QuickPickle\'s Comprehensive Gherkin Syntax Example', () => {
 
   describe('Rule: Business rule description\'', () => {
 
-    const initRuleScenario = async (context, scenario, tags) => {
-      let state = await initScenario(context, scenario, tags);
+    const initRuleScenario = async (context, scenario, tags, steps) => {
+      let state = await initScenario(context, scenario, tags, steps);
       state.info.rule = 'Business rule description\'';
     await gherkinStep('a specific rule context', state, 57, -1);
     await gherkinStep('another specific rule context', state, 58, -2);
@@ -83,7 +83,7 @@ describe('Feature: QuickPickle\'s Comprehensive Gherkin Syntax Example', () => {
 
 
     test('Example: Rule example scenario\' (@tag @multiple_tags @rule_tag)', async (context) => {
-      let state = await initRuleScenario(context, 'Rule example scenario\'', ['@tag', '@multiple_tags', '@rule_tag']);
+      let state = await initRuleScenario(context, 'Rule example scenario\'', ['@tag', '@multiple_tags', '@rule_tag'], [`a specific rule context`,`a rule-related action occurs`,`the rule outcome is observed`]);
       await gherkinStep('a specific rule context', state, 61, 1);
       await gherkinStep('a rule-related action occurs', state, 62, 2);
       await gherkinStep('the rule outcome is observed', state, 63, 3);
@@ -91,7 +91,7 @@ describe('Feature: QuickPickle\'s Comprehensive Gherkin Syntax Example', () => {
     });
 
     test('Scenario: Also a rule example\' (@tag @multiple_tags @rule_tag)', async (context) => {
-      let state = await initRuleScenario(context, 'Also a rule example\'', ['@tag', '@multiple_tags', '@rule_tag']);
+      let state = await initRuleScenario(context, 'Also a rule example\'', ['@tag', '@multiple_tags', '@rule_tag'], [`a Rule statement`,`a scenario is below it`,`it is a child of the Rule, even if it isn't indented`]);
       await gherkinStep('a Rule statement', state, 66, 1);
       await gherkinStep('a scenario is below it', state, 67, 2);
       await gherkinStep('it is a child of the Rule, even if it isn\'t indented', state, 68, 3);
@@ -99,7 +99,7 @@ describe('Feature: QuickPickle\'s Comprehensive Gherkin Syntax Example', () => {
     });
 
     test.todo.skip('Scenario: Scenario with doc string (@tag @multiple_tags @rule_tag @wip @skip)', async (context) => {
-      let state = await initRuleScenario(context, 'Scenario with doc string', ['@tag', '@multiple_tags', '@rule_tag', '@wip', '@skip']);
+      let state = await initRuleScenario(context, 'Scenario with doc string', ['@tag', '@multiple_tags', '@rule_tag', '@wip', '@skip'], [`a document with the following content:`,`the document is processed`,`the system handles it correctly`]);
       await gherkinStep('a document with the following content:', state, 74, 1, undefined, {"content":"This is a doc string.\nIt can contain multiple lines.\nUseful for specifying larger text inputs."});
       await gherkinStep('the document is processed', state, 80, 2);
       await gherkinStep('the system handles it correctly', state, 81, 3);
@@ -107,13 +107,13 @@ describe('Feature: QuickPickle\'s Comprehensive Gherkin Syntax Example', () => {
     });
 
     test('Scenario: Scenario with content type doc string (@tag @multiple_tags @rule_tag)', async (context) => {
-      let state = await initRuleScenario(context, 'Scenario with content type doc string', ['@tag', '@multiple_tags', '@rule_tag']);
+      let state = await initRuleScenario(context, 'Scenario with content type doc string', ['@tag', '@multiple_tags', '@rule_tag'], [`a document with the following Markdown content:`]);
       await gherkinStep('a document with the following Markdown content:', state, 84, 1, undefined, {"content":"Lorem Ipsum\n===============\nLorem ipsum dolor sit amet,\nconsectetur adipiscing elit.","mediaType":"markdown"});
       await afterScenario(state);
     });
 
     test.sequential('Scenario: Scenario with And and But steps (@tag @multiple_tags @rule_tag @sequential)', async (context) => {
-      let state = await initRuleScenario(context, 'Scenario with And and But steps', ['@tag', '@multiple_tags', '@rule_tag', '@sequential']);
+      let state = await initRuleScenario(context, 'Scenario with And and But steps', ['@tag', '@multiple_tags', '@rule_tag', '@sequential'], [`an initial state`,`some additional context`,`an action is performed`,`another action is performed`,`some assertion is made`,`some exception is also handled`]);
       await gherkinStep('an initial state', state, 93, 1);
       await gherkinStep('some additional context', state, 94, 2);
       await gherkinStep('an action is performed', state, 95, 3);
@@ -124,7 +124,7 @@ describe('Feature: QuickPickle\'s Comprehensive Gherkin Syntax Example', () => {
     });
 
     test.fails('Scenario: Failing scenario example (@tag @multiple_tags @rule_tag @fails)', async (context) => {
-      let state = await initRuleScenario(context, 'Failing scenario example', ['@tag', '@multiple_tags', '@rule_tag', '@fails']);
+      let state = await initRuleScenario(context, 'Failing scenario example', ['@tag', '@multiple_tags', '@rule_tag', '@fails'], [`a condition that will fail`,`an impossible action is attempted`,`an unreachable assertion is made`]);
       await gherkinStep('a condition that will fail', state, 102, 1);
       await gherkinStep('an impossible action is attempted', state, 103, 2);
       await gherkinStep('an unreachable assertion is made', state, 104, 3);
@@ -136,8 +136,8 @@ describe('Feature: QuickPickle\'s Comprehensive Gherkin Syntax Example', () => {
 
   describe('Rule: Rules don\'t nest', () => {
 
-    const initRuleScenario = async (context, scenario, tags) => {
-      let state = await initScenario(context, scenario, tags);
+    const initRuleScenario = async (context, scenario, tags, steps) => {
+      let state = await initScenario(context, scenario, tags, steps);
       state.info.rule = 'Rules don\'t nest';
 
       return state;
@@ -145,7 +145,7 @@ describe('Feature: QuickPickle\'s Comprehensive Gherkin Syntax Example', () => {
 
 
     test('Example: This rule doesn\'t nest (@tag @multiple_tags)', async (context) => {
-      let state = await initRuleScenario(context, 'This rule doesn\'t nest', ['@tag', '@multiple_tags']);
+      let state = await initRuleScenario(context, 'This rule doesn\'t nest', ['@tag', '@multiple_tags'], [`a Rule statement`,`another Rule is indented below it`,`the indented Rule is NOT a child of the previous Rule`]);
       await gherkinStep('a Rule statement', state, 110, 1);
       await gherkinStep('another Rule is indented below it', state, 111, 2);
       await gherkinStep('the indented Rule is NOT a child of the previous Rule', state, 112, 3);
@@ -153,7 +153,7 @@ describe('Feature: QuickPickle\'s Comprehensive Gherkin Syntax Example', () => {
     });
 
     test('Scenario: Exploded tags make multiple tests (@tag @multiple_tags @1a)', async (context) => {
-      let state = await initRuleScenario(context, 'Exploded tags make multiple tests', ['@tag', '@multiple_tags', '@1a']);
+      let state = await initRuleScenario(context, 'Exploded tags make multiple tests', ['@tag', '@multiple_tags', '@1a'], [`an explodedTags config of [[ '@1a','@1b' ], [ '@2a','@2b' ]]`,`this Scenario is run`,`it should be split into 2 tests`]);
       await gherkinStep('an explodedTags config of [[ \'@1a\',\'@1b\' ], [ \'@2a\',\'@2b\' ]]', state, 116, 1, 1);
       await gherkinStep('this Scenario is run', state, 117, 2, 1);
       await gherkinStep('it should be split into 2 tests', state, 118, 3, 1);
@@ -163,7 +163,7 @@ describe('Feature: QuickPickle\'s Comprehensive Gherkin Syntax Example', () => {
 
 
     test('Scenario: Exploded tags make multiple tests (@tag @multiple_tags @1b)', async (context) => {
-      let state = await initRuleScenario(context, 'Exploded tags make multiple tests', ['@tag', '@multiple_tags', '@1b']);
+      let state = await initRuleScenario(context, 'Exploded tags make multiple tests', ['@tag', '@multiple_tags', '@1b'], [`an explodedTags config of [[ '@1a','@1b' ], [ '@2a','@2b' ]]`,`this Scenario is run`,`it should be split into 2 tests`]);
       await gherkinStep('an explodedTags config of [[ \'@1a\',\'@1b\' ], [ \'@2a\',\'@2b\' ]]', state, 116, 1, 2);
       await gherkinStep('this Scenario is run', state, 117, 2, 2);
       await gherkinStep('it should be split into 2 tests', state, 118, 3, 2);
@@ -171,7 +171,7 @@ describe('Feature: QuickPickle\'s Comprehensive Gherkin Syntax Example', () => {
     });
 
     test('Scenario: More tags make more tests (@tag @multiple_tags @tag3 @1a @2a)', async (context) => {
-      let state = await initRuleScenario(context, 'More tags make more tests', ['@tag', '@multiple_tags', '@tag3', '@1a', '@2a']);
+      let state = await initRuleScenario(context, 'More tags make more tests', ['@tag', '@multiple_tags', '@tag3', '@1a', '@2a'], [`an explodedTags config of [[ '@1a','@1b' ], [ '@2a','@2b' ]]`,`this Scenario is run`,`it should be split into 4 tests`]);
       await gherkinStep('an explodedTags config of [[ \'@1a\',\'@1b\' ], [ \'@2a\',\'@2b\' ]]', state, 122, 1, 1);
       await gherkinStep('this Scenario is run', state, 123, 2, 1);
       await gherkinStep('it should be split into 4 tests', state, 124, 3, 1);
@@ -181,7 +181,7 @@ describe('Feature: QuickPickle\'s Comprehensive Gherkin Syntax Example', () => {
 
 
     test('Scenario: More tags make more tests (@tag @multiple_tags @tag3 @1a @2b)', async (context) => {
-      let state = await initRuleScenario(context, 'More tags make more tests', ['@tag', '@multiple_tags', '@tag3', '@1a', '@2b']);
+      let state = await initRuleScenario(context, 'More tags make more tests', ['@tag', '@multiple_tags', '@tag3', '@1a', '@2b'], [`an explodedTags config of [[ '@1a','@1b' ], [ '@2a','@2b' ]]`,`this Scenario is run`,`it should be split into 4 tests`]);
       await gherkinStep('an explodedTags config of [[ \'@1a\',\'@1b\' ], [ \'@2a\',\'@2b\' ]]', state, 122, 1, 2);
       await gherkinStep('this Scenario is run', state, 123, 2, 2);
       await gherkinStep('it should be split into 4 tests', state, 124, 3, 2);
@@ -191,7 +191,7 @@ describe('Feature: QuickPickle\'s Comprehensive Gherkin Syntax Example', () => {
 
 
     test('Scenario: More tags make more tests (@tag @multiple_tags @tag3 @1b @2a)', async (context) => {
-      let state = await initRuleScenario(context, 'More tags make more tests', ['@tag', '@multiple_tags', '@tag3', '@1b', '@2a']);
+      let state = await initRuleScenario(context, 'More tags make more tests', ['@tag', '@multiple_tags', '@tag3', '@1b', '@2a'], [`an explodedTags config of [[ '@1a','@1b' ], [ '@2a','@2b' ]]`,`this Scenario is run`,`it should be split into 4 tests`]);
       await gherkinStep('an explodedTags config of [[ \'@1a\',\'@1b\' ], [ \'@2a\',\'@2b\' ]]', state, 122, 1, 3);
       await gherkinStep('this Scenario is run', state, 123, 2, 3);
       await gherkinStep('it should be split into 4 tests', state, 124, 3, 3);
@@ -201,7 +201,7 @@ describe('Feature: QuickPickle\'s Comprehensive Gherkin Syntax Example', () => {
 
 
     test('Scenario: More tags make more tests (@tag @multiple_tags @tag3 @1b @2b)', async (context) => {
-      let state = await initRuleScenario(context, 'More tags make more tests', ['@tag', '@multiple_tags', '@tag3', '@1b', '@2b']);
+      let state = await initRuleScenario(context, 'More tags make more tests', ['@tag', '@multiple_tags', '@tag3', '@1b', '@2b'], [`an explodedTags config of [[ '@1a','@1b' ], [ '@2a','@2b' ]]`,`this Scenario is run`,`it should be split into 4 tests`]);
       await gherkinStep('an explodedTags config of [[ \'@1a\',\'@1b\' ], [ \'@2a\',\'@2b\' ]]', state, 122, 1, 4);
       await gherkinStep('this Scenario is run', state, 123, 2, 4);
       await gherkinStep('it should be split into 4 tests', state, 124, 3, 4);

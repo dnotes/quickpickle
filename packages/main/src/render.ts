@@ -64,8 +64,8 @@ export function renderFeature(feature:Feature, config:QuickPickleConfig) {
 
   // Render the initScenario function, which will be called at the beginning of each scenario
   return`
-const initScenario = async(context, scenario, tags) => {
-  let state = new World(context, { feature:'${featureName}', scenario, tags }, ${JSON.stringify(config.worldConfig || {})});
+const initScenario = async(context, scenario, tags, steps) => {
+  let state = new World(context, { feature:'${featureName}', scenario, tags, steps, config:${JSON.stringify(config)}}, ${JSON.stringify(config.worldConfig)});
   await state.init();
   state.common = common;
   state.info.feature = '${featureName}';
@@ -117,8 +117,8 @@ function renderRule(child:FeatureChild, config:QuickPickleConfig, tags:string[],
   return `
 ${sp}describe('${q(child.rule!.keyword)}: ${q(child.rule!.name)}', () => {
 
-${sp}  const initRuleScenario = async (context, scenario, tags) => {
-${sp}    let state = await initScenario(context, scenario, tags);
+${sp}  const initRuleScenario = async (context, scenario, tags, steps) => {
+${sp}    let state = await initScenario(context, scenario, tags, steps);
 ${sp}    state.info.rule = '${q(child.rule!.name)}';
 ${backgroundSteps}
 ${sp}    return state;
@@ -148,6 +148,11 @@ function renderScenario(child:FeatureChild, config:QuickPickleConfig, tags:strin
 
   let tagTextForVitest = tags.length ? ` (${tags.join(' ')})` : ''
 
+  let steps = child.scenario?.steps.map((step,idx) => {
+    let text = step.text.replace(/`/g, '\\`')
+    return text
+  }) || []
+
   // For Scenario Outlines with examples
   if (child.scenario!.examples?.[0]?.tableHeader && child.scenario!.examples?.[0]?.tableBody) {
 
@@ -166,11 +171,16 @@ function renderScenario(child:FeatureChild, config:QuickPickleConfig, tags:strin
     let describe = q(replaceParamNames(child.scenario?.name ?? ''))
     let name = replaceParamNames(child.scenario?.name ?? '', true).replace(/`/g, '\`')
 
+    let examples = steps.map((text,idx) => {
+      text = replaceParamNames(text,true)
+      return text
+    })
+
     return `
 ${sp}test${attrs}.for(${JSON.stringify(paramValues)})(
 ${sp}  '${q(child.scenario?.keyword || '')}: ${describe}${tagTextForVitest}',
 ${sp}  async ({ ${paramNames?.join(', ')} }, context) => {
-${sp}    let state = await ${initFn}(context, \`${name}\`, ['${tags.join("', '") || ''}']);
+${sp}    let state = await ${initFn}(context, \`${name}\`, ['${tags.join("', '") || ''}'], [${examples?.map(s => '`'+s+'`').join(',')}]);
 ${child.scenario?.steps.map((step,idx) => {
   let text = step.text.replace(/`/g, '\\`')
   text = replaceParamNames(text,true)
@@ -185,7 +195,7 @@ ${sp});
 
   return `
 ${sp}test${attrs}('${q(child.scenario!.keyword)}: ${q(child.scenario!.name)}${tagTextForVitest}', async (context) => {
-${sp}  let state = await ${initFn}(context, '${q(child.scenario!.name)}', ['${tags.join("', '") || ''}']);
+${sp}  let state = await ${initFn}(context, '${q(child.scenario!.name)}', ['${tags.join("', '") || ''}'], [${steps?.map(s => '`'+s+'`').join(',')}]);
 ${renderSteps(child.scenario!.steps as Step[], config, sp + '  ', isExploded ? `${explodedIdx+1}` : '')}
 ${sp}  await afterScenario(state);
 ${sp}});

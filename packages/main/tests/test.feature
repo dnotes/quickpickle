@@ -23,6 +23,40 @@ Feature: Basic Test
       And the property "info.line" should include "23"
       And the typeof "info.explodeIdx" should be "undefined"
       And the property "info.stepIdx" should include "9"
+      And the property "info.steps" should contain 'Then the property "info.feature" should include "Basic Test"'
+      And the property "config.softFailTags" should contain "@soft"
+
+  Rule: The error messages must be useful
+
+    @soft
+    Scenario: The line numbers must match the actual .feature file
+      Given I run the tests
+      When the tests fail
+      Then the stack for error 1 should contain "test.feature:34:1"
+      And clear error 1
+
+  Rule: softFailTags should collect all errors before failing a scenario
+
+    @soft
+    Scenario: Multiple errors are condensed into one
+      Given I run the tests
+      When the tests fail
+      And the tests fail
+      Then the stack for error 1 should contain "test.feature"
+      And the stack for error 2 should contain "test.feature"
+      And clear 2 errors
+
+    @fails @soft
+    Scenario: Soft fail scenarios still fail at the end unless the errors are cleared
+      Given the tests fail
+
+  Rule: the "common" element should work across tests
+
+    Example: Setting a common property
+      When I set a common flag
+
+    Example: Getting a common property
+      Then the flag should be set
 
   Rule: DataTables and DocStrings must work like in @cucumber/cucumber
     Because why re-invent what is pretty good

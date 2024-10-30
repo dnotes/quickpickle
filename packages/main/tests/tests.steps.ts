@@ -6,11 +6,11 @@ import type { DocString } from "../src/models/DocString";
 
 Given("I run the tests", () => {});
 
-Then("the tests should pass", () => {
+Then("the tests (should )pass", () => {
   expect(true).to.be.true;
 })
 
-Then("the tests should fail", () => {
+Then("the tests (should )fail", () => {
   expect(true).to.be.false;
 })
 
@@ -45,4 +45,23 @@ Then('the variable/value/property/typeof {string} should include/contain/equal/m
 
   if (world.info.step.match(/" should (?:equal|match|be)"/)) expect(testValue?.toString() ?? '').toBe(expected)
   else expect(testValue?.toString() ?? '').toContain(expected)
+})
+
+Then('the stack for error {int} should contain {string}', async (world, idx, expected) => {
+  let stack = world.info.errors[idx-1].stack
+  await expect(stack).toContain(expected)
+})
+Then('clear error {int}', async (world, idx) => {
+  world.info.errors.splice(idx-1, 1)
+})
+Then('clear {int} errors', async (world, idx) => {
+  world.info.errors.splice(0, idx)
+})
+
+// FLAGS
+When('I set a common flag', (world) => {
+  world.common.flag = true
+})
+Then('the flag should be set', (world) => {
+  expect(world.common.flag).toBe(true)
 })
