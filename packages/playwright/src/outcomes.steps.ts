@@ -2,7 +2,7 @@ import { Then } from "quickpickle";
 import type { PlaywrightWorld } from "./PlaywrightWorld";
 import { expect, Locator, Page } from '@playwright/test'
 import './snapshotMatcher'
-import { defaultScreenshotPath, getLocator, testMetatag } from "./helpers";
+import { defaultScreenshotPath, getLocator, sanitizeFilepath, testMetatag } from "./helpers";
 
 // ================
 // Text on page
@@ -256,10 +256,20 @@ Then('the meta( )tag {string} should not/NOT contain/include/be/equal {string}',
 
 // Visual regression testing
 Then('(the )screenshot should match', async function (world:PlaywrightWorld) {
-  await expect(world.page).toMatchScreenshot(`${world.worldConfig.screenshotDir}/${defaultScreenshotPath(world)}`)
+  await expect(world.page).toMatchScreenshot(defaultScreenshotPath(world))
 })
 Then('(the )screenshot {string} should match', async function (world:PlaywrightWorld, name:string) {
-  await expect(world.page).toMatchScreenshot(`${world.worldConfig.screenshotDir}/${name}.png`)
+  let explodedTags = world.info.explodedIdx ? `_(${world.info.tags.join(',')})` : ''
+  await expect(world.page).toMatchScreenshot(`${world.worldConfig.screenshotDir}/${name}${explodedTags}.png`)
+})
+Then('(the )screenshot of the {string} {word} should match', async function (world:PlaywrightWorld, identifier, role) {
+  let locator = await getLocator(world.page, identifier, role)
+  await expect(locator).toMatchScreenshot(defaultScreenshotPath(world))
+})
+Then('(the )screenshot {string} of the {string} {word} should match', async function (world:PlaywrightWorld, name, identifier, role) {
+  let locator = await getLocator(world.page, identifier, role)
+  let explodedTags = world.info.explodedIdx ? `_(${world.info.tags.join(',')})` : ''
+  await expect(locator).toMatchScreenshot(`${world.worldConfig.screenshotDir}/${name}${explodedTags}.png`)
 })
 
 // Browser context

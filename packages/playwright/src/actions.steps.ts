@@ -172,6 +172,17 @@ Then('(I )take (a )screenshot named {string}', async function (world:PlaywrightW
   let path = sanitizeFilepath(`${projectRoot}/${world.worldConfig.screenshotDir}/${name}${explodedTags}.png`)
   await world.page.screenshot({ path })
 })
+Then('(I )take (a )screenshot of the {string} {word}', async function (world:PlaywrightWorld, identifier:string, role:string) {
+  let locator = await getLocator(world.page, identifier, role)
+  let path = sanitizeFilepath(`${projectRoot}/${defaultScreenshotPath(world)}`)
+  await locator.screenshot({ path })
+})
+Then('(I )take (a )screenshot of the {string} {word} named {string}', async function (world:PlaywrightWorld, identifier:string, role:string, name:string) {
+  let locator = await getLocator(world.page, identifier, role)
+  let explodedTags = world.info.explodedIdx ? `_(${world.info.tags.join(',')})` : ''
+  let path = sanitizeFilepath(`${projectRoot}/${world.worldConfig.screenshotDir}/${name}${explodedTags}.png`)
+  await locator.screenshot({ path })
+})
 
 // ================
 // Browser size
