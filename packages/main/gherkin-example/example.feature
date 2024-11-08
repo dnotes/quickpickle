@@ -17,16 +17,16 @@ Feature: QuickPickle's Comprehensive Gherkin Syntax Example
     Then a verifiable outcome is achieved'
 
   @concurrent
-  Scenario Outline: Parameterized scenario for <parameter>, '<another_parameter>', "<expected_result>"
+  Scenario Outline: Parameterized scenario for <parameter>, '<5>', "<expected_result*>"
     Given a 'precondition' with <parameter>
-    When an "action" is taken with <another_parameter>
-    Then the `outcome` is <expected_result>
+    When an "action" is taken with <5>
+    Then the `outcome` is <expected_result*>
 
     Examples:
-      | parameter | another_parameter | expected_result |
-      | value1'   | value2'           | result1'        |
-      | value3`   | value4`           | result2`        |
-      | value5"   | value6"           | result3"        |
+      | parameter | 5       | expected_result* |
+      | value1'   | value2' | result1'         |
+      | value3`   | value4` | result2`         |
+      | value5"   | value6" | result3"         |
 
   @data_table
   Scenario: Scenario with various DataTable types

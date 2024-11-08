@@ -3,7 +3,7 @@ import { type QuickPickleConfig } from '.'
 
 import * as Gherkin from '@cucumber/gherkin';
 import * as Messages from '@cucumber/messages';
-import { fromPairs, intersection, pick } from "lodash-es";
+import { fromPairs, intersection, pick, escapeRegExp } from "lodash-es";
 
 const uuidFn = Messages.IdGenerator.uuid();
 const builder = new Gherkin.AstBuilder(uuidFn);
@@ -156,14 +156,14 @@ function renderScenario(child:FeatureChild, config:QuickPickleConfig, tags:strin
   // For Scenario Outlines with examples
   if (child.scenario!.examples?.[0]?.tableHeader && child.scenario!.examples?.[0]?.tableBody) {
 
-    let paramNames = child.scenario?.examples?.[0].tableHeader?.cells?.map(c => c.value) || []
+    let origParamNames = child.scenario?.examples?.[0]?.tableHeader?.cells?.map(c => c.value) || []
     let paramValues = child.scenario?.examples?.[0].tableBody.map((r) => {
-      return fromPairs(r.cells.map((c,i) => [ paramNames![i], c.value ]))
+      return fromPairs(r.cells.map((c,i) => [ '_'+i, c.value ]))
     })
 
     function replaceParamNames(t:string, withBraces?:boolean) {
-      paramNames.forEach(p => {
-        t = t.replace(new RegExp(`<${p}>`, 'g'), (withBraces ? `$\{${p}\}` :  `$${p}`))
+      origParamNames.forEach((p,i) => {
+        t = t.replace(new RegExp(`<${escapeRegExp(p)}>`, 'g'), (withBraces ? `$\{_${i}\}` :  `$_${i}`))
       })
       return t
     }
@@ -183,11 +183,10 @@ ${sp}  ${paramValues?.map(line => {
         }).join(',\n' + sp + '  ')}
 ${sp}])(
 ${sp}  '${q(child.scenario?.keyword || '')}: ${describe}${tagTextForVitest}',
-${sp}  async ({ ${paramNames?.join(', ')} }, context) => {
+${sp}  async ({ ${origParamNames.map((p,i) => '_'+i)?.join(', ')} }, context) => {
 ${sp}    let state = await ${initFn}(context, \`${name}\`, ['${tags.join("', '") || ''}'], [${examples?.map(s => '`'+s+'`').join(',')}]);
 ${child.scenario?.steps.map((step,idx) => {
-  let text = step.text.replace(/`/g, '\\`')
-  text = replaceParamNames(text,true)
+  let text = replaceParamNames(step.text,true).replace(/`/g, '\\`')
   return `${sp}    await gherkinStep(\`${text}\`, state, ${step.location.line}, ${idx+1}${isExploded ? `, ${explodedIdx + 1}` : ''});`
 }).join('\n')
 }

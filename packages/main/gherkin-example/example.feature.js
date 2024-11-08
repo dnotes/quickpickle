@@ -49,16 +49,16 @@ describe('Feature: QuickPickle\'s Comprehensive Gherkin Syntax Example', () => {
   });
 
   test.concurrent.for([
-    {"parameter":"value1'","another_parameter":"value2'","expected_result":"result1'"},
-    {"parameter":"value3`","another_parameter":"value4`","expected_result":"result2`"},
-    {"parameter":"value5\"","another_parameter":"value6\"","expected_result":"result3\""}
+    {"_0":"value1'","_1":"value2'","_2":"result1'"},
+    {"_0":"value3`","_1":"value4`","_2":"result2`"},
+    {"_0":"value5\"","_1":"value6\"","_2":"result3\""}
   ])(
-    'Scenario Outline: Parameterized scenario for $parameter, \'$another_parameter\', "$expected_result" (@tag @multiple_tags @concurrent)',
-    async ({ parameter, another_parameter, expected_result }, context) => {
-      let state = await initScenario(context, `Parameterized scenario for ${parameter}, '${another_parameter}', "${expected_result}"`, ['@tag', '@multiple_tags', '@concurrent'], [`a 'precondition' with ${parameter}`,`an "action" is taken with ${another_parameter}`,`the \`outcome\` is ${expected_result}`]);
-      await gherkinStep(`a 'precondition' with ${parameter}`, state, 21, 1);
-      await gherkinStep(`an "action" is taken with ${another_parameter}`, state, 22, 2);
-      await gherkinStep(`the \`outcome\` is ${expected_result}`, state, 23, 3);
+    'Scenario Outline: Parameterized scenario for $_0, \'$_1\', "$_2" (@tag @multiple_tags @concurrent)',
+    async ({ _0, _1, _2 }, context) => {
+      let state = await initScenario(context, `Parameterized scenario for ${_0}, '${_1}', "${_2}"`, ['@tag', '@multiple_tags', '@concurrent'], [`a 'precondition' with ${_0}`,`an "action" is taken with ${_1}`,`the \`outcome\` is ${_2}`]);
+      await gherkinStep(`a 'precondition' with ${_0}`, state, 21, 1);
+      await gherkinStep(`an "action" is taken with ${_1}`, state, 22, 2);
+      await gherkinStep(`the \`outcome\` is ${_2}`, state, 23, 3);
       await afterScenario(state);
     }
   );
