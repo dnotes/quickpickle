@@ -177,7 +177,11 @@ function renderScenario(child:FeatureChild, config:QuickPickleConfig, tags:strin
     })
 
     return `
-${sp}test${attrs}.for(${JSON.stringify(paramValues)})(
+${sp}test${attrs}.for([
+${sp}  ${paramValues?.map(line => {
+          return JSON.stringify(line)
+        }).join(',\n' + sp + '  ')}
+${sp}])(
 ${sp}  '${q(child.scenario?.keyword || '')}: ${describe}${tagTextForVitest}',
 ${sp}  async ({ ${paramNames?.join(', ')} }, context) => {
 ${sp}    let state = await ${initFn}(context, \`${name}\`, ['${tags.join("', '") || ''}'], [${examples?.map(s => '`'+s+'`').join(',')}]);
