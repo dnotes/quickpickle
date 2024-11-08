@@ -1,5 +1,12 @@
 # @quickpickle/playwright
 
+## 0.10.1
+
+### Patch Changes
+
+- Updated dependencies [db82746]
+  - quickpickle@1.5.1
+
 ## 0.10.0
 
 ### Minor Changes
