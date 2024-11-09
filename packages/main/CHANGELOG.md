@@ -1,5 +1,14 @@
 # quickpickle
 
+## 1.5.2
+
+### Patch Changes
+
+- 2bb4509: Fixed several errors in rendering, including:
+
+  - \`Backticks` and ${variables} were not escaped properly in Scenario Outlines
+  - Backslashes were not escaped properly in other strings
+
 ## 1.5.1
 
 ### Patch Changes
