@@ -124,3 +124,31 @@ Feature: QuickPickle's Comprehensive Gherkin Syntax Example
     Given an explodedTags config of [[ '@1a','@1b' ], [ '@2a','@2b' ]]
     When this Scenario is run
     Then it should be split into 4 tests
+
+  Scenario Outline: Search Ordering: <searchPhrase> (<religion>) <context>
+    When I search for "<searchPhrase>" and get results from 500 books
+    Then I should see search results with these metrics:
+      | Book Importance | Match Quality | score |
+      | primary         | exact         | 3+5=8 |
+    And next I should see search results with these metrics:
+      | secondary       | exact         | 2+5=7 |
+    Examples:
+      | searchPhrase                                      | religion    | context                                   |
+      | ablution                                          | Bahá’í      | teachings on prayer                       |
+      | achieving enlightenment                           | Buddhist    | purpose of existence                      |
+      | achieving immortality                             | Taoist      | purpose of existence                      |
+      | acts of kindness                                  | Jewish      | teachings on charity                      |
+
+  Scenario Outline: `someone` is ${sneaky} \${with} \\${backslashes} \\\${and} \$\{other} \`things\\` 'like' \'quotes\\'
+    Given a "string with \"quotes\""
+    And `someone` is ${sneaky} \${with} \\${backslashes} \\\${and} \$\{other} \`things\\` 'like' \'quotes\\'
+    Examples:
+    | 1     | 2     | 3       |
+    | \'a\' | \`b\` | \"c\"   |
+    | ${a}  | \${b} | \\${c}  |
+    | `a`   | \`b\` | \\`c\\` |
+
+  Scenario: `someone` is ${sneaky} \${with} \\${backslashes} \\\${and} \$\{other} \`things\\` 'like' \'quotes\\'
+    Given a "string with \"quotes\""
+    And `someone` is ${sneaky} \${with} \\${backslashes} \\\${and} \$\{other} \`things\\` 'like' \'quotes\\'
+

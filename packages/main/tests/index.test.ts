@@ -55,8 +55,8 @@ Feature: Exploding Tags
   let output2 = await plugin.transform(feature2, 'test.feature')
   test('exploding tags work as expected', () => {
     expect(output2).toMatch(/test\.concurrent[\s\S]+?test\.concurrent/m)
-    expect(output2).toMatch(/I run the tests', state, 5, 1, 1\)/m)
-    expect(output2).toMatch(/I run the tests', state, 5, 1, 2\)/m)
+    expect(output2).toMatch(/I run the tests`, state, 5, 1, 1\)/m)
+    expect(output2).toMatch(/I run the tests`, state, 5, 1, 2\)/m)
     expect(output2).not.toMatch(/test\.concurrent[\s\S]+?test\.concurrent[/s/S]+?test\.concurrent/m)
   })
 

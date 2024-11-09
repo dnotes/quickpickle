@@ -117,3 +117,42 @@ Feature: Basic Test
     Example: This is a failing test
       Given I run the tests
       Then the tests should fail
+
+  Rule: Tests must have appropriate guards against escaping
+    #        | character 14 - 13 = 1                                                   character 113 - 13 = 100 |
+    Example: `someone` is ${sneaky} \${with} \\${backslashes} \\\${and} \$\{other} \`things\\` 'like' \'quotes\\'
+      When I set the data variable "escapedDoubleQuote" to "\""
+      And I set the data variable "escapedSingleQuote" to "\'"
+      And I set the data variable "escapedBacktick" to "\`"
+      And I set the data variable "doubleEscapedDoubleQuote" to "\\'"
+      And I set the data variable "doubleEscapedSingleQuote" to "\\'"
+      And I set the data variable "doubleEscapedBacktick" to "\\`"
+      And I set the data variable "unescapedError" to "${throw new Error(muuahahaha!)}"
+      And I set the data variable "escapedError" to "\${throw new Error(muuahahaha!)}"
+      Then the variable "data.escapedDoubleQuote" should be 1 character long
+      And the variable "data.escapedSingleQuote" should be 1 character long
+      And the variable "data.escapedBacktick" should be 2 characters long
+      And the variable "data.doubleEscapedDoubleQuote" should be 2 character long
+      And the variable "data.doubleEscapedSingleQuote" should be 2 character long
+      And the variable "data.doubleEscapedBacktick" should be 3 characters long
+      And the variable "data.unescapedError" should be 31 characters long
+      And the variable "data.escapedError" should be 32 characters long
+      And the variable "info.scenario" should be 100 characters long
+
+    Example: Outside a {string} variable, escaped quotes are two characters, but the file is still safe
+      When I raw set the data variable "escapedDoubleQuote" to \"
+      And I raw set the data variable "escapedSingleQuote" to \'
+      And I raw set the data variable "escapedBacktick" to \`
+      And I raw set the data variable "doubleEscapedDoubleQuote" to \\"
+      And I raw set the data variable "doubleEscapedSingleQuote" to \\'
+      And I raw set the data variable "doubleEscapedBacktick" to \\`
+      And I raw set the data variable "unescapedError" to ${throw new Error(muuahahaha!)}
+      And I raw set the data variable "escapedError" to \${throw new Error(muuahahaha!)}
+      Then the variable "data.escapedDoubleQuote" should be 2 characters long
+      And the variable "data.escapedSingleQuote" should be 2 characters long
+      And the variable "data.escapedBacktick" should be 2 characters long
+      And the variable "data.doubleEscapedDoubleQuote" should be 3 character long
+      And the variable "data.doubleEscapedSingleQuote" should be 3 character long
+      And the variable "data.doubleEscapedBacktick" should be 3 characters long
+      And the variable "data.unescapedError" should be 31 characters long
+      And the variable "data.escapedError" should be 32 characters long

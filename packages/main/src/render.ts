@@ -148,11 +148,6 @@ function renderScenario(child:FeatureChild, config:QuickPickleConfig, tags:strin
 
   let tagTextForVitest = tags.length ? ` (${tags.join(' ')})` : ''
 
-  let steps = child.scenario?.steps.map((step,idx) => {
-    let text = step.text.replace(/`/g, '\\`')
-    return text
-  }) || []
-
   // For Scenario Outlines with examples
   if (child.scenario!.examples?.[0]?.tableHeader && child.scenario!.examples?.[0]?.tableBody) {
 
@@ -169,12 +164,14 @@ function renderScenario(child:FeatureChild, config:QuickPickleConfig, tags:strin
     }
 
     let describe = q(replaceParamNames(child.scenario?.name ?? ''))
-    let name = replaceParamNames(child.scenario?.name ?? '', true).replace(/`/g, '\`')
+    let scenarioNameWithReplacements = tl(replaceParamNames(child.scenario?.name ?? '', true))
 
-    let examples = steps.map((text,idx) => {
+    let examples = child.scenario?.steps.map(({text},idx) => {
       text = replaceParamNames(text,true)
       return text
     })
+
+    let renderedSteps = renderSteps(child.scenario!.steps.map(s => ({...s, text: replaceParamNames(s.text, true)})), config, sp + '    ', isExploded ? `${explodedIdx+1}` : '')
 
     return `
 ${sp}test${attrs}.for([
@@ -184,12 +181,8 @@ ${sp}  ${paramValues?.map(line => {
 ${sp}])(
 ${sp}  '${q(child.scenario?.keyword || '')}: ${describe}${tagTextForVitest}',
 ${sp}  async ({ ${origParamNames.map((p,i) => '_'+i)?.join(', ')} }, context) => {
-${sp}    let state = await ${initFn}(context, \`${name}\`, ['${tags.join("', '") || ''}'], [${examples?.map(s => '`'+s+'`').join(',')}]);
-${child.scenario?.steps.map((step,idx) => {
-  let text = replaceParamNames(step.text,true).replace(/`/g, '\\`')
-  return `${sp}    await gherkinStep(\`${text}\`, state, ${step.location.line}, ${idx+1}${isExploded ? `, ${explodedIdx + 1}` : ''});`
-}).join('\n')
-}
+${sp}    let state = await ${initFn}(context, ${scenarioNameWithReplacements}, ['${tags.join("', '") || ''}'], [${examples?.map(s => tl(s)).join(',')}]);
+${renderedSteps}
 ${sp}    await afterScenario(state);
 ${sp}  }
 ${sp});
@@ -198,7 +191,7 @@ ${sp});
 
   return `
 ${sp}test${attrs}('${q(child.scenario!.keyword)}: ${q(child.scenario!.name)}${tagTextForVitest}', async (context) => {
-${sp}  let state = await ${initFn}(context, '${q(child.scenario!.name)}', ['${tags.join("', '") || ''}'], [${steps?.map(s => '`'+s+'`').join(',')}]);
+${sp}  let state = await ${initFn}(context, '${q(child.scenario!.name)}', ['${tags.join("', '") || ''}'], [${child.scenario?.steps.map(s => tl(s.text)).join(',')}]);
 ${renderSteps(child.scenario!.steps as Step[], config, sp + '  ', isExploded ? `${explodedIdx+1}` : '')}
 ${sp}  await afterScenario(state);
 ${sp}});
@@ -214,14 +207,14 @@ function renderSteps(steps:Step[], config:QuickPickleConfig, sp = '  ', exploded
       let data = JSON.stringify(step.dataTable.rows.map(r => {
         return r.cells.map(c => c.value)
       }))
-      return `${sp}await gherkinStep('${q(step.text)}', state, ${step.location.line}, ${minus}${idx+1}, ${explodedText || 'undefined'}, ${data});`
+      return `${sp}await gherkinStep(${tl(step.text)}, state, ${step.location.line}, ${minus}${idx+1}, ${explodedText || 'undefined'}, ${data});`
     }
     else if (step.docString) {
       let data = JSON.stringify(pick(step.docString, ['content','mediaType']))
-      return `${sp}await gherkinStep('${q(step.text)}', state, ${step.location.line}, ${minus}${idx+1}, ${explodedText || 'undefined'}, ${data});`
+      return `${sp}await gherkinStep(${tl(step.text)}, state, ${step.location.line}, ${minus}${idx+1}, ${explodedText || 'undefined'}, ${data});`
     }
 
-    return `${sp}await gherkinStep('${q(step.text)}', state, ${step.location.line}, ${minus}${idx+1}${explodedText ? `, ${explodedText}` : ''});`
+    return `${sp}await gherkinStep(${tl(step.text)}, state, ${step.location.line}, ${minus}${idx+1}${explodedText ? `, ${explodedText}` : ''});`
   }).join('\n')
 }
 
@@ -230,7 +223,27 @@ function renderSteps(steps:Step[], config:QuickPickleConfig, sp = '  ', exploded
  * @param t string
  * @returns string
  */
-const q = (t:string) => (t.replace(/'/g, "\\'"))
+const q = (t:string) => (t.replace(/\\/g,'\\\\').replace(/'/g, "\\'"))
+
+/**
+ * Escapes text and returns a properly escaped template literal,
+ * since steps must be rendered in this way for Scenario Outlines
+ *
+ * For example:
+ * tl('escaped text') returns '`escaped text`'
+ *
+ * @param text string
+ * @returns string
+ */
+const tl = (text:string) => {
+  // Step 1: Escape existing escape sequences (e.g., \`)
+  text = text.replace(/\\/g, '\\\\');
+  // Step 2: Escape backticks
+  text = text.replace(/`/g, '\\`');
+  // Step 3: Escape $ if followed by { and not already escaped
+  text = text.replace(/\$\{(?!_\d+\})/g, '\\$\\{');
+  return '`' + text + '`';
+}
 
 /**
  * Creates a 2d array of all possible combinations of the items in the input array
