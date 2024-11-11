@@ -19,18 +19,21 @@ export interface QuickPickleWorldInterface {
   isComplete: boolean           // (read only) whether the Scenario is on the last step
   config: QuickPickleConfig                       // (read only) configuration for QuickPickle
   worldConfig: QuickPickleConfig['worldConfig']   // (read only) configuration for the World
-  common: {[key: string]: any}                    // Common data shared across tests --- USE SPARINGLY
+  common: {[key: string]: any}                    // Common data shared across tests in one Feature file --- USE SPARINGLY
   init: () => Promise<void>                       // function called by QuickPickle when the world is created
   tagsMatch(tags: string[]): string[]|null        // function to check if the Scenario tags match the given tags
 }
 
+export type InfoConstructor = Omit<QuickPickleWorldInterface['info'], 'errors'> & { common:{[key:string]:any} }
+
 export class QuickPickleWorld implements QuickPickleWorldInterface {
   info: QuickPickleWorldInterface['info']
-  common: QuickPickleWorldInterface['common'] = {}
+  common: QuickPickleWorldInterface['common']
   context: TestContext
-  constructor(context:TestContext, info:Omit<QuickPickleWorldInterface['info'], 'errors'>) {
+  constructor(context:TestContext, info:InfoConstructor) {
     this.context = context
-    this.info = {...info, errors:[]}
+    this.common = info.common
+    this.info = { ...info, errors:[] }
   }
   async init() {}
   get config() { return this.info.config }
@@ -52,7 +55,7 @@ export class QuickPickleWorld implements QuickPickleWorldInterface {
 
 export type WorldConstructor = new (
   context: TestContext,
-  info: QuickPickleWorldInterface['info'],
+  info: InfoConstructor,
 ) => QuickPickleWorldInterface;
 
 let worldConstructor:WorldConstructor = QuickPickleWorld

@@ -4,6 +4,9 @@ Feature: Testing hooks
   As a behavioral test writer
   I need a consistent way to run code before and after steps, scenarios, and test runs
 
+  Scenario: Hooks: The BeforeAll hook can set things in common
+    Then the variable "common.beforeAll" should be "beforeAll"
+
   Scenario: Hooks: All hooks should work
     Given I run the tests
     Then the tests should pass

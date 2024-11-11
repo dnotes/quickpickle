@@ -3,6 +3,7 @@ import { normalizeTags, QuickPickleWorld, QuickPickleWorldInterface } from 'quic
 import { After } from 'quickpickle';
 import type { TestContext } from 'vitest';
 import { defaultsDeep } from 'lodash-es'
+import { InfoConstructor } from 'quickpickle/dist/world';
 
 const browsers = { chromium, firefox, webkit }
 
@@ -53,7 +54,7 @@ export class PlaywrightWorld extends QuickPickleWorld {
   browserContext!: BrowserContext
   page!: Page
 
-  constructor(context:TestContext, info:QuickPickleWorldInterface['info']) {
+  constructor(context:TestContext, info:InfoConstructor) {
     super(context, info)
     this.setConfig(info.config.worldConfig)
   }

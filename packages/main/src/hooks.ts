@@ -59,14 +59,14 @@ const addHook = (hooksName: string, opts: string | Hook | ((state:any) => any), 
 };
 
 
-export const BeforeAll = (opts: string | (() => any), f?: () => any): void => { addHook('beforeAll', opts, f) };
+export const BeforeAll = (opts: string | ((common:any) => void), f?: (common:any) => void): void => { addHook('beforeAll', opts, f) };
 
-export const Before = (opts: string | Hook | ((state:any) => any), f?: (state:any) => any): void => { addHook('before', opts, f) };
+export const Before = (opts: string | Hook | ((state:any) => void), f?: (state:any) => void): void => { addHook('before', opts, f) };
 
-export const BeforeStep = (opts: string | Hook | ((state:any) => any), f?: (state:any) => any): void => { addHook('beforeStep', opts, f) };
+export const BeforeStep = (opts: string | Hook | ((state:any) => void), f?: (state:any) => void): void => { addHook('beforeStep', opts, f) };
 
-export const AfterAll = (opts: string | (() => any), f?: () => any): void => { addHook('afterAll', opts, f) };
+export const AfterAll = (opts: string | ((common:any) => void), f?: (common:any) => void): void => { addHook('afterAll', opts, f) };
 
-export const After = (opts: string | Hook | ((state:any) => any), f?: (state:any) => any): void => { addHook('after', opts, f) };
+export const After = (opts: string | Hook | ((state:any) => void), f?: (state:any) => void): void => { addHook('after', opts, f) };
 
-export const AfterStep = (opts: string | Hook | ((state:any) => any), f?: (state:any) => any): void => { addHook('afterStep', opts, f) };
+export const AfterStep = (opts: string | Hook | ((state:any) => void), f?: (state:any) => void): void => { addHook('afterStep', opts, f) };

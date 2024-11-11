@@ -3,11 +3,14 @@ import { Given, When, Then, BeforeAll, Before, BeforeStep, AfterStep, After, Aft
 
 const log:any = {}
 
-BeforeAll(async () => {
+BeforeAll(async (common) => {
+  common.beforeAll = 'beforeAll'
+  common.totalSteps = 0
   log.tests = {}
 })
 
 Before(async (state) => {
+  state.common.before = true
   log.tests[state.info.scenario] = []
   log.tests[state.info.scenario].push('Before')
   state.hooks = {}
@@ -23,6 +26,7 @@ AfterStep({ tags:'clearErrorsAfterStep' }, async (state) => {
 })
 
 AfterStep(async (state) => {
+  state.common.totalSteps++
   log.tests[state.info.scenario].push('errors: ' + state.info.errors.length)
   log.tests[state.info.scenario].push('AfterStep')
 })
@@ -56,8 +60,11 @@ const testWithError = [
   'After',
 ]
 
-AfterAll(async () => {
+AfterAll(async (common) => {
   console.log('AfterAll')
+  expect(common.beforeAll).toBe('beforeAll')
+  expect(common.before).toBe(true)
+  expect(common.totalSteps).not.toBeFalsy()
   expect(log.tests).toMatchObject({
     'Hooks: All hooks should work': testWithNoErrors,
     'Hooks: Hooks also work on @soft tests': testWithNoErrors,

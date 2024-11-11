@@ -62,7 +62,7 @@ export function renderFeature(feature:Feature, config:QuickPickleConfig) {
   // Render the initScenario function, which will be called at the beginning of each scenario
   return`
 const initScenario = async(context, scenario, tags, steps) => {
-  let state = new World(context, { feature:'${featureName}', scenario, tags, steps, config:${JSON.stringify(config)}}, ${JSON.stringify(config.worldConfig)});
+  let state = new World(context, { feature:'${featureName}', scenario, tags, steps, common, config:${JSON.stringify(config)}}, ${JSON.stringify(config.worldConfig)});
   await state.init();
   state.common = common;
   state.info.feature = '${featureName}';
