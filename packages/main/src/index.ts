@@ -12,10 +12,11 @@ import {
 import { explodeTags, tagsMatch, renderGherkin } from './render';
 import { DataTable } from '@cucumber/cucumber';
 import { DocString } from './models/DocString';
+import { normalizeTags } from './tags';
 
 export { setWorldConstructor, getWorldConstructor, QuickPickleWorld, QuickPickleWorldInterface } from './world';
 export { DocString, DataTable }
-export { explodeTags, tagsMatch }
+export { explodeTags, tagsMatch, normalizeTags }
 
 const featureRegex = /\.feature(?:\.md)?$/;
 
@@ -53,6 +54,13 @@ interface StepDefinitionMatch {
   parameters: any[];
 }
 
+export function formatStack(text:string, line:string) {
+  let stack = text.split('\n')
+  while(!stack[0].match(/\.feature(?:\.md)?:\d+:\d+/)) stack.shift()
+  stack[0] = stack[0].replace(/:\d+:\d+$/, `:${line}:1`)
+  return stack.join('\n')
+}
+
 export const gherkinStep = async (step: string, state: any, line: number, stepIdx:number, explodeIdx?:number, data?:any): Promise<any> => {
   const stepDefinitionMatch: StepDefinitionMatch = findStepDefinitionMatch(step);
 
@@ -71,26 +79,50 @@ export const gherkinStep = async (step: string, state: any, line: number, stepId
   }
 
   try {
-    applyBeforeStepHooks(state);
+    await applyBeforeStepHooks(state);
     try {
       await stepDefinitionMatch.stepDefinition.f(state, ...stepDefinitionMatch.parameters, data);
     }
     catch(e:any) {
-      let stack = e.stack.split('\n')
-      while(!stack[0].match('gherkinStep')) stack.shift()
-      stack.shift()
-      stack[0] = stack[0].replace(/:\d+:\d+$/, `:${state.info.line}:1`)
-      e.stack = stack.join('\n')
-      throw e
+      // Add the Cucumber info to the error message
+      e.message = `${step} (#${line})\n${e.message}`
+
+      // Sort out the stack for the Feature file
+      e.stack = formatStack(e.stack, state.info.line)
+
+      // Set the flag that this error has been added to the state
+      e.isStepError = true
+
+      // Add the error to the state
+      state.info.errors.push(e)
+
+      // If not in a soft fail mode, re-throw the error
+      if (state.isComplete || !state.tagsMatch(state.config.softFailTags)) throw e
     }
-    applyAfterStepHooks(state);
+    finally {
+      await applyAfterStepHooks(state);
+    }
   }
   catch(e:any) {
-    e.message = `${step} (#${line})\n${e.message}`
-    if (state.tagsMatch(state.config.softFailTags)) {
+
+    // If the error hasn't already been added to the state:
+    if (!e.isStepError) {
+
+      // Add the Cucumber info to the error message
+      e.message = `${step} (#${line})\n${e.message}`
+
+      // Add the error to the state
       state.info.errors.push(e)
-      if (!state.isComplete) return
     }
+
+    // If in soft fail mode and the state is not complete, don't throw the error
+    if (state.tagsMatch(state.config.softFailTags) && (!state.isComplete || !state.info.errors.length)) return
+
+    // The After hook is usually run in the rendered file, at the end of the rendered steps.
+    // But, if the tests have failed, then it should run here, since the test is halted.
+    await applyAfterHooks(state)
+
+    // Otherwise throw the error
     throw e
   }
   finally {
@@ -174,13 +206,7 @@ interface ResolvedConfig extends ViteResolvedConfig {
   quickpickle?: Partial<QuickPickleConfig>;
 }
 
-export function normalizeTags(tags?:string|string[]|undefined):string[] {
-  if (!tags) return []
-  tags = Array.isArray(tags) ? tags : tags.split(/\s*,\s*/g)
-  return tags.filter(Boolean).map(tag => tag.startsWith('@') ? tag : `@${tag}`)
-}
-
-function is3d(arr:string|string[]|string[][]):arr is string[][] {
+function is2d(arr:string|string[]|string[][]):arr is string[][] {
   return Array.isArray(arr) && arr.every(item => Array.isArray(item))
 }
 
@@ -203,7 +229,7 @@ export const quickpickle = (conf:Partial<QuickPickleConfigSetting> = {}):Plugin 
       config.softFailTags = normalizeTags(config.softFailTags)
       config.concurrentTags = normalizeTags(config.concurrentTags)
       config.sequentialTags = normalizeTags(config.sequentialTags)
-      if (is3d(config.explodeTags)) config.explodeTags = config.explodeTags.map(normalizeTags)
+      if (is2d(config.explodeTags)) config.explodeTags = config.explodeTags.map(normalizeTags)
       else config.explodeTags = [normalizeTags(config.explodeTags)]
     },
     async transform(src: string, id: string) {

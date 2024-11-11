@@ -42,8 +42,8 @@ Feature: Basic Test
       Given I run the tests
       When the tests fail
       And the tests fail
-      Then the stack for error 1 should contain "test.feature"
-      And the stack for error 2 should contain "test.feature"
+      Then the stack for error 1 should contain "test.feature:43:1"
+      And the stack for error 2 should contain "test.feature:44:1"
       And clear 2 errors
 
     @fails @soft

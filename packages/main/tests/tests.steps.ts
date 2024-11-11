@@ -1,6 +1,6 @@
 import { expect } from "vitest";
 import { Given, Then, When } from "../src";
-import type { DataTable } from "@cucumber/cucumber";
+import type { DataTable } from "../src";
 import { clone, get, set } from "lodash-es";
 import type { DocString } from "../src/models/DocString";
 
@@ -60,7 +60,7 @@ Then('the variable/value/property {string} should be {int} character(s) long', (
 })
 
 Then('the stack for error {int} should contain {string}', async (world, idx, expected) => {
-  let stack = world.info.errors[idx-1].stack
+  let stack = world.info.errors[idx-1].stack.split('\n')[0]
   await expect(stack).toContain(expected)
 })
 Then('clear error {int}', async (world, idx) => {
