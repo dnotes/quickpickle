@@ -2,12 +2,13 @@ import { addStepDefinition, findStepDefinitionMatch } from './steps';
 import { get, defaultsDeep } from 'lodash-es';
 import { Plugin, ResolvedConfig as ViteResolvedConfig } from 'vite'
 import {
-  BeforeAll, applyBeforeAllHooks,
-  Before, applyBeforeHooks,
-  AfterAll, applyAfterAllHooks,
-  After, applyAfterHooks,
-  BeforeStep, applyBeforeStepHooks,
-  AfterStep, applyAfterStepHooks,
+  BeforeAll,
+  Before,
+  AfterAll,
+  After,
+  BeforeStep,
+  AfterStep,
+  applyHooks,
 } from './hooks';
 import { explodeTags, tagsMatch, renderGherkin } from './render';
 import { DataTable } from '@cucumber/cucumber';
@@ -16,20 +17,11 @@ import { normalizeTags } from './tags';
 
 export { setWorldConstructor, getWorldConstructor, QuickPickleWorld, QuickPickleWorldInterface } from './world';
 export { DocString, DataTable }
-export { explodeTags, tagsMatch, normalizeTags }
+export { explodeTags, tagsMatch, normalizeTags, applyHooks }
 
 const featureRegex = /\.feature(?:\.md)?$/;
 
 export { BeforeAll, Before, AfterAll, After, BeforeStep, AfterStep };
-
-export {
-  applyBeforeAllHooks,
-  applyBeforeHooks,
-  applyAfterAllHooks,
-  applyAfterHooks,
-  applyBeforeStepHooks,
-  applyAfterStepHooks,
-};
 
 export const Given = addStepDefinition;
 export const When = addStepDefinition;
@@ -79,7 +71,7 @@ export const gherkinStep = async (step: string, state: any, line: number, stepId
   }
 
   try {
-    await applyBeforeStepHooks(state);
+    await applyHooks('beforeStep', state);
     try {
       await stepDefinitionMatch.stepDefinition.f(state, ...stepDefinitionMatch.parameters, data);
     }
@@ -100,7 +92,7 @@ export const gherkinStep = async (step: string, state: any, line: number, stepId
       if (state.isComplete || !state.tagsMatch(state.config.softFailTags)) throw e
     }
     finally {
-      await applyAfterStepHooks(state);
+      await applyHooks('afterStep', state);
     }
   }
   catch(e:any) {
@@ -120,7 +112,7 @@ export const gherkinStep = async (step: string, state: any, line: number, stepId
 
     // The After hook is usually run in the rendered file, at the end of the rendered steps.
     // But, if the tests have failed, then it should run here, since the test is halted.
-    await applyAfterHooks(state)
+    await applyHooks('after', state)
 
     // Otherwise throw the error
     throw e

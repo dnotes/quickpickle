@@ -2,10 +2,7 @@
 import { test, describe, beforeAll, afterAll } from 'vitest';
 import {
   gherkinStep,
-  applyBeforeAllHooks,
-  applyBeforeHooks,
-  applyAfterAllHooks,
-  applyAfterHooks,
+  applyHooks,
   getWorldConstructor,
 } from 'quickpickle';
 
@@ -14,15 +11,15 @@ let World = getWorldConstructor()
 const common = {};
 
 beforeAll(async () => {
-  await applyBeforeAllHooks(common);
+  await applyHooks('beforeAll', common);
 });
 
 afterAll(async () => {
-  await applyAfterAllHooks(common);
+  await applyHooks('afterAll', common);
 });
 
 const afterScenario = async(state) => {
-  await applyAfterHooks(state);
+  await applyHooks('after', state);
 }
 
 const initScenario = async(context, scenario, tags, steps) => {
@@ -32,7 +29,7 @@ const initScenario = async(context, scenario, tags, steps) => {
   state.info.feature = 'Feature: QuickPickle\'s Comprehensive Gherkin Syntax Example';
   state.info.scenario = scenario;
   state.info.tags = [...tags];
-  await applyBeforeHooks(state);
+  await applyHooks('before', state);
   await gherkinStep(`a common precondition`, state, 10, -1);
   await gherkinStep(`another common precondition`, state, 11, -2);
   return state;

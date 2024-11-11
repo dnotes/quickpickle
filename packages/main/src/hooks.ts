@@ -29,7 +29,7 @@ const hookNames: { [key: string]: string } = {
   afterStep: 'AfterStep',
 };
 
-const applyHooks = async (hooksName: string, state: any): Promise<any> => {
+export const applyHooks = async (hooksName: string, state: any): Promise<any> => {
   const hooks = allHooks[hooksName];
   for (let i = 0; i < hooks.length; i++) {
     let hook = hooks[i]
@@ -60,19 +60,13 @@ const addHook = (hooksName: string, opts: string | Hook | ((state:any) => any), 
 
 
 export const BeforeAll = (opts: string | (() => any), f?: () => any): void => { addHook('beforeAll', opts, f) };
-export const applyBeforeAllHooks = (state: any): Promise<any> => applyHooks('beforeAll', state);
 
 export const Before = (opts: string | Hook | ((state:any) => any), f?: (state:any) => any): void => { addHook('before', opts, f) };
-export const applyBeforeHooks = (state: any): Promise<any> => applyHooks('before', state);
 
 export const BeforeStep = (opts: string | Hook | ((state:any) => any), f?: (state:any) => any): void => { addHook('beforeStep', opts, f) };
-export const applyBeforeStepHooks = (state: any): Promise<any> => applyHooks('beforeStep', state);
 
 export const AfterAll = (opts: string | (() => any), f?: () => any): void => { addHook('afterAll', opts, f) };
-export const applyAfterAllHooks = (state: any): Promise<any> => applyHooks('afterAll', state);
 
 export const After = (opts: string | Hook | ((state:any) => any), f?: (state:any) => any): void => { addHook('after', opts, f) };
-export const applyAfterHooks = (state: any): Promise<any> => applyHooks('after', state);
 
 export const AfterStep = (opts: string | Hook | ((state:any) => any), f?: (state:any) => any): void => { addHook('afterStep', opts, f) };
-export const applyAfterStepHooks = (state: any): Promise<any> => applyHooks('afterStep', state);
