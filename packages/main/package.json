@@ -1,6 +1,6 @@
 {
   "name": "quickpickle",
-  "version": "1.5.2",
+  "version": "1.5.3",
   "description": "Plugin for Vitest to run tests written in Gherkin Syntax.",
   "keywords": [
     "BDD",
