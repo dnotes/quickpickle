@@ -1,5 +1,11 @@
 # quickpickle
 
+## 1.5.5
+
+### Patch Changes
+
+- 3241e3e: remove console.log()s. /oops
+
 ## 1.5.4
 
 ### Patch Changes
