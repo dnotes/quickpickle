@@ -8,7 +8,10 @@ import {
 
 let World = getWorldConstructor()
 
-const common = {};
+const common = { info: {
+  feature: 'Feature: QuickPickle\'s Comprehensive Gherkin Syntax Example',
+  tags: ["@tag","@multiple_tags"]
+}};
 
 beforeAll(async () => {
   await applyHooks('beforeAll', common);

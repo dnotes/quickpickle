@@ -10,10 +10,10 @@ import {
   AfterStep,
   applyHooks,
 } from './hooks';
-import { explodeTags, tagsMatch, renderGherkin } from './render';
+import { explodeTags, renderGherkin } from './render';
 import { DataTable } from '@cucumber/cucumber';
 import { DocString } from './models/DocString';
-import { normalizeTags } from './tags';
+import { normalizeTags, tagsMatch } from './tags';
 
 export { setWorldConstructor, getWorldConstructor, QuickPickleWorld, QuickPickleWorldInterface } from './world';
 export { DocString, DataTable }

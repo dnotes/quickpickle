@@ -4,9 +4,15 @@ import { Given, When, Then, BeforeAll, Before, BeforeStep, AfterStep, After, Aft
 const log:any = {}
 
 BeforeAll(async (common) => {
+  console.log('beforeAll')
   common.beforeAll = 'beforeAll'
   common.totalSteps = 0
   log.tests = {}
+})
+
+BeforeAll('@taggedBeforeAll', async (state) => {
+  console.log('taggedBeforeAll')
+  state.taggedBeforeAll = 'taggedBeforeAll'
 })
 
 Before(async (state) => {
@@ -21,7 +27,7 @@ BeforeStep(async (state) => {
   log.tests[state.info.scenario].push('BeforeStep')
 })
 
-AfterStep({ tags:'clearErrorsAfterStep' }, async (state) => {
+AfterStep({ name:'Clear errors', tags: '@clearErrorsAfterStep' }, async (state) => {
   state.info.errors = []
 })
 
@@ -60,12 +66,12 @@ const testWithError = [
   'After',
 ]
 
-AfterAll(async (common) => {
+AfterAll("not @taggedBeforeAll", async (common) => {
   console.log('AfterAll')
-  expect(common.beforeAll).toBe('beforeAll')
-  expect(common.before).toBe(true)
-  expect(common.totalSteps).not.toBeFalsy()
-  expect(log.tests).toMatchObject({
+  await expect(common.beforeAll).toBe('beforeAll')
+  await expect(common.before).toBe(true)
+  await expect(common.totalSteps).not.toBeFalsy()
+  await expect(log.tests).toMatchObject({
     'Hooks: All hooks should work': testWithNoErrors,
     'Hooks: Hooks also work on @soft tests': testWithNoErrors,
     'Hooks: Errors are available in the hook': testWithError,

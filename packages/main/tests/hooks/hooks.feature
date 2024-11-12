@@ -6,6 +6,7 @@ Feature: Testing hooks
 
   Scenario: Hooks: The BeforeAll hook can set things in common
     Then the variable "common.beforeAll" should be "beforeAll"
+    And the typeof "common.taggedBeforeAll" should be "undefined"
 
   Scenario: Hooks: All hooks should work
     Given I run the tests

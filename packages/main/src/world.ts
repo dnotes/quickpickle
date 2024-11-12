@@ -1,6 +1,15 @@
 import type { TestContext } from 'vitest'
-import { tagsMatch } from './render'
+import { tagsMatch } from './tags'
 import { QuickPickleConfig } from '.'
+
+interface Common {
+  info: {
+    feature: string
+    tags: string[]
+  }
+  [key:string]: any
+}
+
 export interface QuickPickleWorldInterface {
   info: {
     config: QuickPickleConfig   // the configuration for QuickPickle
@@ -19,12 +28,12 @@ export interface QuickPickleWorldInterface {
   isComplete: boolean           // (read only) whether the Scenario is on the last step
   config: QuickPickleConfig                       // (read only) configuration for QuickPickle
   worldConfig: QuickPickleConfig['worldConfig']   // (read only) configuration for the World
-  common: {[key: string]: any}                    // Common data shared across tests in one Feature file --- USE SPARINGLY
+  common: Common                // Common data shared across tests in one Feature file --- USE SPARINGLY
   init: () => Promise<void>                       // function called by QuickPickle when the world is created
   tagsMatch(tags: string[]): string[]|null        // function to check if the Scenario tags match the given tags
 }
 
-export type InfoConstructor = Omit<QuickPickleWorldInterface['info'], 'errors'> & { common:{[key:string]:any} }
+export type InfoConstructor = Omit<QuickPickleWorldInterface['info'], 'errors'> & { common:Common }
 
 export class QuickPickleWorld implements QuickPickleWorldInterface {
   info: QuickPickleWorldInterface['info']

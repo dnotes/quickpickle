@@ -1,10 +1,13 @@
 import { isFunction, isString, isObject, concat } from 'lodash-es'
-import { normalizeTags } from './tags';
+import { tagsFunction } from './tags';
+
+type HookFunction = (state: any) => Promise<void>
 
 interface Hook {
-  name: string;
-  f: (state: any) => Promise<any> | any;
-  tags?: string|string[];
+  name: string
+  f: HookFunction
+  tags: string
+  tagsFunction: (tags:string[]) => boolean
 }
 
 interface HookCollection {
@@ -29,44 +32,49 @@ const hookNames: { [key: string]: string } = {
   afterStep: 'AfterStep',
 };
 
-export const applyHooks = async (hooksName: string, state: any): Promise<any> => {
+export const applyHooks = async (hooksName: string, state: any): Promise<void> => {
   const hooks = allHooks[hooksName];
   for (let i = 0; i < hooks.length; i++) {
     let hook = hooks[i]
-    if (!hook?.tags?.length || state?.tagsMatch(hook.tags)) {
-      await hook.f(state)
+    const result = hook.tagsFunction(state.info.tags.map((t:string) => t.toLowerCase()));
+    if (hooksName === 'beforeAll') console.log('hook.tags:N= ', hook.tags, ' result: ', result)
+    if (result) {
+      if (hooksName === 'beforeAll') console.log('FWAH')
+      await hook.f(state).then(() => {
+        if (hooksName === 'beforeAll') console.log('FWAH!!!')
+      });
     }
   }
   return state;
 };
 
-const addHook = (hooksName: string, opts: string | Hook | ((state:any) => any), f?: (state:any) => any): void => {
-  let hookOpts: Hook;
+const addHook = (hooksName: string, p1: string | Hook | HookFunction, p2?: string | string[] | HookFunction): void => {
 
-  if (isFunction(opts)) {
-    hookOpts = { name: '', f: opts };
-  } else if (isString(opts)) {
-    hookOpts = { name: opts, f: f! };
-  } else if (isObject(opts)) {
-    hookOpts = opts as Hook
-    hookOpts.f = hookOpts.f || f!
-    hookOpts.tags = normalizeTags(hookOpts.tags)
-  } else {
-    throw new Error('Unknown options argument: ' + JSON.stringify(opts));
-  }
+  let hook:Hook = { name:'', f:async ()=>{}, tags:'', tagsFunction: () => true }
 
-  allHooks[hooksName] = concat(allHooks[hooksName], hookOpts);
+  if (isFunction(p1)) hook = { ...hook, f: p1}
+  else if (isString(p1)) hook.tags = p1
+  else hook = { ...hook, ...p1 }
+
+  if (isFunction(p2)) hook.f = p2
+
+  if (!hook.f) throw new Error('Function required: ' + JSON.stringify({ p1, p2 }))
+
+  hook.tagsFunction = tagsFunction(hook.tags.toLowerCase())
+
+  allHooks[hooksName] = concat(allHooks[hooksName], hook);
 };
 
+type AddHookFunction = (p1: string | Hook | HookFunction, p2?: HookFunction) => void
 
-export const BeforeAll = (opts: string | ((common:any) => void), f?: (common:any) => void): void => { addHook('beforeAll', opts, f) };
+export const BeforeAll:AddHookFunction = (p1,p2): void => { addHook('beforeAll', p1, p2) };
 
-export const Before = (opts: string | Hook | ((state:any) => void), f?: (state:any) => void): void => { addHook('before', opts, f) };
+export const Before:AddHookFunction = (p1,p2): void => { addHook('before', p1, p2) };
 
-export const BeforeStep = (opts: string | Hook | ((state:any) => void), f?: (state:any) => void): void => { addHook('beforeStep', opts, f) };
+export const BeforeStep:AddHookFunction = (p1,p2): void => { addHook('beforeStep', p1, p2) };
 
-export const AfterAll = (opts: string | ((common:any) => void), f?: (common:any) => void): void => { addHook('afterAll', opts, f) };
+export const AfterAll:AddHookFunction = (p1,p2): void => { addHook('afterAll', p1, p2) };
 
-export const After = (opts: string | Hook | ((state:any) => void), f?: (state:any) => void): void => { addHook('after', opts, f) };
+export const After:AddHookFunction = (p1,p2): void => { addHook('after', p1, p2) };
 
-export const AfterStep = (opts: string | Hook | ((state:any) => void), f?: (state:any) => void): void => { addHook('afterStep', opts, f) };
+export const AfterStep:AddHookFunction = (p1,p2): void => { addHook('afterStep', p1, p2) };

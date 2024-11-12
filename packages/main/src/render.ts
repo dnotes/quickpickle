@@ -1,9 +1,10 @@
-import type { Feature, FeatureChild, GherkinDocument, RuleChild, Step } from "@cucumber/messages";
+import type { Feature, FeatureChild, RuleChild, Step } from "@cucumber/messages";
 import { type QuickPickleConfig } from '.'
+import { tagsMatch, normalizeTags } from './tags'
 
 import * as Gherkin from '@cucumber/gherkin';
 import * as Messages from '@cucumber/messages';
-import { fromPairs, intersection, pick, escapeRegExp } from "lodash-es";
+import { fromPairs, pick, escapeRegExp } from "lodash-es";
 
 const uuidFn = Messages.IdGenerator.uuid();
 const builder = new Gherkin.AstBuilder(uuidFn);
@@ -32,7 +33,10 @@ import {
 
 let World = getWorldConstructor()
 
-const common = {};
+const common = { info: {
+  feature: '${q(gherkinDocument.feature.keyword)}: ${q(gherkinDocument.feature.name)}',
+  tags: ${JSON.stringify(normalizeTags(gherkinDocument.feature.tags.map(t => t.name)))}
+}};
 
 beforeAll(async () => {
   await applyHooks('beforeAll', common);
@@ -310,15 +314,4 @@ export function explodeTags(explodeTags:string[][], testTags:string[]):string[][
 
   // finally, return the list
   return combined.length ? combined.map(arr => [...tagsToTest, ...arr]) : [testTags]
-}
-
-/**
- *
- * @param confTags string[]
- * @param testTags string[]
- * @returns boolean
- */
-export function tagsMatch(confTags:string[], testTags:string[]) {
-  let tags = intersection(confTags.map(t => t.toLowerCase()), testTags.map(t => t.toLowerCase()))
-  return tags?.length ? tags : null
 }
