@@ -37,12 +37,8 @@ export const applyHooks = async (hooksName: string, state: any): Promise<void> =
   for (let i = 0; i < hooks.length; i++) {
     let hook = hooks[i]
     const result = hook.tagsFunction(state.info.tags.map((t:string) => t.toLowerCase()));
-    if (hooksName === 'beforeAll') console.log('hook.tags:N= ', hook.tags, ' result: ', result)
     if (result) {
-      if (hooksName === 'beforeAll') console.log('FWAH')
-      await hook.f(state).then(() => {
-        if (hooksName === 'beforeAll') console.log('FWAH!!!')
-      });
+      await hook.f(state)
     }
   }
   return state;
