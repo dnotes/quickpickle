@@ -1,8 +1,13 @@
 import { expect } from "vitest";
-import { Given, Then, When } from "../src";
+import { Given, Then, When, defineParameterType } from "../src";
 import type { DataTable } from "../src";
 import { clone, get, set } from "lodash-es";
 import type { DocString } from "../src/models/DocString";
+
+defineParameterType({
+  name: 'updown',
+  regexp: /(up|down)/,
+})
 
 Given("I run the tests", () => {});
 
@@ -59,6 +64,10 @@ Then('the variable/value/property {string} should be {int} character(s) long', (
   expect(value?.toString()?.length).toBe(parseInt(length))
 })
 
+Then('(the )error {int} should contain {string}', async (world, idx, expected) => {
+  let error = world.info.errors[idx-1]
+  await expect(error.message).toContain(expected)
+})
 Then('the stack for error {int} should contain {string}', async (world, idx, expected) => {
   let stack = world.info.errors[idx-1].stack.split('\n')[0]
   await expect(stack).toContain(expected)
@@ -76,4 +85,9 @@ When('I set a common flag', (world) => {
 })
 Then('the flag should be set', (world) => {
   expect(world.common.flag).toBe(true)
+})
+
+// CUSTOM PARAMETER TYPES
+When('I push all the numbers {updown}( again)', (world, updown:'up'|'down') => {
+  world.numbers = world.numbers.map(n => updown === 'up' ? n+1 : n-1)
 })

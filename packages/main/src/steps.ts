@@ -1,4 +1,5 @@
-import { ExpressionFactory, ParameterTypeRegistry, Expression } from '@cucumber/cucumber-expressions';
+import { ExpressionFactory, ParameterTypeRegistry, Expression, ParameterType } from '@cucumber/cucumber-expressions';
+import { IParameterTypeDefinition } from '@cucumber/cucumber/lib/support_code_library_builder/types';
 
 interface StepDefinition {
   expression: string|RegExp;
@@ -27,7 +28,23 @@ const typeName: Record<string, string> = {
   when: 'When',
 };
 
-const expressionFactory = new ExpressionFactory(new ParameterTypeRegistry());
+const parameterTypeRegistry = new ParameterTypeRegistry();
+const expressionFactory = new ExpressionFactory(parameterTypeRegistry);
+
+const buildParameterType = (type:IParameterTypeDefinition<any>): ParameterType<unknown> => {
+  return new ParameterType(
+    type.name,
+    type.regexp,
+    null,
+    type.transformer,
+    type.useForSnippets ?? true,
+    type.preferForRegexpMatch ?? false,
+  )
+}
+
+export const defineParameterType = (parameterType: IParameterTypeDefinition<any>): void => {
+  parameterTypeRegistry.defineParameterType(buildParameterType(parameterType));
+};
 
 export const addStepDefinition = (expression: string|RegExp, f: (state: any, ...args: any[]) => any): void => {
   const cucumberExpression = expressionFactory.createExpression(expression);

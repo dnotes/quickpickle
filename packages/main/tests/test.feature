@@ -156,3 +156,21 @@ Feature: Basic Test
       And the variable "data.doubleEscapedBacktick" should be 3 characters long
       And the variable "data.unescapedError" should be 31 characters long
       And the variable "data.escapedError" should be 32 characters long
+
+  Rule: Custom parameter types must work
+
+    Example: a custom parameter for up or down
+      Given a number 1
+      And a number 2
+      Then the sum should be 3
+      When I push all the numbers up
+      Then the sum should be 5
+      When I push all the numbers down
+      And I push all the numbers down again
+      Then the sum should be 1
+
+    @fails @soft
+    Example: a custom parameter only matches its exact regex
+      Given a number 1
+      When I push all the numbers right
+      Then the error 1 should contain "Undefined. Implement with the following snippet:"

@@ -18,6 +18,7 @@ import { normalizeTags, tagsMatch } from './tags';
 export { setWorldConstructor, getWorldConstructor, QuickPickleWorld, QuickPickleWorldInterface } from './world';
 export { DocString, DataTable }
 export { explodeTags, tagsMatch, normalizeTags, applyHooks }
+export { defineParameterType } from './steps'
 
 const featureRegex = /\.feature(?:\.md)?$/;
 

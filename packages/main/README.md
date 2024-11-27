@@ -22,7 +22,7 @@ by parsing them with the official [Gherkin Parser] and running them as Vitest te
 - [x] [named hooks]
 - [x] [tagged hooks]
 - [x] [skipping in a before hook]: *(use [world.context.skip()])*
-- [ ] [defineParameterType] for custom variable types in Cucumber Expressions *(WORKAROUND: use Regex)* **[PLANNED]**
+- [x] [defineParameterType] for custom parameter types in Cucumber Expressions
 - [x] [setDefaultTimeout] *(use [testTimeout] in Vitest config)*
 - [x] [setDefinitionFunctionWrapper] *(use Before and After hooks)*
 - [x] [setParallelCanAssign] *(use @concurrent and @sequential [special tags])*
@@ -447,10 +447,6 @@ come to notice:
 ### Unsupported CucumberJS Features
 
 #### Planned for feature completeness:
-
-- [defineParameterType] for custom variable types in Cucumber Expressions
-
-  Defining custom parameters is not yet supported. As a workaround, one can use Regex for step definitions.
 
 - [snippets] full support, including proper variables
 
