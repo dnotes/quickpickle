@@ -60,6 +60,7 @@
   ],
   "scripts": {
     "build": "rollup -c",
+    "playwright-install-ci": "playwright install-deps && playwright install chromium",
     "type-check": "tsc --noEmit",
     "test:watch": "vitest",
     "test": "vitest --run"

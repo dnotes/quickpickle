@@ -8,7 +8,7 @@
     "changeset:release": "changeset publish",
     "changeset:version": "changeset version",
     "build": "pnpm -r build",
-    "playwright-install-ci": "playwright install-deps && playwright install chromium",
+    "playwright-install-ci": "pnpm -r playwright-install-ci",
     "test:watch": "vitest",
     "test": "vitest --run"
   },
