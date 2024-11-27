@@ -33,8 +33,8 @@ jobs:
       - name: Build
         run: pnpm build
 
-      - name: Install playwright
-        run: pnpx playwright install --with-deps chromium
+      - name: Install playwright deps
+        run: pnpx playwright install-deps && pnpx playwright install chromium
 
       - name: Run Tests
         run: pnpm -w run test
