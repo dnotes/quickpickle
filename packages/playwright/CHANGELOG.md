@@ -1,5 +1,15 @@
 # @quickpickle/playwright
 
+## 0.10.6
+
+### Patch Changes
+
+- a28faaa: Snippets are now well supported, producing async/await javascript with appropriate variables.
+- Updated dependencies [a28faaa]
+- Updated dependencies [2611f1d]
+- Updated dependencies [0ddc22b]
+  - quickpickle@1.6.0
+
 ## 0.10.5
 
 ### Patch Changes
