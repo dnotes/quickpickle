@@ -68,6 +68,10 @@ Then('(the )error {int} should contain {string}', async (world, idx, expected) =
   let error = world.info.errors[idx-1]
   await expect(error.message).toContain(expected)
 })
+Then('(the )error {int} should contain the following text:', async (world, idx, expected) => {
+  let error = world.info.errors[idx-1]
+  await expect(error.message).toContain(expected.toString())
+})
 Then('the stack for error {int} should contain {string}', async (world, idx, expected) => {
   let stack = world.info.errors[idx-1].stack.split('\n')[0]
   await expect(stack).toContain(expected)

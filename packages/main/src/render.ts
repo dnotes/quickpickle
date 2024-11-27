@@ -208,15 +208,27 @@ function renderSteps(steps:Step[], config:QuickPickleConfig, sp = '  ', exploded
       let data = JSON.stringify(step.dataTable.rows.map(r => {
         return r.cells.map(c => c.value)
       }))
-      return `${sp}await gherkinStep(${tl(step.text)}, state, ${step.location.line}, ${minus}${idx+1}, ${explodedText || 'undefined'}, ${data});`
+      return `${sp}await gherkinStep('${getStepType(steps, idx)}', ${tl(step.text)}, state, ${step.location.line}, ${minus}${idx+1}, ${explodedText || 'undefined'}, ${data});`
     }
     else if (step.docString) {
       let data = JSON.stringify(pick(step.docString, ['content','mediaType']))
-      return `${sp}await gherkinStep(${tl(step.text)}, state, ${step.location.line}, ${minus}${idx+1}, ${explodedText || 'undefined'}, ${data});`
+      return `${sp}await gherkinStep('${getStepType(steps, idx)}', ${tl(step.text)}, state, ${step.location.line}, ${minus}${idx+1}, ${explodedText || 'undefined'}, ${data});`
     }
 
-    return `${sp}await gherkinStep(${tl(step.text)}, state, ${step.location.line}, ${minus}${idx+1}${explodedText ? `, ${explodedText}` : ''});`
+    return `${sp}await gherkinStep('${getStepType(steps, idx)}', ${tl(step.text)}, state, ${step.location.line}, ${minus}${idx+1}${explodedText ? `, ${explodedText}` : ''});`
   }).join('\n')
+}
+
+function getStepType(steps:Step[], idx:number) {
+  switch (steps[idx].keywordType) {
+    case 'Context':
+    case 'Action':
+    case 'Outcome':
+      return steps[idx].keywordType
+    default:
+      if (idx) return getStepType(steps, idx-1)
+      return 'Context'
+  }
 }
 
 /**

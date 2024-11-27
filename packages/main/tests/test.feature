@@ -174,3 +174,48 @@ Feature: Basic Test
       Given a number 1
       When I push all the numbers right
       Then the error 1 should contain "Undefined. Implement with the following snippet:"
+
+  @snippets @soft
+  Rule: Snippets must be helpful
+
+    Example: a custom parameter works
+      Given the phrase goes up
+      Then error 1 should contain the following text:
+        """js
+        Given('the phrase goes {updown}', async function (world, updown) {
+          // Write code here that turns the phrase above into concrete actions
+          throw new Error('Not yet implemented')
+        });
+        """
+      And clear error 1
+
+    Example: multiple parameters work
+      When a phrase with "first" and "second"
+      Then error 1 should contain the following text:
+        ```js
+        When('a phrase with {string} and {string}', async function (world, string, string2) {
+          // Write code here that turns the phrase above into concrete actions
+          throw new Error('Not yet implemented')
+        });
+        ```
+      And clear error 1
+
+    Example: DataTables work
+      And a step with a DataTable:
+        | key | value      |
+        | 1   | data table |
+      And error 1 should contain "Given('a step with a DataTable:', async function (world, dataTable)"
+      And clear error 1
+
+    Example: DocStrings should work
+      Then a step with a DocString:
+        """
+          this is a DocString.
+        """
+      Then error 1 should contain "Then('a step with a DocString:', async function (world, docString)"
+      And clear error 1
+
+    Example: no variables should work
+      Given this step is undefined
+      Then error 1 should contain "Given('this step is undefined', async function (world) {"
+      And clear error 1

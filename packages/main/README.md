@@ -39,7 +39,7 @@ by parsing them with the official [Gherkin Parser] and running them as Vitest te
 - [x] [profiles] *(use Vitest [workspaces])*
 - [x] [rerun] *(press "f" in [watch mode terminal])*
 - [x] [retry] *(use Vitest [retry option])*
-- [ ] [snippets] *poor support* **[PLANNED]**
+- [x] [snippets] *(only async/await javascript is supported)*
 - [x] [transpiling] **100% support through Vite (the reason for this package)**
 
 [Gherkin 6]: https://cucumber.io/docs/gherkin/reference/
@@ -446,21 +446,14 @@ come to notice:
 
 ### Unsupported CucumberJS Features
 
-#### Planned for feature completeness:
-
-- [snippets] full support, including proper variables
-
-  Snippets are currently not well supported, as they don't yet include the proper variables or language formatting.
-
-#### Other unsupported features:
-
-- return "skipped" in step definitions or hooks to skip a step definition or hook
+- return "skipped" in step definitions or hooks to skip a step definition or hook *(use `world.context.skip()`)*
 - [setDefaultTimeout] *(use [testTimeout] in Vitest config)*
 - [setDefinitionFunctionWrapper] *(use Before and After hooks)*
 - [setParallelCanAssign] *(use @concurrent and @sequential [special tags])*
 - attachments with [world.attach], [world.log], and [world.link] *not supported, use Vitest [reporters]*
 - [dry run] *not supported, but you can use `vitest list` which is similar*
-- [filtering] full support, including CucumberJS tag matching with "and", "not", etc.
+- [custom snippet formats] *(only async/await javascript is supported)*
+- [filtering] CucumberJS tag matching with "and", "not", etc.
   In Vitest it is only possible to match the name of the test. With QuickPickle tests
   the name does include the tags, so running `vitest -t "@some-tag"` does work, but
   you can't specify that it should run all tests *without* a certain tag.

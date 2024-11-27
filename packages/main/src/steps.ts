@@ -1,4 +1,4 @@
-import { ExpressionFactory, ParameterTypeRegistry, Expression, ParameterType } from '@cucumber/cucumber-expressions';
+import { ExpressionFactory, ParameterTypeRegistry, Expression, ParameterType, CucumberExpressionGenerator, GeneratedExpression } from '@cucumber/cucumber-expressions';
 import { IParameterTypeDefinition } from '@cucumber/cucumber/lib/support_code_library_builder/types';
 
 interface StepDefinition {
@@ -30,6 +30,8 @@ const typeName: Record<string, string> = {
 
 const parameterTypeRegistry = new ParameterTypeRegistry();
 const expressionFactory = new ExpressionFactory(parameterTypeRegistry);
+
+const cucumberExpressionGenerator = new CucumberExpressionGenerator(() => parameterTypeRegistry.parameterTypes)
 
 const buildParameterType = (type:IParameterTypeDefinition<any>): ParameterType<unknown> => {
   return new ParameterType(
@@ -65,17 +67,18 @@ const findStepDefinitionMatches = (step:string): StepDefinitionMatch[] => {
   }, []);
 };
 
-export const findStepDefinitionMatch = (step:string): StepDefinitionMatch => {
+type SnippetData = {
+  stepType:'Context'|'Action'|'Outcome'
+  dataType:string
+}
+export const findStepDefinitionMatch = (step:string, snippetData:SnippetData): StepDefinitionMatch => {
   const stepDefinitionMatches = findStepDefinitionMatches(step);
 
+  // If it's not found
   if (!stepDefinitionMatches || stepDefinitionMatches.length === 0) {
+    let snippet = getSnippet(step, snippetData);
     throw new Error(`Undefined. Implement with the following snippet:
-
-  Given('${step}', (world, ...params) => {
-    // Write code here that turns the phrase above into concrete actions
-    throw new Error('Not yet implemented!');
-    return state;
-  });
+${snippet}
 `);
   }
 
@@ -85,3 +88,44 @@ export const findStepDefinitionMatch = (step:string): StepDefinitionMatch => {
 
   return stepDefinitionMatches[0];
 };
+
+function getSnippet(step:string, { stepType, dataType }:SnippetData):string {
+
+  const generatedExpressions = cucumberExpressionGenerator.generateExpressions(step);
+  const stepParameterNames = dataType ? [dataType] : []
+
+  let functionName:string = 'Given'
+  if (stepType === 'Action') functionName = 'When'
+  if (stepType === 'Outcome') functionName = 'Then'
+
+  let implementation = "throw new Error('Not yet implemented')"
+
+  const definitionChoices = generatedExpressions.map(
+    (generatedExpression, index) => {
+      const prefix = index === 0 ? '' : '// '
+      const allParameterNames = ['world'].concat(
+        generatedExpression.parameterNames,
+        stepParameterNames
+      )
+      return `${prefix + functionName}('${escapeSpecialCharacters(
+        generatedExpression
+      )}', async function (${allParameterNames.join(', ')}) {\n`
+    }
+  )
+
+  return (
+    `${definitionChoices.join('')}  // Write code here that turns the phrase above into concrete actions\n` +
+    `  ${implementation}\n` +
+    '});'
+  )
+
+}
+
+function escapeSpecialCharacters(generatedExpression: GeneratedExpression) {
+  let source = generatedExpression.source
+  // double up any backslashes because we're in a javascript string
+  source = source.replace(/\\/g, '\\\\')
+  // escape any single quotes because that's our quote delimiter
+  source = source.replace(/'/g, "\\'")
+  return source
+}

@@ -54,26 +54,31 @@ export function formatStack(text:string, line:string) {
   return stack.join('\n')
 }
 
-export const gherkinStep = async (step: string, state: any, line: number, stepIdx:number, explodeIdx?:number, data?:any): Promise<any> => {
-  const stepDefinitionMatch: StepDefinitionMatch = findStepDefinitionMatch(step);
-
-  // Set the state info
-  state.info.step = step
-  state.info.line = line
-  state.info.stepIdx = stepIdx
-  state.info.explodedIdx = explodeIdx
-
-  // Sort out the DataTable or DocString
-  if (Array.isArray(data)) {
-    data = new DataTable(data)
-  }
-  else if (data?.hasOwnProperty('content')) {
-    data = new DocString(data.content, data.mediaType)
-  }
+export const gherkinStep = async (stepType:"Context"|"Action"|"Outcome", step: string, state: any, line: number, stepIdx:number, explodeIdx?:number, data?:any): Promise<any> => {
 
   try {
+    // Set the state info
+    state.info.stepType = stepType
+    state.info.step = step
+    state.info.line = line
+    state.info.stepIdx = stepIdx
+    state.info.explodedIdx = explodeIdx
+
+    // Sort out the DataTable or DocString
+    let dataType = ''
+    if (Array.isArray(data)) {
+      data = new DataTable(data)
+      dataType = 'dataTable'
+    }
+    else if (data?.hasOwnProperty('content')) {
+      data = new DocString(data.content, data.mediaType)
+      dataType = 'docString'
+    }
+
     await applyHooks('beforeStep', state);
+
     try {
+      const stepDefinitionMatch: StepDefinitionMatch = findStepDefinitionMatch(step, { stepType, dataType });
       await stepDefinitionMatch.stepDefinition.f(state, ...stepDefinitionMatch.parameters, data);
     }
     catch(e:any) {
