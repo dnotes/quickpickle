@@ -8,10 +8,79 @@ by parsing them with the official [Gherkin Parser] and running them as Vitest te
 
 - Seamless integration of Gherkin Feature files into Vitest testing workflow
 - Full support for Gherkin 6, using the official [Gherkin Parser]
-- Full typescript and javascript support (because it's really just Vitest)
-- Supports Vitest-native test extensions concurrent, sequential, skip, todo, and fails
-- Supports multiple test environments with vitest.workspace configurations
-- Supports custom world constructors, similar to CucumberJS
+- Full ESM, typescript and javascript support (because it's Vitest)
+- Vitest-native test extensions concurrent, sequential, skip, todo, and fails
+- Multiple test environments with vitest.workspace configurations
+- Custom world constructors, similar to CucumberJS
+
+### CucumberJS Feature List
+
+- [x] Full [Gherkin 6] support
+- [x] Step definitions using [Cucumber Expressions] or Regex
+- [x] [setWorldConstructor]: custom world constructor
+- [x] [hooks]: BeforeAll, Before, BeforeStep, AfterStep, After, AfterAll
+- [x] [named hooks]
+- [x] [tagged hooks]
+- [x] [skipping in a before hook]: *(use [world.context.skip()])*
+- [ ] [defineParameterType] for custom variable types in Cucumber Expressions *(WORKAROUND: use Regex)* **[PLANNED]**
+- [x] [setDefaultTimeout] *(use [testTimeout] in Vitest config)*
+- [x] [setDefinitionFunctionWrapper] *(use Before and After hooks)*
+- [x] [setParallelCanAssign] *(use @concurrent and @sequential [special tags])*
+- [ ] attachments with [world.attach], [world.log], and [world.link] *not supported, use Vitest reporters*
+- [x] [DataTables] fully implemented, with full [DataTable interface]
+- [x] [DocStrings] fully implemented, with mediaType support
+- [x] [debugging] *(use [Vitest debugging])*
+- [x] [dry run] *not precisely supported, but you can use `vitest list` for something similar*
+- [x] [esm] **100% support through Vite (the reason for this package)**
+- [x] [fail fast] *(use [bail option] in Vitest config or command run, e.g. `vitest --bail=1`)*
+- [x] [filtering] partial support *(use [testNamePattern] to run tests matching a regex pattern)*
+- [x] [formatters] *(use Vitest [reporters])*
+- [x] [parallel] *(use `@parellel` and `@sequential` [special tags])*
+- [x] [profiles] *(use Vitest [workspaces])*
+- [x] [rerun] *(press "f" in [watch mode terminal])*
+- [x] [retry] *(use Vitest [retry option])*
+- [ ] [snippets] *poor support* **[PLANNED]**
+- [x] [transpiling] **100% support through Vite (the reason for this package)**
+
+[Gherkin 6]: https://cucumber.io/docs/gherkin/reference/
+[Cucumber Expressions]: https://github.com/cucumber/cucumber-expressions#readme
+[setWorldConstructor]: https://github.com/cucumber/cucumber-js/blob/main/docs/support_files/world.md
+[hooks]: https://github.com/cucumber/cucumber-js/blob/main/docs/support_files/hooks.md
+[named hooks]: https://github.com/cucumber/cucumber-js/blob/main/docs/support_files/hooks.md#named-hooks
+[tagged hooks]: https://github.com/cucumber/cucumber-js/blob/main/docs/support_files/hooks.md#tagged-hooks
+[skipping in a before hook]: https://github.com/cucumber/cucumber-js/blob/main/docs/support_files/hooks.md#skipping-in-a-before-hook
+[world.context.skip()]: https://vitest.dev/guide/test-context.html#context-skip
+[defineParameterType]: https://github.com/cucumber/cucumber-js/blob/main/docs/support_files/api_reference.md#defineparametertypename-preferforregexpmatch-regexp-transformer-useforsnippets
+[setDefaultTimeout]: https://github.com/cucumber/cucumber-js/blob/main/docs/support_files/api_reference.md#setdefaulttimeoutmilliseconds
+[testTimeout]: https://vitest.dev/guide/cli-generated.html#testtimeout
+[setDefinitionFunctionWrapper]: https://github.com/cucumber/cucumber-js/blob/main/docs/support_files/api_reference.md#setdefinitionfunctionwrapperwrapper
+[setParallelCanAssign]: https://github.com/cucumber/cucumber-js/blob/main/docs/support_files/api_reference.md#setparallelcanassigncanassignfn
+[world.attach]: https://github.com/cucumber/cucumber-js/blob/main/docs/support_files/attachments.md
+[world.log]: https://github.com/cucumber/cucumber-js/blob/main/docs/support_files/attachments.md#logging
+[world.link]: https://github.com/cucumber/cucumber-js/blob/main/docs/support_files/attachments.md#links
+[DataTables]: https://cucumber.io/docs/gherkin/reference#data-tables
+[DataTable interface]:  https://github.com/cucumber/cucumber-js/blob/main/docs/support_files/data_table_interface.md
+[DocStrings]: https://cucumber.io/docs/gherkin/reference#doc-strings
+[debugging]: https://github.com/cucumber/cucumber-js/blob/main/docs/debugging.md
+[Vitest debugging]: https://vitest.dev/guide/debugging.html
+[dry run]: https://github.com/cucumber/cucumber-js/blob/main/docs/dry_run.md
+[esm]: https://github.com/cucumber/cucumber-js/blob/main/docs/esm.md
+[fail fast]: https://github.com/cucumber/cucumber-js/blob/main/docs/fail_fast.md
+[bail option]: https://vitest.dev/config/#bail
+[filtering]: https://github.com/cucumber/cucumber-js/blob/main/docs/filtering.md
+[testNamePattern]: https://vitest.dev/guide/cli.html#testnamepattern
+[formatters]: https://github.com/cucumber/cucumber-js/blob/main/docs/formatters.md
+[reporters]: https://vitest.dev/guide/reporters.html
+[parallel]: https://github.com/cucumber/cucumber-js/blob/main/docs/parallel.md
+[profiles]: https://github.com/cucumber/cucumber-js/blob/main/docs/profiles.md
+[workspaces]: https://vitest.dev/guide/#workspaces-support
+[retry]: https://github.com/cucumber/cucumber-js/blob/main/docs/retry.md
+[rerun]: https://github.com/cucumber/cucumber-js/blob/main/docs/rerun.md
+[retry option]: https://vitest.dev/guide/cli-generated.html#retry
+[watch mode terminal]: https://github.com/vitest-dev/vitest/blob/main/packages/vitest/src/node/stdin.ts
+[snippets]: https://github.com/cucumber/cucumber-js/blob/main/docs/snippets.md
+[transpiling]: https://github.com/cucumber/cucumber-js/blob/main/docs/transpiling.md
+[PLANNED]: #planned-for-feature-completeness
 
 ### Benefits of Gherkin
 
@@ -297,7 +366,9 @@ and test running while maintaining functional parity with the original.
 Nonetheless, there are differences. Here are the important ones that have
 come to notice:
 
-- **Each step definition MUST have the "world" variable as its first parameter:**
+### `world` replaces `this` in step definitions
+
+  Each step definition in QuickPickle receives a "world" variable as its first parameter.
 
   ```ts
   // QuickPickle step definition
@@ -320,13 +391,14 @@ come to notice:
   Aside from the fact that a passed variable is much easier to think about for a compiler
   than custom bindings, `this` led to some sub-optimal usage in modern Javascript, including:
 
-  - Arrow functions couldn't be used in step definitions, or `this` wouldn't work.
+  - Arrow functions couldn't be used in step definitions or hooks, or `this` wouldn't work.
   - When using a custom world, you would have to add `(this:CustomWorldType, ...params)`
     in typescript files or else you wouldn't get the right types.
 
-  Passing a variable is cleaner, easier, clearer, and provides better support for modern JS.
+  Passing a variable is clearer and more intuitive, and provides more reliable support for
+  modern JS.
 
-- **The default "world" variable contains different information about the current step.**
+### Current step info in world variable
 
   In CucumberJS, the default world variable contains information about the test *suite*,
   but not the *current step*. In QuickPickle, the "world" variable passed to each test step
@@ -357,7 +429,7 @@ come to notice:
   }
   ```
 
-- **Some tags have special meanings by default**
+### Special Tags
 
   In Gherkin, the meanings of tags are determined by the implementation, there are no defaults.
   Since quickpickle uses Vitest, some tags have been given default meanings:
@@ -371,6 +443,31 @@ come to notice:
   The relevant tags can be configured. Plugins may also have default tag implementations; for example,
   @quickpickle/playwright has `@nojs` to disable javascript, and `@chromium`, `@firefox`, and `@webkit`
   to run a scenario on a particular browser.
+
+### Unsupported CucumberJS Features
+
+#### Planned for feature completeness:
+
+- [defineParameterType] for custom variable types in Cucumber Expressions
+
+  Defining custom parameters is not yet supported. As a workaround, one can use Regex for step definitions.
+
+- [snippets] full support, including proper variables
+
+  Snippets are currently not well supported, as they don't yet include the proper variables or language formatting.
+
+#### Other unsupported features:
+
+- return "skipped" in step definitions or hooks to skip a step definition or hook
+- [setDefaultTimeout] *(use [testTimeout] in Vitest config)*
+- [setDefinitionFunctionWrapper] *(use Before and After hooks)*
+- [setParallelCanAssign] *(use @concurrent and @sequential [special tags])*
+- attachments with [world.attach], [world.log], and [world.link] *not supported, use Vitest [reporters]*
+- [dry run] *not supported, but you can use `vitest list` which is similar*
+- [filtering] full support, including CucumberJS tag matching with "and", "not", etc.
+  In Vitest it is only possible to match the name of the test. With QuickPickle tests
+  the name does include the tags, so running `vitest -t "@some-tag"` does work, but
+  you can't specify that it should run all tests *without* a certain tag.
 
 ## Acknowledgements
 
@@ -402,6 +499,18 @@ in the architecture of this project. Thanks Sam, your work blew my mind.
   * Testing with and without Javascript, in multiple browsers, at multiple resolutions
   * Using QuickPickle's `explodeTags` to minimize test verbiage
 
+* [QuickPickle dev vlog 19 Nov. 2024](https://youtu.be/lZqJyAm82os):
+  Migrating a complex CucumberJS implementation to QuickPickle
+
+  *tl;dr:*
+  * Set the proper configuration for vite / vitest
+  * Change imports
+  * Find and replace "this" to "world" in step definitions and hooks
+  * Move your "setDefaultTimeout" to the vitest config "testTimeout"
+  * Make any necessary changes in your custom world constructor, if applicable
+
+
+
 [Vitest]: https://vitest.dev/
 [Gherkin Syntax]: https://cucumber.io/docs/gherkin/reference/
 [Gherkin Parser]: https://www.npmjs.com/package/@cucumber/gherkin
@@ -413,3 +522,4 @@ in the architecture of this project. Thanks Sam, your work blew my mind.
 [packages/components]: https://github.com/dnotes/quickpickle/tree/main/packages/components
 [packages/svelte]: https://github.com/dnotes/quickpickle/tree/main/packages/svelte
 [release.yml]: https://github.com/dnotes/quickpickle/blob/main/.github/workflows/release.yml
+[special tags]: #special-tags
