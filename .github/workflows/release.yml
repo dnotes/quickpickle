@@ -34,7 +34,7 @@ jobs:
         run: pnpm build
 
       - name: Install playwright deps
-        run: pnpx playwright install-deps && pnpx playwright install chromium
+        run: pnpm -w run playwright-install-ci
 
       - name: Run Tests
         run: pnpm -w run test

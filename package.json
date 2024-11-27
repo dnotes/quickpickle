@@ -8,6 +8,7 @@
     "changeset:release": "changeset publish",
     "changeset:version": "changeset version",
     "build": "pnpm -r build",
+    "playwright-install-ci": "playwright install-deps && playwright install chromium",
     "test:watch": "vitest",
     "test": "vitest --run"
   },
@@ -27,6 +28,7 @@
   "author": "David Hunt",
   "license": "MIT",
   "devDependencies": {
+    "playwright": "^1.48.0",
     "pnpm": "^9.12.0",
     "vitest": "^2.1.2"
   },
