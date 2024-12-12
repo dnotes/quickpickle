@@ -5,7 +5,7 @@ import { defaultScreenshotPath, getLocator, sanitizeFilepath, setValue } from ".
 
 import path from 'node:path'
 import url from 'node:url'
-export const projectRoot = path.resolve(path.dirname(url.fileURLToPath(import.meta.url)), '..')
+export const projectRoot = path.resolve(path.dirname(url.fileURLToPath(import.meta.url)).replace(/node_modules.+/, ''), '..')
 
 // ================
 // Navigation
