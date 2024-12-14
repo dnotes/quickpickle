@@ -6,6 +6,7 @@ export default defineConfig({
   plugins: [
     // @ts-ignore
     quickpickle({
+      failTags: ['fails', 'should-fail'],
       explodeTags: [
         ['nojs','js'],
         ['chromium','firefox','webkit'],

@@ -2,7 +2,6 @@ import { Given, When, Then, DocString, DataTable, AfterAll } from 'quickpickle'
 import type { PlaywrightWorld } from '../src/PlaywrightWorld'
 import yaml from 'js-yaml'
 import { expect } from '@playwright/test'
-import { sanitizeFilepath } from '../src/helpers'
 
 import path from 'node:path'
 import url from 'node:url'
@@ -23,11 +22,11 @@ Given('the following world config:', async (world:PlaywrightWorld, rawConf:DocSt
 
 // Filesystem
 Then('the file {string} should exist(--delete it)', async function (world:PlaywrightWorld, filepath:string) {
-  let fullpath = sanitizeFilepath(`${projectRoot}/${filepath}`)
+  let fullpath = world.sanitizeFilepath(`${projectRoot}/${filepath}`)
   await expect(fs.existsSync(fullpath)).toBeTruthy();
   if (world.info.step?.match(/--delete it$/)) fs.unlinkSync(fullpath)
 })
 Then('the file {string} should not exist', async function (world:PlaywrightWorld, filepath:string) {
-  let fullpath = sanitizeFilepath(`${projectRoot}/${filepath}`)
+  let fullpath = world.sanitizeFilepath(`${projectRoot}/${filepath}`)
   await expect(fs.existsSync(fullpath)).toBeFalsy();
 })

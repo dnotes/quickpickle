@@ -46,27 +46,28 @@ Feature: Outcome step definitions on a static page
 
   Rule: All of the ways of addressing an element should be tested
 
-    Example: it works to address an element with css selector but no role (or the word "element")
-      Then a "textarea#message" should be visible
-      And the "li.hidden" should be hidden
+    Example: it works to address an element with css selector
+      Then a "textarea#message" element should be visible
       And an 'input[type="submit"]' element should be visible
+      And a "ul>li" element should be visible
+      And a "li.hidden" element should be hidden
 
-    @fails
-    Example: it FAILS to address an element with a css selector AND a role
-      Then a "li.hidden" listitem should be hidden
+    @should-fail
+    Example: it FAILS to address an element with a css selector AND a role other than "element"
+      Then a "ul>li" listitem should be visible
 
     Example: it works to address an element with name and role
       Then an "XKCD Comic" img should be visible
       And a "message" textbox should be visible
       And a "lists" link should be visible
 
-    @fails
+    @should-fail
     Example: it FAILS to address an element with name and role IF the element is hidden
       And a "Hidden item" listitem should be hidden
 
     Example: it works to address an element with css selector and text
-      Then the "li.hidden" with the text "Hidden item" should be hidden
-      And the 'a[href="https://xkcd.com/2928"]' element with the text "2928" should be visible
+      Then the 'a[href="https://xkcd.com/2928"]' element with the text "2928" should be visible
+      And the "li.hidden" element with the text "Hidden item" should be hidden
 
   Rule: Testing for invisible elements should be possible
 
@@ -76,7 +77,7 @@ Feature: Outcome step definitions on a static page
     Scenario: "the {string} should be hidden" passes when elements are present and invisible
       Then the "li.hidden" element should be invisible
 
-    @fails
+    @should-fail
     Scenario: "the {string} should be hidden" FAILS when elements are not present
       Then the "li.imaginary" should be invisible
 

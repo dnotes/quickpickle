@@ -1,9 +1,14 @@
-import { chromium, firefox, webkit, type Browser, type BrowserContext, type Page } from 'playwright';
+import { chromium, firefox, Locator, webkit, type Browser, type BrowserContext, type Page } from 'playwright';
 import { normalizeTags, QuickPickleWorld, QuickPickleWorldInterface } from 'quickpickle';
 import { After } from 'quickpickle';
 import type { TestContext } from 'vitest';
 import { defaultsDeep } from 'lodash-es'
 import { InfoConstructor } from 'quickpickle/dist/world';
+
+import path from 'node:path'
+import url from 'node:url'
+import { expect } from 'playwright/test';
+export const projectRoot = path.resolve(path.dirname(url.fileURLToPath(import.meta.url)).replace(/node_modules.+/, ''), '..')
 
 const browsers = { chromium, firefox, webkit }
 
@@ -22,6 +27,8 @@ export type PlaywrightWorldConfigSetting = Partial<{
   browserSizes: Record<string,string> // the default browser sizes to use, in the form "widthxheight"
   // (default: { mobile: "480x640", tablet: "1024x768", desktop: "1920x1080", widescreen: "3440x1440" })
   defaultBrowserSize: string // the default browser size to use (default: desktop)
+  // Timeouts!
+  stepTimeout: number // the number of milliseconds to wait for PROVIDED (not custom) steps to complete (default:5000)
 }>
 
 export const defaultPlaywrightWorldConfig = {
@@ -42,6 +49,7 @@ export const defaultPlaywrightWorldConfig = {
     widescreen: '3440x1440',
   },
   defaultBrowserSize: 'desktop',
+  stepTimeout: 5000,
 }
 
 export type PlaywrightWorldConfig = typeof defaultPlaywrightWorldConfig & {
@@ -150,6 +158,164 @@ export class PlaywrightWorld extends QuickPickleWorld {
   get playwrightConfig() {
     console.warn('playwrightConfig is deprecated. Use worldConfig instead.')
     return this.worldConfig
+  }
+
+  get projectRoot() {
+    return projectRoot
+  }
+
+  sanitizeFilepath(filepath:string) {
+    return filepath.replace(/\/\/+/g, '/').replace(/\/[\.~]+\//g, '/')
+  }
+
+  get screenshotPath() {
+    return this.sanitizeFilepath(`${this.worldConfig.screenshotDir}/${this.toString().replace(/^.+?Feature: /, 'Feature: ').replace(' ' + this.info.step, '')}.png`)
+  }
+
+  get fullScreenshotPath() {
+    return this.sanitizeFilepath(`${this.projectRoot}/${this.screenshotPath}`)
+  }
+
+  /**
+    * Gets a locator based on a certain logic
+    * @example getLocator(page, 'Cancel', 'button') => page.getByRole('button', { name: 'Cancel' })
+    * @example getLocator(page, 'Search', 'input') => page.getByLabel('Search').or(page.getByPlaceholder('Search'))
+    * @example getLocator(page, 'ul.fourteen-points li', 'element', 'Open covenants of peace') => page.locator('ul.fourteen-points li').filter({ hasText: 'Open covenants of peace' })
+    *
+    * @param el The locator or page inside which to get a new locator
+    * @param identifier The value, label, placeholder, or css selector, depending on role
+    * @param role An ARIA role, "input", or "element"
+    * @param text Optional text to match inside the locator
+    * @returns Promise<void>
+    */
+  getLocator(el:Locator|Page, identifier:string, role:string|'element'|'input', text:string|null=null) {
+    let locator:Locator
+    if (role === 'element') locator = el.locator(identifier)
+    else if (role === 'input') locator = el.getByLabel(identifier).or(el.getByPlaceholder(identifier))
+    else locator = el.getByRole(role as any, { name: identifier })
+    if (text && role !== 'input') return locator.filter({ hasText: text })
+    return locator
+  }
+
+  /**
+    * Sets a value on a form element based on its type (select, checkbox/radio, or other input)
+    * @example setValue(locator, "Option 1, Option 2") => Selects multiple options in a select element
+    * @example setValue(locator, "true") => Checks a checkbox/radio button
+    * @example setValue(locator, "false") => Unchecks a checkbox/radio button
+    * @example setValue(locator, "Some text") => Fills a text input with "Some text"
+    *
+    * @param locator The Playwright locator for the form element
+    * @param value The value to set - can be string or other value type
+    * @returns Promise<void>
+    */
+  async setValue(locator:Locator, value:string|any) {
+    let { tag, type, role } = await locator.evaluate((el) => ({ tag:el.tagName.toLowerCase(), type:el.getAttribute('type')?.toLowerCase(), role:el.getAttribute('role')?.toLowerCase() }), undefined, { timeout: this.worldConfig.stepTimeout })
+    if (!tag || !type) throw new Error(`Could not find element with locator: ${locator.toString()}`)
+    if (tag === 'select') {
+      let values = value.split(/\s*(?<!\\),\s*/).map((v:string) => v.replace(/\\,/g, ','))
+      await locator.selectOption(values, { timeout: this.worldConfig.stepTimeout })
+    }
+    else if (type === 'checkbox' || type === 'radio' || role === 'checkbox') {
+      let check = !( ['false','no','unchecked','','null','undefined','0'].includes(value.toString().toLowerCase()) )
+      if (check) await locator.check({ timeout: this.worldConfig.stepTimeout })
+      else await locator.uncheck({ timeout: this.worldConfig.stepTimeout })
+    }
+    else {
+      await locator.fill(value, { timeout: this.worldConfig.stepTimeout })
+    }
+  }
+
+  /**
+    * Scrolls the mouse wheel in a specified direction by a given number of pixels
+    * @example scroll("down", 100) => Scrolls down 100 pixels
+    * @example scroll("up", 50) => Scrolls up 50 pixels
+    * @example scroll("left", 200) => Scrolls left 200 pixels
+    * @example scroll("right") => Scrolls right using default 100 pixels
+    *
+    * @param direction The direction to scroll: "up", "down", "left", or "right"
+    * @param px The number of pixels to scroll (defaults to 100)
+    * @returns Promise<void>
+    */
+  async scroll(direction:"up"|"down"|"left"|"right", px = 100) {
+    let horiz = direction.includes('t')
+    if (horiz) await this.page.mouse.wheel(direction === 'right' ? px : -px, 0)
+    else await this.page.mouse.wheel(0, direction === 'down' ? px : -px)
+  }
+
+  /**
+    * A helper function for parsing text on a page or in an element.
+    * Can be used to check for the presence OR absence of visible OR hidden text.
+    * Examples:
+    * @example assertText(locator, 'text', true, true) // assert that a locator with the text is visible (and there may be hidden ones)
+    * @example assertText(locator, 'text', false, true) // assert that NO locator with the text is visible (but there may be hidden ones)
+    * @example assertText(locator, 'text', true, false) // assert that a HIDDEN locator with the text IS FOUND on the page (but there may be visible ones)
+    * @example assertText(locator, 'text', false, false) // assert that NO hidden locator with the text is found on the page (but there may be visible ones)
+    *
+    * @param locator the locator to check
+    * @param text the text to be found
+    * @param toBePresent whether a locator with the text should be present
+    * @param toBeVisible whether the locator with the text should be visible
+    * @returns void
+    */
+  async expectText(locator:Locator|Page, text:string, toBePresent:boolean=true, toBeVisible:boolean=true) {
+    try {
+      await this.expectElement(locator.getByText(text), toBePresent, toBeVisible)
+    }
+    catch(e) {
+      throw new Error(`The${toBeVisible ? ' hidden' :''} text "${text}" was unexpectedly ${toBePresent ? 'not present' : 'present'}.`)
+    }
+  }
+
+  /**
+    * A helper function for parsing elements on a page or in an element.
+    * Can be used to check for the presence OR absence of visible OR hidden elements.
+    * Examples:
+    * @example assertElement(locator, true) // assert that an element is visible (and there may be hidden ones)
+    * @example assertElement(locator, false) // assert that NO element is visible (but there may be hidden ones)
+    * @example assertElement(locator, true, false) // assert that a HIDDEN element IS FOUND on the page (but there may be visible ones)
+    * @example assertElement(locator, false, false) // assert that NO hidden element is found on the page (but there may be visible ones)
+    *
+    * @param locator the locator to check
+    * @param toBePresent whether an element should be present
+    * @param toBeVisible whether the element should be visible
+    */
+  async expectElement(locator:Locator|Page, toBePresent:boolean=true, toBeVisible:boolean=true) {
+    let visibleText = toBeVisible ? 'true' : ''
+    try {
+      if (toBePresent) await expect(locator.locator(`visible=${visibleText}`).first()).toBeAttached({ timeout:this.worldConfig.stepTimeout })
+      else await expect(locator.locator(`visible=${visibleText}`)).toHaveCount(0, { timeout:this.worldConfig.stepTimeout })
+    }
+    catch(e) {
+      throw new Error(`The${toBeVisible ? ' hidden' :''} element "${locator}" was unexpectedly ${toBePresent ? 'not present' : 'present'}.`)
+    }
+  }
+
+  /**
+    * A helper function for getting a metatag from a page.
+    * @example assertMetatag(page, 'title', 'Example') // assert that the page title CONTAINS "Example"
+    * @example assertMetatag(page, 'title', 'Example', true) // assert that the page title EQUALS "Example"
+    * @example assertMetatag(page, 'title', 'Example', true, false) // assert that the page title DOES NOT EQUAL "Example"
+    * @example assertMetatag(page, 'title', 'Example', false, false) // assert that the page title DOES NOT CONTAIN "Example"
+    *
+    * @param page The playwright page to check
+    * @param name The name of the metatag to check
+    * @param expected The expected string to check
+    * @param exact Whether the expected string should be an exact match
+    * @param expectMatching Whether the expected string should match or NOT match
+    */
+  async expectMetatag(page:Page, name:string, expected:string, exact:boolean, expectMatching = true) {
+    let actual:string|null
+
+    if (name === 'title') actual = await page.title()
+    else actual = await (await page.locator(`meta[name="${name}"]`)).getAttribute('content')
+
+    let matches = exact ?  actual === expected : actual?.includes(expected)
+
+    if (matches !== expectMatching) {
+      let word = exact ? 'exactly match' : 'contain'
+      let not = expectMatching ? '' : 'not '
+      throw new Error(`Expected ${name} metatag ${not }to ${word} '${expected}' but got '${actual}'`)
+    }
   }
 
 }

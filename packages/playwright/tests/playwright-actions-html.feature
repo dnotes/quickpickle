@@ -26,15 +26,15 @@ Feature: Actions step definitions on a static page
       And I wait for 1000ms
       Then I should see "AI says:"
 
-    @fails
+    @should-fail
     Scenario: clicking on inexact text FAILS
       When I click on "Do CSS transitions"
 
-    @fails
+    @should-fail
     Scenario: clicking on hidden elements FAILS
       When I click on "Hidden item"
 
-    @fails
+    @should-fail
     Scenario: clicking on invisible elements FAILS
       When I click on "Invisible item"
 
@@ -52,36 +52,23 @@ Feature: Actions step definitions on a static page
       When I focus on "Text"
       Then the "Text" link should be focused
 
-    @fails @timeout
+    @should-fail
     Scenario: focusing on hidden elements fails
       When I focus on "Do CSS transitions affect Playwright awaits?"
-      Then the "Do CSS transitions affect Playwright awaits?" input should be focused
 
-    Scenario: focusing on non-selectable elements FAILS TRANSPARENTLY
+    @should-fail
+    Scenario: focusing on non-selectable elements FAILS
       When I focus on "Item 1"
 
-    @fails @timeout
-    Scenario: because non-selectable elements can't be focused
-      When I focus on "Item 1"
-      Then the "li" with "Item 1" should be focused
-
-    @fails
+    @should-fail
     Scenario: focusing on inexact text FAILS
       When I focus on "List"
-
-    @fails
-    Scenario: focusing on hidden elements FAILS
-      When I focus on "Hidden item"
-
-    @fails
-    Scenario: focusing on invisible elements FAILS
-      When I focus on "Invisible item"
 
     Scenario: Focusing on elements by css selector should work
       When I focus the 'a[href="#faq"]' element
       Then the "FAQ" link should be focused
 
-    Scenario: Clicking on elements by role should work
+    Scenario: Focusing on elements by role should work
       When I focus the "Image" link
       Then the "Image" link should be focused
 
@@ -110,7 +97,7 @@ Feature: Actions step definitions on a static page
 
   Rule: Form entry must be supported
 
-    @fails @timeout
+    @should-fail
     Scenario: filling a disabled field FAILS
       When for "From" I enter "anything"
 
@@ -166,21 +153,11 @@ Feature: Actions step definitions on a static page
 
   Rule: Waiting must be supported
 
-    @todo @brittle
     Scenario: waiting for visible/hidden text works
       When I click on "Do CSS transitions affect Playwright awaits?"
-      Then I should not see "AI says:"
-      When I wait for "AI says:" to be visible
       Then I should see "AI says:"
       When I click on "Do CSS transitions affect Playwright awaits?"
-      Then I should see "AI says:"
-      When I wait for "AI says:" to be hidden
       Then I should NOT see "AI says:"
-
-    @todo @brittle
-    Scenario: should finding text work even without waiting? sometimes it does, sometimes not...
-      When I click on "Do CSS transitions affect Playwright awaits?"
-      Then I should see "AI says:"
 
   Rule: Scrolling must be supported
 

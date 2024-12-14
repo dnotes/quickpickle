@@ -14,7 +14,7 @@ Feature: Basic tests of Playwright browser and steps
     When I click on the "Form" link
     Then the url should contain "#form"
     When I click on "Message:"
-    Then the "textarea" should be focused
+    Then the "textarea" element should be focused
 
   @concurrent
   Rule: Playwright should support testing with multiple browsers
