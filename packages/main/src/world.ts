@@ -28,7 +28,8 @@ export interface QuickPickleWorldInterface {
   isComplete: boolean           // (read only) whether the Scenario is on the last step
   config: QuickPickleConfig                       // (read only) configuration for QuickPickle
   worldConfig: QuickPickleConfig['worldConfig']   // (read only) configuration for the World
-  common: Common                // Common data shared across tests in one Feature file --- USE SPARINGLY
+  data: {[key:string]:any}      // Data limited to the current Scenario
+  common: Common                // Common data shared across ALL tests in one Feature file --- USE SPARINGLY
   init: () => Promise<void>                       // function called by QuickPickle when the world is created
   tagsMatch(tags: string[]): string[]|null        // function to check if the Scenario tags match the given tags
 }
@@ -39,6 +40,7 @@ export class QuickPickleWorld implements QuickPickleWorldInterface {
   info: QuickPickleWorldInterface['info']
   common: QuickPickleWorldInterface['common']
   context: TestContext
+  data = {}
   constructor(context:TestContext, info:InfoConstructor) {
     this.context = context
     this.common = info.common
