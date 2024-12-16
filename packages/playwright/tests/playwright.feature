@@ -68,6 +68,31 @@ Feature: Basic tests of Playwright browser and steps
       Then the file "screenshots/visual-regression-simple-page.png.diff.png" should not exist
       And the file "screenshots/visual-regression-simple-page.png.actual.png" should exist--delete it
 
+  Rule: Setting screenshot options must be supported
+
+    Scenario: Setting a screenshot mask
+      Given I load the file "tests/examples/example.html"
+      And the following world config:
+        ```yaml
+        screenshotOptions:
+          mask:
+            - form
+        ```
+      Then the screenshot should match
+
+    Scenario: Setting a clip area
+      Given I load the file "tests/examples/example.html"
+      And the following world config:
+        ```yaml
+          screenshotOptions:
+            clip:
+              x: 0
+              y: 60
+              width: 300
+              height: 180
+        ```
+      Then the screenshot should match
+
   @skip-ci
   Rule: Screenshots should be placed in the proper directory
 

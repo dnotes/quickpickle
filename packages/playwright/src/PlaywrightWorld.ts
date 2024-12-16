@@ -8,6 +8,7 @@ import { InfoConstructor } from 'quickpickle/dist/world';
 import path from 'node:path'
 import url from 'node:url'
 import { expect } from 'playwright/test';
+import { ScreenshotSetting } from './snapshotMatcher';
 export const projectRoot = path.resolve(path.dirname(url.fileURLToPath(import.meta.url)).replace(/node_modules.+/, ''), '..')
 
 const browsers = { chromium, firefox, webkit }
@@ -16,6 +17,7 @@ export type PlaywrightWorldConfigSetting = Partial<{
   host: string, // default host, including protocol (default: http://localhost)
   port: number, // port to which the browser should connect (default: undefined)
   screenshotDir: string, // directory in which to save screenshots (default: "screenshots")
+  screenshotOptions?: ScreenshotSetting // options for the default screenshot comparisons
   nojsTags: string|string[] // tags for scenarios to run without javascript (default: @nojs, @noscript)
   showBrowserTags: string|string[] // tags for scenarios to run with browser visible (default: @browser, @show-browser, @showbrowser)
   slowMoTags: string|string[] // tags for scenarios to be run with slow motion enabled (default: @slowmo)
@@ -97,7 +99,7 @@ export class PlaywrightWorld extends QuickPickleWorld {
   }
 
   setConfig(worldConfig:PlaywrightWorldConfigSetting) {
-    let newConfig = defaultsDeep(worldConfig || {}, defaultPlaywrightWorldConfig )
+    let newConfig = defaultsDeep(worldConfig || {}, defaultPlaywrightWorldConfig)
     newConfig.nojsTags = normalizeTags(newConfig.nojsTags)
     newConfig.showBrowserTags = normalizeTags(newConfig.showBrowserTags)
     newConfig.slowMoTags = normalizeTags(newConfig.slowMoTags)
@@ -108,7 +110,6 @@ export class PlaywrightWorld extends QuickPickleWorld {
     }
     this.info.config.worldConfig = newConfig
   }
-
   async setViewportSize(size?:string) {
     if (size) {
       size = size.replace(/^['"]/, '').replace(/['"]$/, '')
@@ -133,6 +134,7 @@ export class PlaywrightWorld extends QuickPickleWorld {
   }
 
   async reset(conf?:PlaywrightWorldConfigSetting) {
+    let url = this.page.url() || this.baseUrl.toString()
     await this.page?.close()
     await this.browserContext?.close()
     if (conf) {
@@ -144,6 +146,7 @@ export class PlaywrightWorld extends QuickPickleWorld {
       serviceWorkers: 'block'
     })
     this.page = await this.browserContext.newPage()
+    await this.page.goto(url, { timeout: this.worldConfig.stepTimeout })
   }
 
   async close() {
@@ -316,6 +319,17 @@ export class PlaywrightWorld extends QuickPickleWorld {
       let not = expectMatching ? '' : 'not '
       throw new Error(`Expected ${name} metatag ${not }to ${word} '${expected}' but got '${actual}'`)
     }
+  }
+
+  async screenshot(opts?:{
+    name?:string
+    locator?:Locator
+  }) {
+    let explodedTags = this.info.explodedIdx ? `_(${this.info.tags.join(',')})` : ''
+    let path = opts?.name ? this.sanitizeFilepath(`${this.projectRoot}/${this.worldConfig.screenshotDir}/${opts.name}${explodedTags}.png`) : this.fullScreenshotPath
+    let locator = opts?.locator ?? this.page
+    console.log('FWAH')
+    return await locator.screenshot({ path, ...this.worldConfig.screenshotOpts })
   }
 
 }

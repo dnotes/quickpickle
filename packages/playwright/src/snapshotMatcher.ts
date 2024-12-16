@@ -5,6 +5,7 @@ import { promises as fs } from 'node:fs';
 import path from 'node:path';
 import pixelmatch, { PixelmatchOptions } from 'pixelmatch';
 import { defaultsDeep } from 'lodash-es';
+import type { PageScreenshotOptions } from 'playwright-core';
 
 export interface ToHaveScreenshotOptions extends PixelmatchOptions {
 
@@ -19,14 +20,29 @@ export interface ToHaveScreenshotOptions extends PixelmatchOptions {
     height: number;
   };
   fullPage?: boolean;
-  mask?: Array<Locator>;
+  mask?: Array<Locator|string>;
   maskColor?: string;
   omitBackground?: boolean;
   timeout?: number;
 
 };
 
-const defaultOptions = {
+export interface ScreenshotSetting extends PixelmatchOptions {
+  maxDiffPercentage?: number;
+  clip?: {
+    x?: number
+    y?: number
+    width?: number
+    height?: number
+  }
+  fullPage?: boolean
+  mask?: string[]
+  maskColor?: string
+  omitBackground?: boolean
+  timeout?: number
+}
+
+export const defaultScreenshotOptions = {
   // Options for the comparison
   maxDiffPercentage: 0,
 
@@ -34,14 +50,14 @@ const defaultOptions = {
   fullPage: true,
   omitBackground: false,
   mask: [],
-  maskColor: 'rgb(255,255,255)',
+  maskColor: '#555555',
   timeout: 5000,
 
   // Options for pixelmatch
   threshold: 0.1,
   alpha:0.6,
 };
-type _DefaultOptions = Omit<typeof defaultOptions, "mask"> & { mask: Array<Locator> };
+type _DefaultOptions = Omit<typeof defaultScreenshotOptions, "mask"> & { mask: Array<Locator> };
 type _ToHaveScreenshotOptions = Omit<ToHaveScreenshotOptions, keyof _DefaultOptions> & _DefaultOptions;
 
 async function compareImages(actual: Buffer, expected: Buffer, opts:_ToHaveScreenshotOptions): Promise<{ pass: boolean; diffPercentage: number, image: PNG }> {
@@ -65,7 +81,7 @@ async function customToHaveScreenshot(
   snapshotPath: string,
   opts?: Partial<ToHaveScreenshotOptions>,
 ): Promise<{ pass: boolean; message: () => string }> {
-  const options = defaultsDeep(opts, defaultOptions);
+  const options = defaultsDeep(opts, defaultScreenshotOptions);
   const pathparts = snapshotPath.split('/');
   const name = pathparts.pop();
   const screenshotDir = pathparts.join('/');
@@ -128,6 +144,11 @@ playwrightExpect.extend({
   async toMatchScreenshot(received: Page | Locator, nameOrOptions?: string | Partial<ToHaveScreenshotOptions>, optOptions?: Partial<ToHaveScreenshotOptions>) {
     const name = typeof nameOrOptions === 'string' ? nameOrOptions : 'screenshot';
     const options = typeof nameOrOptions === 'object' ? nameOrOptions : optOptions;
+    if (options?.mask) {
+      options.mask = options.mask.map((stringOrLocator) => {
+        return typeof stringOrLocator !== 'string' ? stringOrLocator : received.locator(stringOrLocator);
+      });
+    }
     return customToHaveScreenshot.call(this, received, name, options);
   },
 });

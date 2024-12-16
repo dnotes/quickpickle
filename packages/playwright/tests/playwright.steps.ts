@@ -1,5 +1,5 @@
 import { Given, When, Then, DocString, DataTable, AfterAll } from 'quickpickle'
-import type { PlaywrightWorld } from '../src/PlaywrightWorld'
+import type { PlaywrightWorld, PlaywrightWorldConfig, PlaywrightWorldConfigSetting } from '../src/PlaywrightWorld'
 import yaml from 'js-yaml'
 import { expect } from '@playwright/test'
 
@@ -9,15 +9,18 @@ export const projectRoot = path.resolve(path.dirname(url.fileURLToPath(import.me
 import fs from 'fs'
 
 Given('the following world config:', async (world:PlaywrightWorld, rawConf:DocString|DataTable) => {
+  let config:PlaywrightWorldConfigSetting
   if (rawConf instanceof DataTable)
-    world.reset(rawConf.rowsHash())
+    config = rawConf.rowsHash()
   else if (rawConf.mediaType.match(/^json/))
-    world.reset(JSON.parse(rawConf.toString()))
+    config = JSON.parse(rawConf.toString())
   else if (rawConf.mediaType.match(/^ya?ml$/))
-    world.reset(yaml.load(rawConf.toString()))
+    config = yaml.load(rawConf.toString())
   else if (rawConf.match(/\s*\{/))
-    world.reset(JSON.parse(rawConf.toString()))
-  else world.reset(yaml.load(rawConf.toString()))
+    config = JSON.parse(rawConf.toString())
+  else config = yaml.load(rawConf.toString())
+  await world.reset(config)
+  console.log('world config', world.worldConfig)
 })
 
 // Filesystem
