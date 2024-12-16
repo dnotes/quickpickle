@@ -25,6 +25,10 @@ Given('(I have )a number {int}', (world, int) => {
   else world.numbers.push(int)
 })
 
+Given("the following datatable:", (world, datatable: DataTable) => {
+  world.datatable = datatable;
+})
+
 Given('the following numbers:', (world, numbers:DataTable) => {
   world.numbers = numbers.raw().map(n => parseInt(n[0][0]))
 })
@@ -44,6 +48,21 @@ When('I set {string} to the json value', (world, prop) => {
 Then('the sum should be {int}', (world, int) => {
   expect(world.numbers.reduce((a,b) => a + b, 0)).toBe(int)
 })
+
+Then("datatable should contain {string}", (world, value) => {
+  const values = world.datatable
+    .rows()
+    .reduce((prev, curr) => [...curr, ...prev], []);
+  expect(values.includes(value)).toBe(true);
+});
+
+Then("json should contain {string}", (world, value) => {
+  const values = [
+    ...Object.keys(world.json),
+    ...(Object.values(world.json) as string[]).map((v) => v.toString()),
+  ];
+  expect(values.includes(value)).toBe(true);
+});
 
 When('I set the data variable/value/property {string} to {string}', (world, prop, value) => {
   if (!world.data) world.data = {}
