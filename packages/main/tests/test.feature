@@ -102,6 +102,33 @@ Feature: Basic Test
         | 5    | 8    | 13  |
         | 8    | 13   | 21  |
         | 13   | 21   | 34  |
+     
+     Scenario Outline: DataTables row: <Row>
+      Given the following datatable:
+        | Product    | Quantity |
+        | <Product1> | <Qty1>   |
+        | <Product2> | <Qty2>   |
+      Then datatable should contain "<Product1>"
+
+      Examples:
+        | Row | Product1 | Qty1 | Product2 | Qty2 |
+        | 0   | Widget A | 2    | Widget B | 3    |
+        | 1   | Widget C | 1    | Widget D | 4    |
+
+    Scenario Outline: DocStrings row: <Row>
+      And the following json:
+        """
+        {
+          "<Product1>": "<Qty1>",
+          "<Product2>": "<Qty2>"
+        }
+        """
+      Then json should contain "<Product1>"
+
+      Examples:
+        | Row | Product1 | Qty1 | Product2 | Qty2 |
+        | 0   | Widget A | 2    | Widget B | 3    |
+        | 1   | Widget C | 1    | Widget D | 4    |
 
   Rule: Vitest "todo", "skip", "fails" should work out of the box
 
