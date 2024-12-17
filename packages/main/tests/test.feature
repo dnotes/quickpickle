@@ -102,13 +102,26 @@ Feature: Basic Test
         | 5    | 8    | 13  |
         | 8    | 13   | 21  |
         | 13   | 21   | 34  |
-     
-     Scenario Outline: DataTables row: <Row>
+
+    Scenario Outline: Replacements in strings work for <prop>:<value> (<length>)
+      Given I set the data property "<prop>" to "<value>"
+      Then the variable "data.<prop>" should be "<value>"
+      And the variable "data.<prop>" should be <length> characters long
+
+      Examples:
+        | prop | value | length |
+        | foo  | bar   | 3      |
+        | fwah | fwee  | 4      |
+
+    Scenario Outline: DataTables row: <Row>
       Given the following datatable:
         | Product    | Quantity |
         | <Product1> | <Qty1>   |
         | <Product2> | <Qty2>   |
-      Then datatable should contain "<Product1>"
+      Then the datatable should contain "<Product1>"
+      And the datatable should contain "<Qty1>"
+      And the datatable should contain "<Product2>"
+      And the datatable should contain "<Qty2>"
 
       Examples:
         | Row | Product1 | Qty1 | Product2 | Qty2 |
@@ -123,7 +136,10 @@ Feature: Basic Test
           "<Product2>": "<Qty2>"
         }
         """
-      Then json should contain "<Product1>"
+      Then the json should contain "<Product1>"
+      And the json should contain "<Qty1>"
+      And the json should contain "<Product2>"
+      And the json should contain "<Qty2>"
 
       Examples:
         | Row | Product1 | Qty1 | Product2 | Qty2 |

@@ -65,11 +65,11 @@ describe('Feature: QuickPickle\'s Comprehensive Gherkin Syntax Example', () => {
 
   test('Scenario: Scenario with various DataTable types (@tag @multiple_tags @data_table)', async (context) => {
     let state = await initScenario(context, 'Scenario with various DataTable types', ['@tag', '@multiple_tags', '@data_table'], [`a list of strings:`,`a list of integers:`,`a map of string to string:`,`a list of maps:`,`a map of string to list of string:`,`they are processed`,`the system behaves correctly`]);
-    await gherkinStep('Context', `a list of strings:`, state, 33, 1, undefined, [["Apple'"],["Banana`"],["Cherry\""]]);
-    await gherkinStep('Context', `a list of integers:`, state, 37, 2, undefined, [["1"],["2"],["3"]]);
-    await gherkinStep('Context', `a map of string to string:`, state, 41, 3, undefined, [["key1'","value1'"],["key2`","value2\""]]);
-    await gherkinStep('Context', `a list of maps:`, state, 44, 4, undefined, [["name'","age`","role\""],["Alice'","30","admin\""],["Bob`","25","user\""]]);
-    await gherkinStep('Context', `a map of string to list of string:`, state, 48, 5, undefined, [["fruits","Apple, Banana, Cherry"],["vegetables","Carrot, Potato, Onion"]]);
+    await gherkinStep('Context', `a list of strings:`, state, 33, 1, undefined, [[`Apple'`],[`Banana\``],[`Cherry"`]]);
+    await gherkinStep('Context', `a list of integers:`, state, 37, 2, undefined, [[`1`],[`2`],[`3`]]);
+    await gherkinStep('Context', `a map of string to string:`, state, 41, 3, undefined, [[`key1'`,`value1'`],[`key2\``,`value2"`]]);
+    await gherkinStep('Context', `a list of maps:`, state, 44, 4, undefined, [[`name'`,`age\``,`role"`],[`Alice'`,`30`,`admin"`],[`Bob\``,`25`,`user"`]]);
+    await gherkinStep('Context', `a map of string to list of string:`, state, 48, 5, undefined, [[`fruits`,`Apple, Banana, Cherry`],[`vegetables`,`Carrot, Potato, Onion`]]);
     await gherkinStep('Action', `they are processed`, state, 51, 6);
     await gherkinStep('Outcome', `the system behaves correctly`, state, 52, 7);
     await afterScenario(state);
@@ -104,7 +104,9 @@ describe('Feature: QuickPickle\'s Comprehensive Gherkin Syntax Example', () => {
 
     test.todo.skip('Scenario: Scenario with doc string (@tag @multiple_tags @rule_tag @wip @skip)', async (context) => {
       let state = await initRuleScenario(context, 'Scenario with doc string', ['@tag', '@multiple_tags', '@rule_tag', '@wip', '@skip'], [`a document with the following content:`,`the document is processed`,`the system handles it correctly`]);
-      await gherkinStep('Context', `a document with the following content:`, state, 76, 1, undefined, {"content":"This is a doc string.\nIt can contain multiple lines.\nUseful for specifying larger text inputs."});
+      await gherkinStep('Context', `a document with the following content:`, state, 76, 1, undefined, {content:`This is a doc string.
+It can contain multiple lines.
+Useful for specifying larger text inputs.`, mediaType:null });
       await gherkinStep('Action', `the document is processed`, state, 82, 2);
       await gherkinStep('Outcome', `the system handles it correctly`, state, 83, 3);
       await afterScenario(state);
@@ -112,7 +114,10 @@ describe('Feature: QuickPickle\'s Comprehensive Gherkin Syntax Example', () => {
 
     test('Scenario: Scenario with content type doc string (@tag @multiple_tags @rule_tag)', async (context) => {
       let state = await initRuleScenario(context, 'Scenario with content type doc string', ['@tag', '@multiple_tags', '@rule_tag'], [`a document with the following Markdown content:`]);
-      await gherkinStep('Context', `a document with the following Markdown content:`, state, 86, 1, undefined, {"content":"Lorem Ipsum\n===============\nLorem ipsum dolor sit amet,\nconsectetur adipiscing elit.","mediaType":"markdown"});
+      await gherkinStep('Context', `a document with the following Markdown content:`, state, 86, 1, undefined, {content:`Lorem Ipsum
+===============
+Lorem ipsum dolor sit amet,
+consectetur adipiscing elit.`, mediaType:`markdown` });
       await afterScenario(state);
     });
 
@@ -222,8 +227,8 @@ describe('Feature: QuickPickle\'s Comprehensive Gherkin Syntax Example', () => {
       async ({ _0, _1, _2 }, context) => {
         let state = await initRuleScenario(context, `Search Ordering: ${_0} (${_1}) ${_2}`, ['@tag', '@multiple_tags'], [`I search for "${_0}" and get results from 500 books`,`I should see search results with these metrics:`,`next I should see search results with these metrics:`]);
         await gherkinStep('Action', `I search for "${_0}" and get results from 500 books`, state, 129, 1);
-        await gherkinStep('Outcome', `I should see search results with these metrics:`, state, 130, 2, undefined, [["Book Importance","Match Quality","score"],["primary","exact","3+5=8"]]);
-        await gherkinStep('Outcome', `next I should see search results with these metrics:`, state, 133, 3, undefined, [["secondary","exact","2+5=7"]]);
+        await gherkinStep('Outcome', `I should see search results with these metrics:`, state, 130, 2, undefined, [[`Book Importance`,`Match Quality`,`score`],[`primary`,`exact`,`3+5=8`]]);
+        await gherkinStep('Outcome', `next I should see search results with these metrics:`, state, 133, 3, undefined, [[`secondary`,`exact`,`2+5=7`]]);
         await afterScenario(state);
       }
     );
@@ -248,6 +253,35 @@ describe('Feature: QuickPickle\'s Comprehensive Gherkin Syntax Example', () => {
       await gherkinStep('Context', `\`someone\` is \$\{sneaky} \\\$\{with} \\\\\$\{backslashes} \\\\\\\$\{and} \\$\\{other} \\\`things\\\\\` 'like' \\'quotes\\\\'`, state, 153, 2);
       await afterScenario(state);
     });
+
+    test.for([
+      {"_0":"0","_1":"Widget A","_2":"2","_3":"Widget B","_4":"3"},
+      {"_0":"1","_1":"Widget C","_2":"1","_3":"Widget D","_4":"4"}
+    ])(
+      'Scenario Outline: DataTables row: $_0 (@tag @multiple_tags)',
+      async ({ _0, _1, _2, _3, _4 }, context) => {
+        let state = await initRuleScenario(context, `DataTables row: ${_0}`, ['@tag', '@multiple_tags'], [`the following datatable:`,`datatable should contain "${_1}"`]);
+        await gherkinStep('Context', `the following datatable:`, state, 156, 1, undefined, [[`Product`,`Quantity`],[`${_1}`,`${_2}`],[`${_3}`,`${_4}`]]);
+        await gherkinStep('Outcome', `datatable should contain "${_1}"`, state, 160, 2);
+        await afterScenario(state);
+      }
+    );
+
+    test.for([
+      {"_0":"0","_1":"Widget A","_2":"2","_3":"Widget B","_4":"3"},
+      {"_0":"1","_1":"Widget C","_2":"1","_3":"Widget D","_4":"4"}
+    ])(
+      'Scenario Outline: DocStrings row: $_0 (@tag @multiple_tags)',
+      async ({ _0, _1, _2, _3, _4 }, context) => {
+        let state = await initRuleScenario(context, `DocStrings row: ${_0}`, ['@tag', '@multiple_tags'], [`the following json:`,`json should contain "${_1}"`]);
+        await gherkinStep('Context', `the following json:`, state, 168, 1, undefined, {content:`{
+  "${_1}": "${_2}",
+  "${_3}": "${_4}"
+}`, mediaType:null });
+        await gherkinStep('Outcome', `json should contain "${_1}"`, state, 175, 2);
+        await afterScenario(state);
+      }
+    );
 
 
   });

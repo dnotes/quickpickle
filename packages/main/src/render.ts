@@ -4,7 +4,7 @@ import { tagsMatch, normalizeTags } from './tags'
 
 import * as Gherkin from '@cucumber/gherkin';
 import * as Messages from '@cucumber/messages';
-import { fromPairs, pick, escapeRegExp } from "lodash-es";
+import { fromPairs, pick, escapeRegExp, replace } from "lodash-es";
 
 const uuidFn = Messages.IdGenerator.uuid();
 const builder = new Gherkin.AstBuilder(uuidFn);
@@ -158,7 +158,7 @@ function renderScenario(child:FeatureChild, config:QuickPickleConfig, tags:strin
       return fromPairs(r.cells.map((c,i) => [ '_'+i, c.value ]))
     })
 
-    function replaceParamNames(t:string, withBraces?:boolean) {
+    const replaceParamNames = (t:string, withBraces?:boolean) => {
       origParamNames.forEach((p,i) => {
         t = t.replace(new RegExp(`<${escapeRegExp(p)}>`, 'g'), (withBraces ? `$\{_${i}\}` :  `$_${i}`))
       })
@@ -173,7 +173,7 @@ function renderScenario(child:FeatureChild, config:QuickPickleConfig, tags:strin
       return text
     })
 
-    let renderedSteps = renderSteps(child.scenario!.steps.map(s => ({...s, text: replaceParamNames(s.text, true)})), config, sp + '    ', isExploded ? `${explodedIdx+1}` : '')
+    let renderedSteps = renderSteps(child.scenario!.steps.map(s => ({...s, text: replaceParamNames(s.text, true)})), config, sp + '    ', isExploded ? `${explodedIdx+1}` : '', false, replaceParamNames)
 
     return `
 ${sp}test${attrs}.for([
@@ -201,18 +201,16 @@ ${sp}});
   }).join('\n\n')
 }
 
-function renderSteps(steps:Step[], config:QuickPickleConfig, sp = '  ', explodedText = '', isBackground:boolean = false) {
+function renderSteps(steps:Step[], config:QuickPickleConfig, sp = '  ', explodedText = '', isBackground:boolean = false, replaceParamNames:(t:string, withBraces?:boolean) => string = (t) => t) {
   let minus = isBackground ? '-' : ''
   return steps.map((step,idx) => {
 
     if (step.dataTable) {
-      let data = JSON.stringify(step.dataTable.rows.map(r => {
-        return r.cells.map(c => c.value)
-      }))
+      let data = `[${step.dataTable.rows.map(r => `[${r.cells.map(c => tl(replaceParamNames(c.value, true))).join(',')}]`).join(',')}]`
       return `${sp}await gherkinStep('${getStepType(steps, idx)}', ${tl(step.text)}, state, ${step.location.line}, ${minus}${idx+1}, ${explodedText || 'undefined'}, ${data});`
     }
     else if (step.docString) {
-      let data = JSON.stringify(pick(step.docString, ['content','mediaType']))
+      let data = `{content:${tl(replaceParamNames(step.docString.content, true))}, mediaType:${step.docString?.mediaType ? tl(step.docString.mediaType) : 'null'} }`
       return `${sp}await gherkinStep('${getStepType(steps, idx)}', ${tl(step.text)}, state, ${step.location.line}, ${minus}${idx+1}, ${explodedText || 'undefined'}, ${data});`
     }
 
