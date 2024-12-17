@@ -213,7 +213,7 @@ export class PlaywrightWorld extends QuickPickleWorld {
     */
   async setValue(locator:Locator, value:string|any) {
     let { tag, type, role } = await locator.evaluate((el) => ({ tag:el.tagName.toLowerCase(), type:el.getAttribute('type')?.toLowerCase(), role:el.getAttribute('role')?.toLowerCase() }), undefined, { timeout: this.worldConfig.stepTimeout })
-    if (!tag || !type) throw new Error(`Could not find element with locator: ${locator.toString()}`)
+    if (!tag) throw new Error(`Could not find element with locator: ${locator.toString()}`)
     if (tag === 'select') {
       let values = value.split(/\s*(?<!\\),\s*/).map((v:string) => v.replace(/\\,/g, ','))
       await locator.selectOption(values, { timeout: this.worldConfig.stepTimeout })
