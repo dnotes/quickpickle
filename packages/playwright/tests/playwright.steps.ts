@@ -3,9 +3,6 @@ import type { PlaywrightWorld, PlaywrightWorldConfig, PlaywrightWorldConfigSetti
 import yaml from 'js-yaml'
 import { expect } from '@playwright/test'
 
-import path from 'node:path'
-import url from 'node:url'
-export const projectRoot = path.resolve(path.dirname(url.fileURLToPath(import.meta.url)), '..')
 import fs from 'fs'
 
 Given('the following world config:', async (world:PlaywrightWorld, rawConf:DocString|DataTable) => {
@@ -23,13 +20,13 @@ Given('the following world config:', async (world:PlaywrightWorld, rawConf:DocSt
   console.log('world config', world.worldConfig)
 })
 
-// Filesystem
-Then('the file {string} should exist(--delete it)', async function (world:PlaywrightWorld, filepath:string) {
-  let fullpath = world.sanitizeFilepath(`${projectRoot}/${filepath}`)
+// Screenshots
+Then('the screenshot {string} should exist(--delete it)', async function (world:PlaywrightWorld, filepath:string) {
+  let fullpath = world.sanitizeFilepath(`${world.screenshotDir}/${filepath}`)
   await expect(fs.existsSync(fullpath)).toBeTruthy();
   if (world.info.step?.match(/--delete it$/)) fs.unlinkSync(fullpath)
 })
-Then('the file {string} should not exist', async function (world:PlaywrightWorld, filepath:string) {
-  let fullpath = world.sanitizeFilepath(`${projectRoot}/${filepath}`)
+Then('the screenshot {string} should not exist', async function (world:PlaywrightWorld, filepath:string) {
+  let fullpath = world.sanitizeFilepath(`${world.screenshotDir}/${filepath}`)
   await expect(fs.existsSync(fullpath)).toBeFalsy();
 })

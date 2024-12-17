@@ -38,7 +38,7 @@ Feature: Basic tests of Playwright browser and steps
       When I load the file "tests/examples/example.html"
       Then I should see an "h1" element with text "HTML Test Page"
 
-  @skip-ci @sequential
+  @sequential
   Rule: Visual regression testing must be supported
 
     Example: Passing visual regression test
@@ -60,13 +60,13 @@ Feature: Basic tests of Playwright browser and steps
     @fails
     Example: Failing visual regression test
       When I load the file "tests/examples/example.html"
-      Then the file "screenshots/visual-regression-simple-page.png.diff.png" should not exist
-      And the file "screenshots/visual-regression-simple-page.png.actual.png" should not exist
+      Then the screenshot "visual-regression-simple-page.png.diff.png" should not exist
+      And the screenshot "visual-regression-simple-page.png.actual.png" should not exist
       And the screenshot "visual-regression-simple-page" should match
 
     Scenario: Delete the visual regression failure file
-      Then the file "screenshots/visual-regression-simple-page.png.diff.png" should not exist
-      And the file "screenshots/visual-regression-simple-page.png.actual.png" should exist--delete it
+      Then the screenshot "visual-regression-simple-page.png.diff.png" should not exist
+      And the screenshot "visual-regression-simple-page.png.actual.png" should exist--delete it
 
   Rule: Setting screenshot options must be supported
 
@@ -93,24 +93,23 @@ Feature: Basic tests of Playwright browser and steps
         ```
       Then the screenshot should match
 
-  @skip-ci
   Rule: Screenshots should be placed in the proper directory
 
     Scenario: Taking a screenshot
       When I take a screenshot
-      Then the file "screenshots/Feature: Basic tests of Playwright browser and steps_Taking a screenshot_01.png" should exist--delete it
+      Then the screenshot "Feature: Basic tests of Playwright browser and steps_Taking a screenshot_01.png" should exist--delete it
 
     Scenario: Taking a named screenshot
       When I take a screenshot named "test"
-      Then the file "screenshots/test.png" should exist--delete it
+      Then the screenshot "test.png" should exist--delete it
 
     Scenario: Taking a screenshot of an element
       Given I load the file "tests/examples/example.html"
       When I take a screenshot of the "Image" link
-      Then the file "screenshots/Feature: Basic tests of Playwright browser and steps_Taking a screenshot of an element_02.png" should exist--delete it
+      Then the screenshot "Feature: Basic tests of Playwright browser and steps_Taking a screenshot of an element_02.png" should exist--delete it
 
     Scenario: Taking a named screenshot of an element
       Given I load the file "tests/examples/example.html"
       When I take a screenshot of the "XKCD Comic" img named "test2"
-      Then the file "screenshots/test2.png" should exist--delete it
+      Then the screenshot "test2.png" should exist--delete it
 

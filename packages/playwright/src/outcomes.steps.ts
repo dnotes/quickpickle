@@ -194,7 +194,7 @@ Then('(the )screenshot should match', async function (world:PlaywrightWorld) {
 })
 Then('(the )screenshot {string} should match', async function (world:PlaywrightWorld, name:string) {
   let explodedTags = world.info.explodedIdx ? `_(${world.info.tags.join(',')})` : ''
-  await expect(world.page).toMatchScreenshot(`${world.worldConfig.screenshotDir}/${name}${explodedTags}.png`, world.worldConfig.screenshotOptions)
+  await expect(world.page).toMatchScreenshot(`${world.screenshotDir}/${name}${explodedTags}.png`, world.worldConfig.screenshotOptions)
 })
 Then('(the )screenshot of the {string} {word} should match', async function (world:PlaywrightWorld, identifier, role) {
   let locator = await world.getLocator(world.page, identifier, role)
@@ -203,7 +203,7 @@ Then('(the )screenshot of the {string} {word} should match', async function (wor
 Then('(the )screenshot {string} of the {string} {word} should match', async function (world:PlaywrightWorld, name, identifier, role) {
   let locator = await world.getLocator(world.page, identifier, role)
   let explodedTags = world.info.explodedIdx ? `_(${world.info.tags.join(',')})` : ''
-  await expect(locator).toMatchScreenshot(`${world.worldConfig.screenshotDir}/${name}${explodedTags}.png`, world.worldConfig.screenshotOptions)
+  await expect(locator).toMatchScreenshot(`${world.screenshotDir}/${name}${explodedTags}.png`, world.worldConfig.screenshotOptions)
 })
 
 // Browser context

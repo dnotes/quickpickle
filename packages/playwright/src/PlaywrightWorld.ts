@@ -171,12 +171,23 @@ export class PlaywrightWorld extends QuickPickleWorld {
     return filepath.replace(/\/\/+/g, '/').replace(/\/[\.~]+\//g, '/')
   }
 
-  get screenshotPath() {
-    return this.sanitizeFilepath(`${this.worldConfig.screenshotDir}/${this.toString().replace(/^.+?Feature: /, 'Feature: ').replace(' ' + this.info.step, '')}.png`)
+  get screenshotDir() {
+    return this.sanitizeFilepath(`${this.projectRoot}/${this.worldConfig.screenshotDir}`)
   }
 
+  get screenshotPath() {
+    return this.sanitizeFilepath(`${this.projectRoot}/${this.worldConfig.screenshotDir}/${this.toString().replace(/^.+?Feature: /, 'Feature: ').replace(' ' + this.info.step, '')}.png`)
+  }
+
+  get screenshotFilename() {
+    return `${this.toString().replace(/^.+?Feature: /, 'Feature: ').replace(' ' + this.info.step, '')}.png`
+  }
+
+  /**
+   * @deprecated Use `screenshotPath` instead
+   */
   get fullScreenshotPath() {
-    return this.sanitizeFilepath(`${this.projectRoot}/${this.screenshotPath}`)
+    return this.screenshotPath
   }
 
   /**
@@ -326,7 +337,7 @@ export class PlaywrightWorld extends QuickPickleWorld {
     locator?:Locator
   }) {
     let explodedTags = this.info.explodedIdx ? `_(${this.info.tags.join(',')})` : ''
-    let path = opts?.name ? this.sanitizeFilepath(`${this.projectRoot}/${this.worldConfig.screenshotDir}/${opts.name}${explodedTags}.png`) : this.fullScreenshotPath
+    let path = opts?.name ? this.sanitizeFilepath(`${this.screenshotDir}/${opts.name}${explodedTags}.png`) : this.screenshotPath
     let locator = opts?.locator ?? this.page
     return await locator.screenshot({ path, ...this.worldConfig.screenshotOpts })
   }

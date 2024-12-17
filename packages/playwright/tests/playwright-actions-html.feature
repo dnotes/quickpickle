@@ -170,16 +170,15 @@ Feature: Actions step definitions on a static page
     @todo
     Scenario: Scrolling a particular div
 
-  @skip-ci
   Rule: Screenshots must be supported
 
     Scenario: Taking a default screenshot
       When I take a screenshot
-      Then the file "screenshots/Feature: Actions step definitions on a static page_Taking a default screenshot_01.png" should exist--delete it
+      Then the screenshot "Feature: Actions step definitions on a static page_Taking a default screenshot_01.png" should exist--delete it
 
     Scenario: Taking a named screenshot
       When I take a screenshot named "pickles"
-      Then the file "screenshots/pickles.png" should exist--delete it
+      Then the screenshot "pickles.png" should exist--delete it
 
     @nojs @js @sequential
     Scenario: Taking a default screenshot with exploded tags
@@ -191,14 +190,13 @@ Feature: Actions step definitions on a static page
 
     @sequential
     Scenario: Cleaning up the screenshots with exploded tags
-      Then the file "screenshots/Feature: Actions step definitions on a static page_Taking a default screenshot with exploded tags (@concurrent,@skip-ci,@sequential,@js)_01.png" should exist--delete it
-      And the file "screenshots/Feature: Actions step definitions on a static page_Taking a default screenshot with exploded tags (@concurrent,@skip-ci,@sequential,@nojs)_01.png" should exist--delete it
-      And the file "screenshots/temp_(@concurrent,@skip-ci,@slowmo,@sequential,@nojs,@webkit,@mobile).png" should exist--delete it
-      And the file "screenshots/temp_(@concurrent,@skip-ci,@slowmo,@sequential,@nojs,@webkit,@desktop).png" should exist--delete it
-      And the file "screenshots/temp_(@concurrent,@skip-ci,@slowmo,@sequential,@js,@webkit,@mobile).png" should exist--delete it
-      And the file "screenshots/temp_(@concurrent,@skip-ci,@slowmo,@sequential,@js,@webkit,@desktop).png" should exist--delete it
+      Then the screenshot "Feature: Actions step definitions on a static page_Taking a default screenshot with exploded tags (@concurrent,@sequential,@js)_01.png" should exist--delete it
+      And the screenshot "Feature: Actions step definitions on a static page_Taking a default screenshot with exploded tags (@concurrent,@sequential,@nojs)_01.png" should exist--delete it
+      And the screenshot "temp_(@concurrent,@slowmo,@sequential,@nojs,@webkit,@mobile).png" should exist--delete it
+      And the screenshot "temp_(@concurrent,@slowmo,@sequential,@nojs,@webkit,@desktop).png" should exist--delete it
+      And the screenshot "temp_(@concurrent,@slowmo,@sequential,@js,@webkit,@mobile).png" should exist--delete it
+      And the screenshot "temp_(@concurrent,@slowmo,@sequential,@js,@webkit,@desktop).png" should exist--delete it
 
-  @skip-ci
   Rule: Different browser sizes must be supported
 
     Background: load the simple file

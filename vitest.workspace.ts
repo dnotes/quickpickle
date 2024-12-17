@@ -37,7 +37,6 @@ export default defineWorkspace([
     quickpickle: {
       skipTags: ['@skip','@wip','@skip-ci'],
       worldConfig: {
-        screenshotDir: 'packages/playwright/screenshots',
       }
     }
   }
