@@ -328,7 +328,6 @@ export class PlaywrightWorld extends QuickPickleWorld {
     let explodedTags = this.info.explodedIdx ? `_(${this.info.tags.join(',')})` : ''
     let path = opts?.name ? this.sanitizeFilepath(`${this.projectRoot}/${this.worldConfig.screenshotDir}/${opts.name}${explodedTags}.png`) : this.fullScreenshotPath
     let locator = opts?.locator ?? this.page
-    console.log('FWAH')
     return await locator.screenshot({ path, ...this.worldConfig.screenshotOpts })
   }
 
