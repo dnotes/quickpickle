@@ -1,5 +1,13 @@
 # quickpickle
 
+## 1.6.1
+
+### Patch Changes
+
+- 2626333: Render empty Features and Rules without errors.
+- 4ce1543: added "data" property to World interface and variable
+- d4d5717: Fix DataTables and DocStrings replacements in Scenario Outlines
+
 ## 1.6.0
 
 ### Minor Changes

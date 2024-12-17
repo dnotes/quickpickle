@@ -1,5 +1,20 @@
 # @quickpickle/playwright
 
+## 0.11.0
+
+### Minor Changes
+
+- 63e01b5: Refactor for better playwright code
+- a614266: added screenshot options to playwright world config
+
+### Patch Changes
+
+- 4859183: trying to fix the project root for saving screenshots
+- Updated dependencies [2626333]
+- Updated dependencies [4ce1543]
+- Updated dependencies [d4d5717]
+  - quickpickle@1.6.1
+
 ## 0.10.6
 
 ### Patch Changes
