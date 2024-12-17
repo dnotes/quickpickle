@@ -184,7 +184,7 @@ Feature: Actions step definitions on a static page
     Scenario: Taking a default screenshot with exploded tags
       When I take a screenshot
 
-    @webkit @mobile @desktop @nojs @js @slowmo @sequential
+    @webkit @mobile @desktop @nojs @js @slowmo @sequential @skip-ci
     Scenario: Taking a screenshot with lots of exploded tags
       When I take a screenshot named "temp"
 
@@ -192,10 +192,13 @@ Feature: Actions step definitions on a static page
     Scenario: Cleaning up the screenshots with exploded tags
       Then the screenshot "Feature: Actions step definitions on a static page_Taking a default screenshot with exploded tags (@concurrent,@sequential,@js)_01.png" should exist--delete it
       And the screenshot "Feature: Actions step definitions on a static page_Taking a default screenshot with exploded tags (@concurrent,@sequential,@nojs)_01.png" should exist--delete it
-      And the screenshot "temp_(@concurrent,@slowmo,@sequential,@nojs,@webkit,@mobile).png" should exist--delete it
-      And the screenshot "temp_(@concurrent,@slowmo,@sequential,@nojs,@webkit,@desktop).png" should exist--delete it
-      And the screenshot "temp_(@concurrent,@slowmo,@sequential,@js,@webkit,@mobile).png" should exist--delete it
-      And the screenshot "temp_(@concurrent,@slowmo,@sequential,@js,@webkit,@desktop).png" should exist--delete it
+
+    @sequential @skip-ci
+    Scenario: Cleaning up the screenshots with exploded tags
+      And the screenshot "temp_(@skip-ci,@concurrent,@slowmo,@sequential,@nojs,@webkit,@mobile).png" should exist--delete it
+      And the screenshot "temp_(@skip-ci,@concurrent,@slowmo,@sequential,@nojs,@webkit,@desktop).png" should exist--delete it
+      And the screenshot "temp_(@skip-ci,@concurrent,@slowmo,@sequential,@js,@webkit,@mobile).png" should exist--delete it
+      And the screenshot "temp_(@skip-ci,@concurrent,@slowmo,@sequential,@js,@webkit,@desktop).png" should exist--delete it
 
   Rule: Different browser sizes must be supported
 
