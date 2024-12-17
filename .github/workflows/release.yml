@@ -44,7 +44,9 @@ jobs:
         if: always()
         with:
           name: visual-regressions
-          path: '**/*.(actual|diff).png'
+          path: |
+            '**/*.actual.png'
+            '**/*.diff.png'
           retention-days: 3
           overwrite: true
 
