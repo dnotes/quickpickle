@@ -1,8 +1,9 @@
 import { expect } from "vitest";
-import { Given, Then, When, defineParameterType } from "../src";
+import { Given, Then, When, defaultConfig, defineParameterType } from "../src";
 import type { DataTable } from "../src";
-import { clone, get, set } from "lodash-es";
+import { clone, get, set, escapeRegExp } from "lodash-es";
 import type { DocString } from "../src/models/DocString";
+import { renderGherkin } from "../src/render";
 
 defineParameterType({
   name: 'updown',
@@ -94,4 +95,34 @@ Then('the flag should be set', (world) => {
 // CUSTOM PARAMETER TYPES
 When('I push all the numbers {updown}( again)', (world, updown:'up'|'down') => {
   world.numbers = world.numbers.map(n => updown === 'up' ? n+1 : n-1)
+})
+
+// RENDERER
+
+Given("the following feature( file)( is rendered):", (world, feature:DocString) => {
+  world.data.featureText = feature;
+  world.data.featureRendered = renderGherkin(world.data.featureText, world.data.featureConfig ?? {}, (world.data.featureText?.mediaType === 'md' || world.data.featureText?.mediaType === 'markdown'));
+});
+Given("the following feature( file)( is rendered): {string}", (world, feature:string) => {
+  world.data.featureText = feature;
+  world.data.featureRendered = renderGherkin(world.data.featureText, world.data.featureConfig ?? {}, (world.data.featureText?.mediaType === 'md' || world.data.featureText?.mediaType === 'markdown'));
+});
+Given("the following quickpickle config/configuration json/JSON:", (world, config:DocString) => {
+  world.data.featureConfig = JSON.parse((config.toString()));
+});
+When("the feature is rendered", (world) => {
+  world.data.featureRendered = renderGherkin(world.data.featureText, world.data.featureConfig ?? {}, (world.data.featureText?.mediaType === 'md' || world.data.featureText?.mediaType === 'markdown'));
+});
+Then("the rendered feature (file )should contain {string}", (world, expected) => {
+  expect(world.data.featureRendered).toMatch(expected);
+})
+Then("the rendered feature (file )should contain:", (world, expected) => {
+  expect(world.data.featureRendered).toMatch(
+    // Create a new RegExp from the docString
+    new RegExp(escapeRegExp(expected.toString())
+      // Ignore omitted semicolons (in test code), number of newlines, or spacing at the start of lines
+      .replace(/\n+/gm, ';?[\\n\\s]+')
+      // Ignore newlines and spacing at the start of the test string
+      .replace(/^/gm, '[\\n\\s]*'))
+    );
 })
