@@ -38,7 +38,7 @@ Feature: Basic tests of Playwright browser and steps
       When I load the file "tests/examples/example.html"
       Then I should see an "h1" element with text "HTML Test Page"
 
-  @sequential
+  @sequential @skip-ci @artifacts-todo
   Rule: Visual regression testing must be supported
 
     Example: Passing visual regression test
@@ -68,6 +68,7 @@ Feature: Basic tests of Playwright browser and steps
       Then the screenshot "visual-regression-simple-page.png.diff.png" should not exist
       And the screenshot "visual-regression-simple-page.png.actual.png" should exist--delete it
 
+  @skip-ci @artifacts-todo
   Rule: Setting screenshot options must be supported
 
     Scenario: Setting a screenshot mask

@@ -200,6 +200,7 @@ Feature: Actions step definitions on a static page
       And the screenshot "temp_(@skip-ci,@concurrent,@slowmo,@sequential,@js,@webkit,@mobile).png" should exist--delete it
       And the screenshot "temp_(@skip-ci,@concurrent,@slowmo,@sequential,@js,@webkit,@desktop).png" should exist--delete it
 
+  @skip-ci @artifacts-todo
   Rule: Different browser sizes must be supported
 
     Background: load the simple file
