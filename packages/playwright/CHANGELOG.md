@@ -1,5 +1,11 @@
 # @quickpickle/playwright
 
+## 0.11.1
+
+### Patch Changes
+
+- 176dbdc: Fix the screenshot paths so they run on CI
+
 ## 0.11.0
 
 ### Minor Changes
