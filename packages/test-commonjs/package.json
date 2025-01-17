@@ -1,0 +1,19 @@
+{
+  "name": "test-commonjs",
+  "version": "0.0.1",
+  "description": "Testing the CommonJS support of QuickPickle packages",
+  "main": "index.js",
+  "private": true,
+  "scripts": {
+    "test": "vitest --run",
+    "test:watch": "vitest"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@quickpickle/playwright": "workspace:^",
+    "quickpickle": "workspace:^",
+    "vitest": "^3.0.1"
+  }
+}

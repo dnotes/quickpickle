@@ -39,5 +39,25 @@ export default defineWorkspace([
       worldConfig: {
       }
     }
+  },
+  {
+    root: './packages/test-commonjs',
+    extends: './packages/test-commonjs/vite.config.js',
+    test: {
+      name: 'commonjs-main',
+      include: ['tests/quickpickle/**/*.feature'],
+      setupFiles: 'tests/quickpickle.steps.js',
+      testTimeout: 5000,
+    },
+  },
+  {
+    root: './packages/test-commonjs',
+    extends: './packages/test-commonjs/vite.config.js',
+    test: {
+      name: 'commonjs-playwright',
+      include: ['tests/playwright/**/*.feature'],
+      setupFiles: ['tests/playwright.steps.js'],
+      testTimeout: 5000,
+    }
   }
 ])
