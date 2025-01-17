@@ -1,6 +1,6 @@
 import type { TestContext } from 'vitest'
 import { tagsMatch } from './tags'
-import { QuickPickleConfig } from '.'
+import type { QuickPickleConfig } from '.'
 
 interface Common {
   info: {
@@ -37,6 +37,7 @@ export interface QuickPickleWorldInterface {
 export type InfoConstructor = Omit<QuickPickleWorldInterface['info'], 'errors'> & { common:Common }
 
 export class QuickPickleWorld implements QuickPickleWorldInterface {
+  private _projectRoot: string = ''
   info: QuickPickleWorldInterface['info']
   common: QuickPickleWorldInterface['common']
   context: TestContext
@@ -45,11 +46,13 @@ export class QuickPickleWorld implements QuickPickleWorldInterface {
     this.context = context
     this.common = info.common
     this.info = { ...info, errors:[] }
+    this._projectRoot = info.config.root
   }
   async init() {}
   get config() { return this.info.config }
   get worldConfig() { return this.info.config.worldConfig }
   get isComplete() { return this.info.stepIdx === this.info.steps.length }
+  get projectRoot() { return this._projectRoot }
   tagsMatch(tags: string[]) {
     return tagsMatch(tags, this.info.tags)
   }

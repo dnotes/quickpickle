@@ -133,6 +133,7 @@ export const gherkinStep = async (stepType:"Context"|"Action"|"Outcome", step: s
 };
 
 export type QuickPickleConfigSetting<T = {[key:string]:any}> = Partial<{
+  root?:string
   todoTags: string|string[]
   skipTags: string|string[]
   failTags: string|string[]
@@ -144,6 +145,7 @@ export type QuickPickleConfigSetting<T = {[key:string]:any}> = Partial<{
 }>;
 
 export type QuickPickleConfig<T = {[key:string]:any}> = {
+  root: string
   todoTags: string[]
   skipTags: string[]
   failTags: string[]
@@ -155,6 +157,11 @@ export type QuickPickleConfig<T = {[key:string]:any}> = {
 };
 
 export const defaultConfig: QuickPickleConfig = {
+
+  /**
+   * The root directory for the tests to run, from vite or vitest config
+   */
+  root: '',
 
   /**
    * Tags to mark as todo, using Vitest's `test.todo` implementation.
@@ -229,6 +236,7 @@ export const quickpickle = (conf:Partial<QuickPickleConfigSetting> = {}):Plugin 
       config.sequentialTags = normalizeTags(config.sequentialTags)
       if (is2d(config.explodeTags)) config.explodeTags = config.explodeTags.map(normalizeTags)
       else config.explodeTags = [normalizeTags(config.explodeTags)]
+      if (!config.root) config.root = resolvedConfig.root
     },
     async transform(src: string, id: string) {
       if (featureRegex.test(id)) {

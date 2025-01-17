@@ -161,6 +161,7 @@ export type PlaywrightWorldConfigSetting = Partial<{
   host: string, // default host, including protocol (default: http://localhost)
   port: number, // port to which the browser should connect (default: undefined)
   screenshotDir: string, // directory in which to save screenshots (default: "screenshots")
+  screenshotOptions: ScreenshotSetting // options for the screenshots, for clipping and masking, etc.
   nojsTags: string|string[] // tags for scenarios to run without javascript (default: @nojs, @noscript)
   showBrowserTags: string|string[] // tags for scenarios to run with browser visible (default: @browser, @show-browser, @showbrowser)
   slowMoTags: string|string[] // tags for scenarios to be run with slow motion enabled (default: @slowmo)

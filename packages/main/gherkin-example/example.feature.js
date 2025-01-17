@@ -26,7 +26,7 @@ const afterScenario = async(state) => {
 }
 
 const initScenario = async(context, scenario, tags, steps) => {
-  let state = new World(context, { feature:'Feature: QuickPickle\'s Comprehensive Gherkin Syntax Example', scenario, tags, steps, common, config:{"todoTags":["@todo","@wip"],"skipTags":["@skip"],"failTags":["@fail","@fails"],"softFailTags":["@soft","@softfail"],"concurrentTags":["@concurrent"],"sequentialTags":["@sequential"],"explodeTags":[["@1a","@1b"],["@2a","@2b"]],"worldConfig":{}}}, {});
+  let state = new World(context, { feature:'Feature: QuickPickle\'s Comprehensive Gherkin Syntax Example', scenario, tags, steps, common, config:{"root":"","todoTags":["@todo","@wip"],"skipTags":["@skip"],"failTags":["@fail","@fails"],"softFailTags":["@soft","@softfail"],"concurrentTags":["@concurrent"],"sequentialTags":["@sequential"],"explodeTags":[["@1a","@1b"],["@2a","@2b"]],"worldConfig":{}}}, {});
   await state.init();
   state.common = common;
   state.info.feature = 'Feature: QuickPickle\'s Comprehensive Gherkin Syntax Example';

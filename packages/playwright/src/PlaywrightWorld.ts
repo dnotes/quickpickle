@@ -5,11 +5,8 @@ import type { TestContext } from 'vitest';
 import { defaultsDeep } from 'lodash-es'
 import { InfoConstructor } from 'quickpickle/dist/world';
 
-import path from 'node:path'
-import url from 'node:url'
 import { expect } from 'playwright/test';
 import { ScreenshotSetting } from './snapshotMatcher';
-export const projectRoot = path.resolve(path.dirname(url.fileURLToPath(import.meta.url)).replace(/node_modules.+/, ''), '..')
 
 const browsers = { chromium, firefox, webkit }
 
@@ -70,6 +67,7 @@ export class PlaywrightWorld extends QuickPickleWorld {
   }
 
   async init() {
+    await super.init()
     await this.startBrowser()
     this.browserContext = await this.browser.newContext({
       serviceWorkers: 'block',
@@ -161,10 +159,6 @@ export class PlaywrightWorld extends QuickPickleWorld {
   get playwrightConfig() {
     console.warn('playwrightConfig is deprecated. Use worldConfig instead.')
     return this.worldConfig
-  }
-
-  get projectRoot() {
-    return projectRoot
   }
 
   sanitizeFilepath(filepath:string) {
