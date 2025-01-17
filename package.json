@@ -28,11 +28,11 @@
   "author": "David Hunt",
   "license": "MIT",
   "devDependencies": {
-    "playwright": "^1.48.0",
-    "pnpm": "^9.12.0",
-    "vitest": "^2.1.2"
+    "playwright": "^1.49.1",
+    "pnpm": "^9.15.4",
+    "vitest": "^2.1.8"
   },
   "dependencies": {
-    "@changesets/cli": "^2.27.9"
+    "@changesets/cli": "^2.27.11"
   }
 }
