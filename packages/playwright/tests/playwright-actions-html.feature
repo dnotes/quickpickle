@@ -195,10 +195,10 @@ Feature: Actions step definitions on a static page
 
     @sequential @skip-ci
     Scenario: Cleaning up the screenshots with exploded tags
-      And the screenshot "temp_(@skip-ci,@concurrent,@slowmo,@sequential,@nojs,@webkit,@mobile).png" should exist--delete it
-      And the screenshot "temp_(@skip-ci,@concurrent,@slowmo,@sequential,@nojs,@webkit,@desktop).png" should exist--delete it
-      And the screenshot "temp_(@skip-ci,@concurrent,@slowmo,@sequential,@js,@webkit,@mobile).png" should exist--delete it
-      And the screenshot "temp_(@skip-ci,@concurrent,@slowmo,@sequential,@js,@webkit,@desktop).png" should exist--delete it
+      And the screenshot "temp_(@concurrent,@slowmo,@sequential,@skip-ci,@nojs,@webkit,@mobile).png" should exist--delete it
+      And the screenshot "temp_(@concurrent,@slowmo,@sequential,@skip-ci,@nojs,@webkit,@desktop).png" should exist--delete it
+      And the screenshot "temp_(@concurrent,@slowmo,@sequential,@skip-ci,@js,@webkit,@mobile).png" should exist--delete it
+      And the screenshot "temp_(@concurrent,@slowmo,@sequential,@skip-ci,@js,@webkit,@desktop).png" should exist--delete it
 
   @skip-ci @artifacts-todo
   Rule: Different browser sizes must be supported
