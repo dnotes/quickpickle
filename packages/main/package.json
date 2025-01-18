@@ -35,7 +35,7 @@
     "dist"
   ],
   "scripts": {
-    "build": "rollup -c",
+    "build": "rollup -c && FORMAT=cjs rollup -c",
     "type-check": "tsc --noEmit",
     "test:watch": "vitest",
     "test": "vitest --run"
@@ -46,9 +46,12 @@
     "@cucumber/gherkin": "^29.0.0",
     "@cucumber/messages": "^22.0.0",
     "@cucumber/tag-expressions": "^6.1.1",
+    "lodash": "^4.17.21",
     "lodash-es": "^4.17.21"
   },
   "devDependencies": {
+    "@optimize-lodash/esbuild-plugin": "^3.0.0",
+    "@optimize-lodash/rollup-plugin": "^5.0.0",
     "@rollup/plugin-replace": "^6.0.1",
     "@rollup/plugin-terser": "^0.4.4",
     "@rollup/plugin-typescript": "^12.1.1",
@@ -57,7 +60,7 @@
     "@types/node": "^18.19.66",
     "@vitest/browser": "^2.1.6",
     "playwright": "^1.49.0",
-    "rollup": "^3.29.5",
+    "rollup": "^4.27.4",
     "typescript": "^5.7.2",
     "vite": "^6.0.7",
     "vitest": "^2.1.6"

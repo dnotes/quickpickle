@@ -2,6 +2,9 @@ import typescript from '@rollup/plugin-typescript';
 import replace from '@rollup/plugin-replace';
 import glob from 'fast-glob';
 import path from 'node:path';
+import { optimizeLodashImports } from '@optimize-lodash/rollup-plugin'
+
+let cjs = process.env.FORMAT === 'cjs' ? 'cjs' : '';
 
 const input = Object.fromEntries(
   glob.sync('src/**/*.ts').map(file => [
@@ -16,18 +19,11 @@ export default {
   output: [
     {
       dir: 'dist',
-      format: 'cjs',
+      format: cjs || 'esm',
       sourcemap: true,
       exports: 'named',
-      entryFileNames: '[name].cjs'
+      entryFileNames: `[name].${cjs || 'mjs'}`
     },
-    {
-      dir: 'dist',
-      format: 'esm',
-      sourcemap: true,
-      exports: 'named',
-      entryFileNames: '[name].mjs'
-    }
   ],
   plugins: [
     replace({
@@ -35,7 +31,11 @@ export default {
       values: {
         'import.meta?.env?.MODE': JSON.stringify('production'),
         'process?.env?.NODE_ENV': JSON.stringify('production'),
+        'lodash-es': cjs ? 'lodash' : 'lodash-es',
       }
+    }),
+    optimizeLodashImports({
+      appendDotJs: false,
     }),
     typescript({
       tsconfig: './tsconfig.json',
@@ -51,6 +51,7 @@ export default {
     'node:url',
     'node:fs',
     'lodash-es',
+    'lodash',
     'pngjs',
     'pixelmatch',
   ]

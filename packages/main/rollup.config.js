@@ -1,18 +1,15 @@
 import typescript from '@rollup/plugin-typescript';
 import replace from '@rollup/plugin-replace';
+import { optimizeLodashImports } from '@optimize-lodash/rollup-plugin'
+
+let cjs = process.env.FORMAT === 'cjs' ? 'cjs' : '';
 
 export default {
   input: 'src/index.ts',
   output: [
     {
-      file: 'dist/index.cjs',
-      format: 'cjs',
-      sourcemap: true,
-      exports: 'named',
-    },
-    {
-      file: 'dist/index.esm.js',
-      format: 'esm',
+      file: `dist/index.${cjs || 'esm.js'}`,
+      format: cjs || 'esm',
       sourcemap: true,
       exports: 'named',
     },
@@ -23,7 +20,11 @@ export default {
       values: {
         'import.meta?.env?.MODE': JSON.stringify('production'),
         'process?.env?.NODE_ENV': JSON.stringify('production'),
+        'lodash-es': cjs ? 'lodash' : 'lodash-es',
       }
+    }),
+    optimizeLodashImports({
+      appendDotJs: false,
     }),
     typescript({
       tsconfig: './tsconfig.json',
@@ -37,5 +38,6 @@ export default {
     '@cucumber/messages',
     '@cucumber/tag-expressions',
     'lodash-es',
+    'lodash',
   ]
 };
