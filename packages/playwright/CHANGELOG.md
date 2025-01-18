@@ -1,5 +1,15 @@
 # @quickpickle/playwright
 
+## 0.11.2
+
+### Patch Changes
+
+- 156ee84: Use vite/vitest root directory for QuickPickle World projectRoot.
+- 375fd69: Fix and optimize lodash imports for CommonJS
+- Updated dependencies [156ee84]
+- Updated dependencies [375fd69]
+  - quickpickle@1.6.2
+
 ## 0.11.1
 
 ### Patch Changes

@@ -1,5 +1,12 @@
 # quickpickle
 
+## 1.6.2
+
+### Patch Changes
+
+- 156ee84: Use vite/vitest root directory for QuickPickle World projectRoot.
+- 375fd69: Fix and optimize lodash imports for CommonJS
+
 ## 1.6.1
 
 ### Patch Changes
