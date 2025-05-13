@@ -1,4 +1,6 @@
 import { defineWorkspace } from 'vitest/config'
+import componentConfig from './packages/browser/vitest.workspace.ts'
+import { defaultsDeep } from 'lodash'
 
 export default defineWorkspace([
   {
@@ -33,7 +35,6 @@ export default defineWorkspace([
     test: {
       name: 'playwright',
     },
-    // @ts-ignore
     quickpickle: {
       skipTags: ['@skip','@wip','@skip-ci'],
       worldConfig: {
@@ -59,5 +60,20 @@ export default defineWorkspace([
       setupFiles: ['tests/playwright.steps.js'],
       testTimeout: 5000,
     }
-  }
+  },
+  ...componentConfig.map(conf => {
+    return defaultsDeep(
+      {
+        root: './packages/components',
+        extends: './packages/components/vite.config.ts',
+        test: {
+          browser: {
+            ui: false,
+            headless: true,
+          }
+        }
+      },
+      conf
+    )
+  })
 ])
