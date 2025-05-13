@@ -1,5 +1,5 @@
 import { ExpressionFactory, ParameterTypeRegistry, Expression, ParameterType, CucumberExpressionGenerator, GeneratedExpression } from '@cucumber/cucumber-expressions';
-import { IParameterTypeDefinition } from '@cucumber/cucumber/lib/support_code_library_builder/types';
+import { type IParameterTypeDefinition } from '@cucumber/cucumber/lib/support_code_library_builder/types';
 
 interface StepDefinition {
   expression: string|RegExp;
