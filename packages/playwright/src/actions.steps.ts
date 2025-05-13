@@ -69,11 +69,11 @@ When('I type the following keys: {}', async function (world:PlaywrightWorld, key
 })
 When("for/in/on (the ){string} I type the following keys: {}", async function (world:PlaywrightWorld, identifier, keys) {
   let locator = world.getLocator(world.page, identifier, 'input')
-  for (let key of keys) await locator.press(key, { delay:world.worldConfig.keyboardDelay, timeout:world.worldConfig.stepTimeout })
+  for (let key of keys.split(' ')) await locator.press(key, { delay:world.worldConfig.keyboardDelay, timeout:world.worldConfig.stepTimeout })
 })
 When("for/in/on (the ){string} {word} I type the following keys: {}", async function (world:PlaywrightWorld, identifier, role, keys) {
   let locator = world.getLocator(world.page, identifier, role)
-  for (let key of keys) await locator.press(key, { delay:world.worldConfig.keyboardDelay, timeout:world.worldConfig.stepTimeout })
+  for (let key of keys.split(' ')) await locator.press(key, { delay:world.worldConfig.keyboardDelay, timeout:world.worldConfig.stepTimeout })
 })
 
 // ================
