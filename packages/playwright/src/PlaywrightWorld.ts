@@ -5,7 +5,7 @@ import type { TestContext } from 'vitest';
 import { defaultsDeep } from 'lodash-es'
 import { InfoConstructor } from 'quickpickle/dist/world';
 
-import { expect } from 'playwright/test';
+import { expect } from '@playwright/test';
 import { ScreenshotSetting } from './snapshotMatcher';
 
 const browsers = { chromium, firefox, webkit }
@@ -254,10 +254,10 @@ export class PlaywrightWorld extends QuickPickleWorld {
     * A helper function for parsing text on a page or in an element.
     * Can be used to check for the presence OR absence of visible OR hidden text.
     * Examples:
-    * @example assertText(locator, 'text', true, true) // assert that a locator with the text is visible (and there may be hidden ones)
-    * @example assertText(locator, 'text', false, true) // assert that NO locator with the text is visible (but there may be hidden ones)
-    * @example assertText(locator, 'text', true, false) // assert that a HIDDEN locator with the text IS FOUND on the page (but there may be visible ones)
-    * @example assertText(locator, 'text', false, false) // assert that NO hidden locator with the text is found on the page (but there may be visible ones)
+    * @example expectText(locator, 'text', true, true) // expect that a locator with the text is visible (and there may be hidden ones)
+    * @example expectText(locator, 'text', false, true) // expect that NO locator with the text is visible (but there may be hidden ones)
+    * @example expectText(locator, 'text', true, false) // expect that a HIDDEN locator with the text IS FOUND on the page (but there may be visible ones)
+    * @example expectText(locator, 'text', false, false) // expect that NO hidden locator with the text is found on the page (but there may be visible ones)
     *
     * @param locator the locator to check
     * @param text the text to be found
@@ -278,10 +278,10 @@ export class PlaywrightWorld extends QuickPickleWorld {
     * A helper function for parsing elements on a page or in an element.
     * Can be used to check for the presence OR absence of visible OR hidden elements.
     * Examples:
-    * @example assertElement(locator, true) // assert that an element is visible (and there may be hidden ones)
-    * @example assertElement(locator, false) // assert that NO element is visible (but there may be hidden ones)
-    * @example assertElement(locator, true, false) // assert that a HIDDEN element IS FOUND on the page (but there may be visible ones)
-    * @example assertElement(locator, false, false) // assert that NO hidden element is found on the page (but there may be visible ones)
+    * @example expectElement(locator, true) // expect that an element is visible (and there may be hidden ones)
+    * @example expectElement(locator, false) // expect that NO element is visible (but there may be hidden ones)
+    * @example expectElement(locator, true, false) // expect that a HIDDEN element IS FOUND on the page (but there may be visible ones)
+    * @example expectElement(locator, false, false) // expect that NO hidden element is found on the page (but there may be visible ones)
     *
     * @param locator the locator to check
     * @param toBePresent whether an element should be present
@@ -300,10 +300,10 @@ export class PlaywrightWorld extends QuickPickleWorld {
 
   /**
     * A helper function for getting a metatag from a page.
-    * @example assertMetatag(page, 'title', 'Example') // assert that the page title CONTAINS "Example"
-    * @example assertMetatag(page, 'title', 'Example', true) // assert that the page title EQUALS "Example"
-    * @example assertMetatag(page, 'title', 'Example', true, false) // assert that the page title DOES NOT EQUAL "Example"
-    * @example assertMetatag(page, 'title', 'Example', false, false) // assert that the page title DOES NOT CONTAIN "Example"
+    * @example expectMetatag(page, 'title', 'Example') // expect that the page title CONTAINS "Example"
+    * @example expectMetatag(page, 'title', 'Example', true) // expect that the page title EQUALS "Example"
+    * @example expectMetatag(page, 'title', 'Example', true, false) // expect that the page title DOES NOT EQUAL "Example"
+    * @example expectMetatag(page, 'title', 'Example', false, false) // expect that the page title DOES NOT CONTAIN "Example"
     *
     * @param page The playwright page to check
     * @param name The name of the metatag to check
