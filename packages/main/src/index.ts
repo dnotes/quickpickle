@@ -11,7 +11,7 @@ import {
   applyHooks,
 } from './hooks';
 import { explodeTags, renderGherkin } from './render';
-import { DataTable } from '@cucumber/cucumber';
+import { DataTable } from './models/DataTable';
 import { DocString } from './models/DocString';
 import { normalizeTags, tagsMatch } from './tags';
 
