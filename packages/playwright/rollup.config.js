@@ -50,8 +50,7 @@ export default {
     'node:path',
     'node:url',
     'node:fs',
-    'lodash-es',
-    'lodash',
+    /^lodash/,
     'pngjs',
     'pixelmatch',
   ]
