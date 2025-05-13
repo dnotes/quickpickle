@@ -262,3 +262,12 @@ Feature: Basic Test
       Given this step is undefined
       Then error 1 should contain "Given('this step is undefined', async function (world) {"
       And clear error 1
+
+  @soft
+  Rule: Steps should have a timeout
+
+    Example: a test with a step that times out
+      When a step takes too long
+      Then error 1 should contain "a step takes too long"
+      And error 1 should contain "timed out after"
+      And clear error 1

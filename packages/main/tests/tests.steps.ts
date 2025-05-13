@@ -111,6 +111,11 @@ When('I push all the numbers {updown}( again)', (world, updown:'up'|'down') => {
   world.numbers = world.numbers.map(n => updown === 'up' ? n+1 : n-1)
 })
 
+// TIMEOUTS
+When('a step takes too long', async function (world) {
+  await new Promise(resolve => setTimeout(resolve, 10000));
+});
+
 // RENDERER
 
 Given("the following feature( file)( is rendered):", (world, feature:DocString) => {

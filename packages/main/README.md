@@ -170,11 +170,12 @@ Also add the configuration to get the feature files, step definitions, world fil
 
 ```ts
 // vite.config.ts
-import { quickpickle } from 'quickpickle';
+import { quickpickle, type QuickPickleConfigSetting } from './src';
+const qpOptions:QuickPickleConfigSetting = {}
 
 export default {
   plugins: [
-    quickpickle() // <-- Add the quickpickle plugin
+    quickpickle(qpOptions) // <-- Add the quickpickle plugin
   ],
   test: {
     include : [
@@ -193,28 +194,98 @@ different browser environments, different world constructors, etc.
 ```ts
 // vitest.workspace.ts
 import { defineWorkspace } from 'vitest/config';
+import type { QuickPickleConfigSetting } from 'quickpickle';
+
+const options1:QuickPickleConfigSetting = {} // some settings for e.g. e2e tests
+const options2:QuickPickleConfigSetting = {} // other settings for e.g. component tests
 
 export default defineWorkspace([
   { // configuration for feature files testing the application
     extends: './vite.config.ts',
     test: {
-      include : [ 'tests/*.feature' ],
+      name: 'e2e',
+      include: [ 'tests/*.feature' ],
       setupFiles: [ 'tests/tests.steps.ts' ],
+      quickpickle: options1,
     },
   },
   { // a second configuration for feature files testing components
     extends: './vite.config.ts',
     test: {
-      include : [ 'src/lib/*.feature' ],
+      name: 'components',
+      include: [ 'src/lib/*.feature' ],
       setupFiles: [ 'tests/components.steps.ts' ],
+      quickpickle: options2,
     },
   },
   { // configuration for unit tests
     test: {
-      include : [ 'tests/*.test.ts' ],
+      name: 'unit',
+      include: [ 'tests/*.test.ts' ],
     }
   }
 ])
+```
+
+The QuickPickle configuration options can be seen
+in the [quickpickle defaultConfig object](https://github.com/dnotes/quickpickle/blob/main/packages/main/src/index.ts#L159):
+
+```ts
+export const defaultConfig: QuickPickleConfig = {
+
+  /**
+   * The root directory for the tests to run, from vite or vitest config
+   */
+  root: '',
+
+  /**
+   * The maximum time in ms to wait for a step to complete.
+   */
+  stepTimeout: 3000,
+
+  /**
+   * Tags to mark as todo, using Vitest's `test.todo` implementation.
+   */
+  todoTags: ['@todo','@wip'],
+
+  /**
+   * Tags to skip, using Vitest's `test.skip` implementation.
+   */
+  skipTags: ['@skip'],
+
+  /**
+   * Tags to mark as failing, using Vitest's `test.failing` implementation.
+   */
+  failTags: ['@fails', '@failing'],
+
+  /**
+   * Tags to mark as soft failing, allowing further steps to run until the end of the scenario.
+   */
+  softFailTags: ['@soft', '@softfail'],
+
+  /**
+   * Tags to run in parallel, using Vitest's `test.concurrent` implementation.
+   */
+  concurrentTags: ['@concurrent'],
+
+  /**
+   * Tags to run sequentially, using Vitest's `test.sequential` implementation.
+   */
+  sequentialTags: ['@sequential'],
+
+  /**
+   * Explode tags into multiple tests, e.g. for different browsers.
+   */
+  explodeTags: [],
+
+  /**
+   * The config for the World class. Must be serializable with JSON.stringify.
+   * Not used by the default World class, but may be used by plugins or custom
+   * implementations, like @quickpickle/playwright.
+   */
+  worldConfig: {},
+
+}
 ```
 
 ### Step definition file
@@ -423,7 +494,9 @@ come to notice:
     isComplete: boolean           // (read only) whether the Scenario is on the last step
     config: QuickPickleConfig                       // (read only) configuration for QuickPickle
     worldConfig: QuickPickleConfig['worldConfig']   // (read only) configuration for the World
-    common: {[key: string]: any}                    // Common data shared across tests --- USE SPARINGLY
+    data: {[key:string]:any}      // Data limited to the current Scenario
+    common: Common                // Common data shared across ALL tests in one Feature file --- USE SPARINGLY
+    projectRoot: string           // (read only) the project root directory
     init: () => Promise<void>                       // function called by QuickPickle when the world is created
     tagsMatch(tags: string[]): string[]|null        // function to check if the Scenario tags match the given tags
   }

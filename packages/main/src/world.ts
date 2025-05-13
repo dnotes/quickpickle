@@ -30,6 +30,7 @@ export interface QuickPickleWorldInterface {
   worldConfig: QuickPickleConfig['worldConfig']   // (read only) configuration for the World
   data: {[key:string]:any}      // Data limited to the current Scenario
   common: Common                // Common data shared across ALL tests in one Feature file --- USE SPARINGLY
+  projectRoot: string           // (read only) the project root directory
   init: () => Promise<void>                       // function called by QuickPickle when the world is created
   tagsMatch(tags: string[]): string[]|null        // function to check if the Scenario tags match the given tags
 }

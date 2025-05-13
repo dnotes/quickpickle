@@ -47,15 +47,27 @@ interface StepDefinitionMatch {
   parameters: any[];
 }
 
+const stackRegex = /\.feature(?:\.md)?:\d+:\d+/
 export function formatStack(text:string, line:string) {
+  if (!text.match(stackRegex)) return text
   let stack = text.split('\n')
-  while(!stack[0]?.match(/\.feature(?:\.md)?:\d+:\d+/)) stack.shift()
-  if (!stack.length) return text
+  while(!stack[0].match(stackRegex)) stack.shift()
   stack[0] = stack[0].replace(/:\d+:\d+$/, `:${line}:1`)
   return stack.join('\n')
 }
 
-export const gherkinStep = async (stepType:"Context"|"Action"|"Outcome", step: string, state: any, line: number, stepIdx:number, explodeIdx?:number, data?:any): Promise<any> => {
+function raceTimeout<T>(work: Promise<T>, ms: number, errorMessage?: string) {
+  let timerId: ReturnType<typeof setTimeout>;
+  const timeoutPromise = new Promise<never>((_, reject) => {
+    timerId = setTimeout(() => reject(new Error(errorMessage)), ms);
+  });
+
+  // make sure to clearTimeout on either success *or* failure
+  const wrapped = work.finally(() => clearTimeout(timerId));
+  return Promise.race([wrapped, timeoutPromise]);
+}
+
+export const gherkinStep = async (stepType:"Context"|"Action"|"Outcome", step: string, state: any, line: number, stepIdx:number, explodeIdx?:number, data?:any):Promise<any> => {
 
   try {
     // Set the state info
@@ -76,31 +88,36 @@ export const gherkinStep = async (stepType:"Context"|"Action"|"Outcome", step: s
       dataType = 'docString'
     }
 
-    await applyHooks('beforeStep', state);
+    const promise = async () => {
 
-    try {
-      const stepDefinitionMatch: StepDefinitionMatch = findStepDefinitionMatch(step, { stepType, dataType });
-      await stepDefinitionMatch.stepDefinition.f(state, ...stepDefinitionMatch.parameters, data);
+      await applyHooks('beforeStep', state);
+
+      try {
+        const stepDefinitionMatch: StepDefinitionMatch = findStepDefinitionMatch(step, { stepType, dataType });
+        await stepDefinitionMatch.stepDefinition.f(state, ...stepDefinitionMatch.parameters, data);
+      }
+      catch(e:any) {
+        // Add the Cucumber info to the error message
+        e.message = `${step} (#${line})\n${e.message}`
+
+        // Sort out the stack for the Feature file
+        e.stack = formatStack(e.stack, state.info.line)
+
+        // Set the flag that this error has been added to the state
+        e.isStepError = true
+
+        // Add the error to the state
+        state.info.errors.push(e)
+
+        // If not in a soft fail mode, re-throw the error
+        if (state.isComplete || !state.tagsMatch(state.config.softFailTags)) throw e
+      }
+      finally {
+        await applyHooks('afterStep', state);
+      }
+
     }
-    catch(e:any) {
-      // Add the Cucumber info to the error message
-      e.message = `${step} (#${line})\n${e.message}`
-
-      // Sort out the stack for the Feature file
-      e.stack = formatStack(e.stack, state.info.line)
-
-      // Set the flag that this error has been added to the state
-      e.isStepError = true
-
-      // Add the error to the state
-      state.info.errors.push(e)
-
-      // If not in a soft fail mode, re-throw the error
-      if (state.isComplete || !state.tagsMatch(state.config.softFailTags)) throw e
-    }
-    finally {
-      await applyHooks('afterStep', state);
-    }
+    await raceTimeout(promise(), state.config.stepTimeout, `Step timed out after ${state.config.stepTimeout}ms`)
   }
   catch(e:any) {
 
@@ -119,7 +136,7 @@ export const gherkinStep = async (stepType:"Context"|"Action"|"Outcome", step: s
 
     // The After hook is usually run in the rendered file, at the end of the rendered steps.
     // But, if the tests have failed, then it should run here, since the test is halted.
-    await applyHooks('after', state)
+    await raceTimeout(applyHooks('after', state), state.config.stepTimeout, `After hook timed out after ${state.config.stepTimeout}ms`)
 
     // Otherwise throw the error
     throw e
@@ -131,10 +148,12 @@ export const gherkinStep = async (stepType:"Context"|"Action"|"Outcome", step: s
       throw error
     }
   }
+
 };
 
 export type QuickPickleConfigSetting<T = {[key:string]:any}> = Partial<{
   root?:string
+  stepTimeout: number
   todoTags: string|string[]
   skipTags: string|string[]
   failTags: string|string[]
@@ -147,6 +166,7 @@ export type QuickPickleConfigSetting<T = {[key:string]:any}> = Partial<{
 
 export type QuickPickleConfig<T = {[key:string]:any}> = {
   root: string
+  stepTimeout: number
   todoTags: string[]
   skipTags: string[]
   failTags: string[]
@@ -163,6 +183,11 @@ export const defaultConfig: QuickPickleConfig = {
    * The root directory for the tests to run, from vite or vitest config
    */
   root: '',
+
+  /**
+   * The maximum time in ms to wait for a step to complete.
+   */
+  stepTimeout: 3000,
 
   /**
    * Tags to mark as todo, using Vitest's `test.todo` implementation.
@@ -204,7 +229,7 @@ export const defaultConfig: QuickPickleConfig = {
    * Not used by the default World class, but may be used by plugins or custom
    * implementations, like @quickpickle/playwright.
    */
-  worldConfig: {}
+  worldConfig: {},
 
 }
 
