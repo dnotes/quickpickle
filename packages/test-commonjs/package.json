@@ -14,6 +14,6 @@
   "devDependencies": {
     "@quickpickle/playwright": "workspace:^",
     "quickpickle": "workspace:^",
-    "vitest": "^3.0.1"
+    "vitest": "^3.1.3"
   }
 }

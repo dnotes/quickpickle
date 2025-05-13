@@ -23,7 +23,8 @@
     "type": "git",
     "url": "https://github.com/dnotes/quickpickle.git"
   },
-  "license": "MIT",
+  "author": "David Hunt",
+  "license": "ISC",
   "type": "module",
   "main": "./dist/PlaywrightWorld.cjs",
   "module": "./dist/PlaywrightWorld.mjs",
@@ -31,28 +32,23 @@
   "exports": {
     ".": {
       "require": "./dist/PlaywrightWorld.cjs",
-      "import": "./dist/PlaywrightWorld.mjs",
-      "types": "./dist/PlaywrightWorld.d.ts"
+      "import": "./dist/PlaywrightWorld.mjs"
     },
     "./PlaywrightWorld": {
       "require": "./dist/PlaywrightWorld.cjs",
-      "import": "./dist/PlaywrightWorld.mjs",
-      "types": "./dist/PlaywrightWorld.d.ts"
+      "import": "./dist/PlaywrightWorld.mjs"
     },
     "./world": {
       "require": "./dist/world.cjs",
-      "import": "./dist/world.mjs",
-      "types": "./dist/world.d.ts"
+      "import": "./dist/world.mjs"
     },
     "./actions": {
       "require": "./dist/actions.steps.cjs",
-      "import": "./dist/actions.steps.mjs",
-      "types": "./dist/actions.steps.d.ts"
+      "import": "./dist/actions.steps.mjs"
     },
     "./outcomes": {
       "require": "./dist/outcomes.steps.cjs",
-      "import": "./dist/outcomes.steps.mjs",
-      "types": "./dist/outcomes.steps.d.ts"
+      "import": "./dist/outcomes.steps.mjs"
     }
   },
   "files": [
@@ -65,7 +61,6 @@
     "test:watch": "vitest",
     "test": "vitest --run"
   },
-  "author": "David Hunt",
   "dependencies": {
     "@playwright/test": "^1.52.0",
     "lodash": "^4.17.21",

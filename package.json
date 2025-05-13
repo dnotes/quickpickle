@@ -10,7 +10,7 @@
     "build": "pnpm -r build",
     "playwright-install-ci": "pnpm -r playwright-install-ci",
     "test:watch": "vitest",
-    "test": "vitest --run"
+    "test": "vitest --run --reporter='dot'"
   },
   "keywords": [
     "BDD",
@@ -30,7 +30,7 @@
   "devDependencies": {
     "playwright": "^1.52.0",
     "pnpm": "^9.15.9",
-    "vitest": "^2.1.9"
+    "vitest": "^3.1.3"
   },
   "dependencies": {
     "@changesets/cli": "^2.29.3"
