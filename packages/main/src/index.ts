@@ -49,7 +49,8 @@ interface StepDefinitionMatch {
 
 export function formatStack(text:string, line:string) {
   let stack = text.split('\n')
-  while(!stack[0].match(/\.feature(?:\.md)?:\d+:\d+/)) stack.shift()
+  while(!stack[0]?.match(/\.feature(?:\.md)?:\d+:\d+/)) stack.shift()
+  if (!stack.length) return text
   stack[0] = stack[0].replace(/:\d+:\d+$/, `:${line}:1`)
   return stack.join('\n')
 }
