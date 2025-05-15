@@ -31,22 +31,27 @@
   "types": "./dist/PlaywrightWorld.d.ts",
   "exports": {
     ".": {
+      "types": "./dist/PlaywrightWorld.d.ts",
       "require": "./dist/PlaywrightWorld.cjs",
       "import": "./dist/PlaywrightWorld.mjs"
     },
     "./PlaywrightWorld": {
+      "types": "./dist/PlaywrightWorld.d.ts",
       "require": "./dist/PlaywrightWorld.cjs",
       "import": "./dist/PlaywrightWorld.mjs"
     },
     "./world": {
+      "types": "./dist/world.d.ts",
       "require": "./dist/world.cjs",
       "import": "./dist/world.mjs"
     },
     "./actions": {
+      "types": "./dist/actions.steps.d.ts",
       "require": "./dist/actions.steps.cjs",
       "import": "./dist/actions.steps.mjs"
     },
     "./outcomes": {
+      "types": "./dist/outcomes.steps.d.ts",
       "require": "./dist/outcomes.steps.cjs",
       "import": "./dist/outcomes.steps.mjs"
     }
