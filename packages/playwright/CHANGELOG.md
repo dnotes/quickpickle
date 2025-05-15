@@ -1,5 +1,13 @@
 # @quickpickle/playwright
 
+## 0.12.1
+
+### Patch Changes
+
+- 9145a9c: fixed types from last update
+- Updated dependencies [9145a9c]
+  - quickpickle@1.7.1
+
 ## 0.12.0
 
 ### Minor Changes

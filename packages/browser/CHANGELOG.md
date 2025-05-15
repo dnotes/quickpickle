@@ -1,5 +1,13 @@
 # @quickpickle/vitest-browser
 
+## 0.0.3
+
+### Patch Changes
+
+- 186848c: fix types and frameworks imports, and remove old file
+- Updated dependencies [9145a9c]
+  - quickpickle@1.7.1
+
 ## 0.0.2
 
 ### Patch Changes

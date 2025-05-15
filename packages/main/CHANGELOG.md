@@ -1,5 +1,11 @@
 # quickpickle
 
+## 1.7.1
+
+### Patch Changes
+
+- 9145a9c: fixed types from last update
+
 ## 1.7.0
 
 ### Minor Changes
