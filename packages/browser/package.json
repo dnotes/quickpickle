@@ -32,42 +32,52 @@
   "types": "./dist/VitestBrowserWorld.d.ts",
   "exports": {
     ".": {
+      "types": "./dist/VitestBrowserWorld.d.ts",
       "require": "./dist/VitestBrowserWorld.cjs",
       "import": "./dist/VitestBrowserWorld.mjs"
     },
     "./VitestBrowserWorld": {
+      "types": "./dist/VitestBrowserWorld.d.ts",
       "require": "./dist/VitestBrowserWorld.cjs",
       "import": "./dist/VitestBrowserWorld.mjs"
     },
     "./actions": {
+      "types": "./dist/actions.steps.d.ts",
       "require": "./dist/actions.steps.cjs",
       "import": "./dist/actions.steps.mjs"
     },
     "./outcomes": {
+      "types": "./dist/outcomes.steps.d.ts",
       "require": "./dist/outcomes.steps.cjs",
       "import": "./dist/outcomes.steps.mjs"
     },
-    "./frameworks/svelte": {
+    "./svelte": {
+      "types": "./dist/frameworks/svelte.d.ts",
       "require": "./dist/frameworks/svelte.cjs",
       "import": "./dist/frameworks/svelte.mjs"
     },
-    "./frameworks/SvelteBrowserWorld": {
+    "./SvelteBrowserWorld": {
+      "types": "./dist/frameworks/SvelteBrowserWorld.d.ts",
       "require": "./dist/frameworks/SvelteBrowserWorld.cjs",
       "import": "./dist/frameworks/SvelteBrowserWorld.mjs"
     },
-    "./frameworks/vue": {
+    "./vue": {
+      "types": "./dist/frameworks/vue.d.ts",
       "require": "./dist/frameworks/vue.cjs",
       "import": "./dist/frameworks/vue.mjs"
     },
-    "./frameworks/VueBrowserWorld": {
+    "./VueBrowserWorld": {
+      "types": "./dist/frameworks/VueBrowserWorld.d.ts",
       "require": "./dist/frameworks/VueBrowserWorld.cjs",
       "import": "./dist/frameworks/VueBrowserWorld.mjs"
     },
-    "./frameworks/react": {
+    "./react": {
+      "types": "./dist/frameworks/react.d.ts",
       "require": "./dist/frameworks/react.cjs",
       "import": "./dist/frameworks/react.mjs"
     },
-    "./frameworks/ReactBrowserWorld": {
+    "./ReactBrowserWorld": {
+      "types": "./dist/frameworks/ReactBrowserWorld.d.ts",
       "require": "./dist/frameworks/ReactBrowserWorld.cjs",
       "import": "./dist/frameworks/ReactBrowserWorld.mjs"
     }
