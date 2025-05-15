@@ -1,5 +1,24 @@
 # @quickpickle/playwright
 
+## 0.12.0
+
+### Minor Changes
+
+- 1cf8cca: update dependencies
+
+### Patch Changes
+
+- 2e7530d: updating packages
+- 094f7dd: rollup config and hoisting for vitest browser
+- 159542b: fix playwright actions for typing keys
+- Updated dependencies [2e7530d]
+- Updated dependencies [094f7dd]
+- Updated dependencies [7ad035c]
+- Updated dependencies [1cf8cca]
+- Updated dependencies [ab52cf6]
+- Updated dependencies [1162c84]
+  - quickpickle@1.7.0
+
 ## 0.11.2
 
 ### Patch Changes
