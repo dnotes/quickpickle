@@ -51,6 +51,7 @@ export default {
     'vitest-browser-vue',
     'vitest-browser-react',
     /^lodash/,
+    'react',
     'pngjs',
     'pixelmatch',
   ]

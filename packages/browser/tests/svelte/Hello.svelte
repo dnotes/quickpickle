@@ -2,14 +2,16 @@
 
   let {
     name = 'world',
+    tag = 'h1',
   }:{
-    name:string
+    name?:string
+    tag?:string
   } = $props()
 
 </script>
 
 <div>
-  <h1>Hello {name}!</h1>
+  <svelte:element this={tag}>Hello {name}!</svelte:element>
   <label>
     <span>Name</span>
     <input type="text" bind:value={name} />

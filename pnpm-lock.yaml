@@ -22,24 +22,27 @@ importers:
         specifier: ^3.1.3
         version: 3.1.3(@types/node@22.15.17)(@vitest/browser@3.1.3)(@vitest/ui@3.1.3)(jsdom@26.1.0)(msw@2.8.2(@types/node@22.15.17)(typescript@5.8.3))(terser@5.39.0)(yaml@2.7.1)
 
-  packages/components:
+  packages/browser:
     dependencies:
       quickpickle:
         specifier: workspace:^
         version: link:../main
       vitest-browser-react:
         specifier: ^0.1.1
-        version: 0.1.1(@vitest/browser@3.1.3)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(vitest@3.1.3)
+        version: 0.1.1(@types/react@19.1.4)(@vitest/browser@3.1.3)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(vitest@3.1.3)
       vitest-browser-svelte:
         specifier: ^0.1.0
-        version: 0.1.0(@vitest/browser@3.1.3)(svelte@5.28.2)(vitest@3.1.3)
+        version: 0.1.0(@vitest/browser@3.1.3)(svelte@5.28.6)(vitest@3.1.3)
       vitest-browser-vue:
         specifier: ^0.2.0
         version: 0.2.0(@vitest/browser@3.1.3)(vitest@3.1.3)(vue@3.5.13(typescript@5.8.3))
     devDependencies:
       '@sveltejs/vite-plugin-svelte':
         specifier: ^5
-        version: 5.0.3(svelte@5.28.2)(vite@6.3.5(@types/node@22.15.17)(terser@5.39.0)(yaml@2.7.1))
+        version: 5.0.3(svelte@5.28.6)(vite@6.3.5(@types/node@22.15.17)(terser@5.39.0)(yaml@2.7.1))
+      '@types/react':
+        specifier: ^19.1.4
+        version: 19.1.4
       '@vitejs/plugin-react':
         specifier: ^4.4.1
         version: 4.4.1(vite@6.3.5(@types/node@22.15.17)(terser@5.39.0)(yaml@2.7.1))
@@ -49,12 +52,15 @@ importers:
       '@vitest/browser':
         specifier: ^3.1.3
         version: 3.1.3(msw@2.8.2(@types/node@22.15.17)(typescript@5.8.3))(playwright@1.52.0)(vite@6.3.5(@types/node@22.15.17)(terser@5.39.0)(yaml@2.7.1))(vitest@3.1.3)
+      react:
+        specifier: ^19.1.0
+        version: 19.1.0
       rollup:
         specifier: ^4
         version: 4.40.2
       svelte:
         specifier: ^5
-        version: 5.28.2
+        version: 5.28.6
       vite:
         specifier: ^6
         version: 6.3.5(@types/node@22.15.17)(terser@5.39.0)(yaml@2.7.1)
@@ -1102,6 +1108,9 @@ packages:
   '@types/pngjs@6.0.5':
     resolution: {integrity: sha512-0k5eKfrA83JOZPppLtS2C7OUtyNAl2wKNxfyYl9Q5g9lPkgBl/9hNyAu6HuEH2J4XmIv2znEpkDd0SaZVxW6iQ==}
 
+  '@types/react@19.1.4':
+    resolution: {integrity: sha512-EB1yiiYdvySuIITtD5lhW4yPyJ31RkJkkDw794LaQYrxCSaQV/47y5o1FMC4zF9ZyjUjzJMZwbovEnT5yHTW6g==}
+
   '@types/stack-utils@2.0.3':
     resolution: {integrity: sha512-9aEbYZ3TbYMznPdcdr3SmIrLXwC/AKZXQeCf9Pgao5CKb8CyHuEX5jzWPTkvregvhRJHcpRO6BFoGW9ycaOkYw==}
 
@@ -1235,11 +1244,6 @@ packages:
 
   acorn@8.12.1:
     resolution: {integrity: sha512-tcpGyI9zbizT9JbV6oYE477V6mTlXvvi0T0G3SNIYE2apm/G5huBa1+K89VGeovbg+jycCrfhl3ADxErOuO6Jg==}
-    engines: {node: '>=0.4.0'}
-    hasBin: true
-
-  acorn@8.14.0:
-    resolution: {integrity: sha512-cl669nCJTZBsL97OF4kUQm5g5hC2uihk0NxY3WENAC0TYdILVkAyHymAntgxGkl7K+t0cXIrH5siy5S4XkFycA==}
     engines: {node: '>=0.4.0'}
     hasBin: true
 
@@ -2457,10 +2461,6 @@ packages:
       svelte: ^3.55 || ^4.0.0-next.0 || ^4.0 || ^5.0.0-next.0
       typescript: ^4.9.4 || ^5.0.0
 
-  svelte@5.28.2:
-    resolution: {integrity: sha512-FbWBxgWOpQfhKvoGJv/TFwzqb4EhJbwCD17dB0tEpQiw1XyUEKZJtgm4nA4xq3LLsMo7hu5UY/BOFmroAxKTMg==}
-    engines: {node: '>=18'}
-
   svelte@5.28.6:
     resolution: {integrity: sha512-9qqr7mw8YR9PAnxGFfzCK6PUlNGtns7wVavrhnxyf3fpB1mP/Ol55Z2UnIapsSzNNl3k9qw7cZ22PdE8+xT/jQ==}
     engines: {node: '>=18'}
@@ -3641,10 +3641,6 @@ snapshots:
 
   '@sinclair/typebox@0.27.8': {}
 
-  '@sveltejs/acorn-typescript@1.0.5(acorn@8.14.0)':
-    dependencies:
-      acorn: 8.14.0
-
   '@sveltejs/acorn-typescript@1.0.5(acorn@8.14.1)':
     dependencies:
       acorn: 8.14.1
@@ -3682,34 +3678,12 @@ snapshots:
     transitivePeerDependencies:
       - typescript
 
-  '@sveltejs/vite-plugin-svelte-inspector@4.0.1(@sveltejs/vite-plugin-svelte@5.0.3(svelte@5.28.2)(vite@6.3.5(@types/node@22.15.17)(terser@5.39.0)(yaml@2.7.1)))(svelte@5.28.2)(vite@6.3.5(@types/node@22.15.17)(terser@5.39.0)(yaml@2.7.1))':
-    dependencies:
-      '@sveltejs/vite-plugin-svelte': 5.0.3(svelte@5.28.2)(vite@6.3.5(@types/node@22.15.17)(terser@5.39.0)(yaml@2.7.1))
-      debug: 4.4.0(supports-color@8.1.1)
-      svelte: 5.28.2
-      vite: 6.3.5(@types/node@22.15.17)(terser@5.39.0)(yaml@2.7.1)
-    transitivePeerDependencies:
-      - supports-color
-
   '@sveltejs/vite-plugin-svelte-inspector@4.0.1(@sveltejs/vite-plugin-svelte@5.0.3(svelte@5.28.6)(vite@6.3.5(@types/node@22.15.17)(terser@5.39.0)(yaml@2.7.1)))(svelte@5.28.6)(vite@6.3.5(@types/node@22.15.17)(terser@5.39.0)(yaml@2.7.1))':
     dependencies:
       '@sveltejs/vite-plugin-svelte': 5.0.3(svelte@5.28.6)(vite@6.3.5(@types/node@22.15.17)(terser@5.39.0)(yaml@2.7.1))
       debug: 4.4.0(supports-color@8.1.1)
       svelte: 5.28.6
       vite: 6.3.5(@types/node@22.15.17)(terser@5.39.0)(yaml@2.7.1)
-    transitivePeerDependencies:
-      - supports-color
-
-  '@sveltejs/vite-plugin-svelte@5.0.3(svelte@5.28.2)(vite@6.3.5(@types/node@22.15.17)(terser@5.39.0)(yaml@2.7.1))':
-    dependencies:
-      '@sveltejs/vite-plugin-svelte-inspector': 4.0.1(@sveltejs/vite-plugin-svelte@5.0.3(svelte@5.28.2)(vite@6.3.5(@types/node@22.15.17)(terser@5.39.0)(yaml@2.7.1)))(svelte@5.28.2)(vite@6.3.5(@types/node@22.15.17)(terser@5.39.0)(yaml@2.7.1))
-      debug: 4.4.0(supports-color@8.1.1)
-      deepmerge: 4.3.1
-      kleur: 4.1.5
-      magic-string: 0.30.17
-      svelte: 5.28.2
-      vite: 6.3.5(@types/node@22.15.17)(terser@5.39.0)(yaml@2.7.1)
-      vitefu: 1.0.6(vite@6.3.5(@types/node@22.15.17)(terser@5.39.0)(yaml@2.7.1))
     transitivePeerDependencies:
       - supports-color
 
@@ -3828,6 +3802,10 @@ snapshots:
   '@types/pngjs@6.0.5':
     dependencies:
       '@types/node': 22.15.17
+
+  '@types/react@19.1.4':
+    dependencies:
+      csstype: 3.1.3
 
   '@types/stack-utils@2.0.3': {}
 
@@ -4007,8 +3985,6 @@ snapshots:
       acorn: 8.12.1
 
   acorn@8.12.1: {}
-
-  acorn@8.14.0: {}
 
   acorn@8.14.1: {}
 
@@ -5168,23 +5144,6 @@ snapshots:
       svelte: 5.28.6
       typescript: 5.8.3
 
-  svelte@5.28.2:
-    dependencies:
-      '@ampproject/remapping': 2.3.0
-      '@jridgewell/sourcemap-codec': 1.5.0
-      '@sveltejs/acorn-typescript': 1.0.5(acorn@8.14.0)
-      '@types/estree': 1.0.7
-      acorn: 8.14.0
-      aria-query: 5.3.2
-      axobject-query: 4.1.0
-      clsx: 2.1.1
-      esm-env: 1.2.2
-      esrap: 1.4.6
-      is-reference: 3.0.3
-      locate-character: 3.0.0
-      magic-string: 0.30.17
-      zimmerframe: 1.1.2
-
   svelte@5.28.6:
     dependencies:
       '@ampproject/remapping': 2.3.0
@@ -5389,17 +5348,19 @@ snapshots:
     optionalDependencies:
       vite: 6.3.5(@types/node@22.15.17)(terser@5.39.0)(yaml@2.7.1)
 
-  vitest-browser-react@0.1.1(@vitest/browser@3.1.3)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(vitest@3.1.3):
+  vitest-browser-react@0.1.1(@types/react@19.1.4)(@vitest/browser@3.1.3)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(vitest@3.1.3):
     dependencies:
       '@vitest/browser': 3.1.3(msw@2.8.2(@types/node@22.15.17)(typescript@5.8.3))(playwright@1.52.0)(vite@6.3.5(@types/node@22.15.17)(terser@5.39.0)(yaml@2.7.1))(vitest@3.1.3)
       react: 19.1.0
       react-dom: 19.1.0(react@19.1.0)
       vitest: 3.1.3(@types/node@22.15.17)(@vitest/browser@3.1.3)(@vitest/ui@3.1.3)(jsdom@26.1.0)(msw@2.8.2(@types/node@22.15.17)(typescript@5.8.3))(terser@5.39.0)(yaml@2.7.1)
+    optionalDependencies:
+      '@types/react': 19.1.4
 
-  vitest-browser-svelte@0.1.0(@vitest/browser@3.1.3)(svelte@5.28.2)(vitest@3.1.3):
+  vitest-browser-svelte@0.1.0(@vitest/browser@3.1.3)(svelte@5.28.6)(vitest@3.1.3):
     dependencies:
       '@vitest/browser': 3.1.3(msw@2.8.2(@types/node@22.15.17)(typescript@5.8.3))(playwright@1.52.0)(vite@6.3.5(@types/node@22.15.17)(terser@5.39.0)(yaml@2.7.1))(vitest@3.1.3)
-      svelte: 5.28.2
+      svelte: 5.28.6
       vitest: 3.1.3(@types/node@22.15.17)(@vitest/browser@3.1.3)(@vitest/ui@3.1.3)(jsdom@26.1.0)(msw@2.8.2(@types/node@22.15.17)(typescript@5.8.3))(terser@5.39.0)(yaml@2.7.1)
 
   vitest-browser-vue@0.2.0(@vitest/browser@3.1.3)(vitest@3.1.3)(vue@3.5.13(typescript@5.8.3)):

@@ -1,4 +1,4 @@
-import { After, AfterStep, Before, QuickPickleWorld, QuickPickleWorldInterface } from 'quickpickle';
+import { Before, QuickPickleWorld, QuickPickleWorldInterface } from 'quickpickle';
 import type { BrowserPage, Locator, UserEvent, ScreenshotOptions } from '@vitest/browser/context'
 import { defaultsDeep } from 'lodash-es'
 import type { TestContext } from 'vitest';
@@ -54,11 +54,11 @@ export class VitestBrowserWorld extends QuickPickleWorld implements VitestBrowse
     let component = typeof name === 'string'
       ? await import(`${this.projectRoot}/${this.worldConfig.componentDir}/${name}`.replace(/\/+/g, '/') /* @vite-ignore */ )
       : name
-    return await this.renderFn(component, props, renderOptions)
+    await this.renderFn(component, props, renderOptions)
   };
 
   async cleanup() {
-    return await this.cleanupFn()
+    await this.cleanupFn()
   }
 
   sanitizeFilepath(filepath:string) {
@@ -163,7 +163,6 @@ export class VitestBrowserWorld extends QuickPickleWorld implements VitestBrowse
     }
     catch(e) {
       let message = `The${toBeVisible ? '' : ' hidden'} text "${text}" was unexpectedly ${toBePresent ? 'not present' : 'present'}.`
-      console.error(message)
       throw new Error(message)
     }
   }

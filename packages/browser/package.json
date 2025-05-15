@@ -52,21 +52,43 @@
       "import": "./dist/frameworks/svelte.mjs"
     },
     "./frameworks/SvelteBrowserWorld": {
-      "require": "./dist/frameworks/svelte.cjs",
-      "import": "./dist/frameworks/svelte.mjs"
+      "require": "./dist/frameworks/SvelteBrowserWorld.cjs",
+      "import": "./dist/frameworks/SvelteBrowserWorld.mjs"
+    },
+    "./frameworks/vue": {
+      "require": "./dist/frameworks/vue.cjs",
+      "import": "./dist/frameworks/vue.mjs"
+    },
+    "./frameworks/VueBrowserWorld": {
+      "require": "./dist/frameworks/VueBrowserWorld.cjs",
+      "import": "./dist/frameworks/VueBrowserWorld.mjs"
+    },
+    "./frameworks/react": {
+      "require": "./dist/frameworks/react.cjs",
+      "import": "./dist/frameworks/react.mjs"
+    },
+    "./frameworks/ReactBrowserWorld": {
+      "require": "./dist/frameworks/ReactBrowserWorld.cjs",
+      "import": "./dist/frameworks/ReactBrowserWorld.mjs"
     }
   },
   "scripts": {
     "build": "rollup -c && FORMAT=cjs rollup -c",
     "type-check": "tsc --noEmit",
+    "test:browser": "SHOW_BROWSER=true vitest",
+    "test:svelte": "SHOW_BROWSER=true vitest --project svelte",
+    "test:vue": "SHOW_BROWSER=true vitest --project vue",
+    "test:react": "SHOW_BROWSER=true vitest --project react",
     "test:watch": "vitest",
     "test": "vitest --run"
   },
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "^5",
+    "@types/react": "^19.1.4",
     "@vitejs/plugin-react": "^4.4.1",
     "@vitejs/plugin-vue": "^5.2.4",
     "@vitest/browser": "^3.1.3",
+    "react": "^19.1.0",
     "rollup": "^4",
     "svelte": "^5",
     "vite": "^6",

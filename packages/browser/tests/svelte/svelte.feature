@@ -4,6 +4,7 @@ Feature: svelte__hello
     Given I render "Hello.svelte"
     Then I should see "Hello world!"
 
+  @skip-ci
   Scenario: Name is changed reactively
     Given I render "Hello.svelte"
     When for "Name" I enter "reactive variable"
