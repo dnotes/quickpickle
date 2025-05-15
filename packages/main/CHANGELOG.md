@@ -1,5 +1,29 @@
 # quickpickle
 
+## 1.7.0
+
+### Minor Changes
+
+- 1cf8cca: update dependencies
+- 1162c84: feat: added stepTimeout option for quickpickle
+
+### Patch Changes
+
+- 2e7530d: updating packages
+- 094f7dd: rollup config and hoisting for vitest browser
+- 7ad035c: fix: some errors would error when formatting stack
+
+  In some environments, errors during step execution are
+  not formatted correctly, leading to another error that
+  is very unhelpful. This commit works around that problem.
+
+- ab52cf6: fix: removed dependency on @cucumber/cucumber for DataTable
+
+  The DataTable model from @cucumber/cucumber is now mirrored by
+  QuickPickle because including it from the cucumber-js package
+  brought all the test runner stuff with it, which was too big
+  and messed up anything that tried to run in the browser.
+
 ## 1.6.2
 
 ### Patch Changes

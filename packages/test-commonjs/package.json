@@ -1,6 +1,6 @@
 {
   "name": "test-commonjs",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Testing the CommonJS support of QuickPickle packages",
   "main": "index.js",
   "private": true,
