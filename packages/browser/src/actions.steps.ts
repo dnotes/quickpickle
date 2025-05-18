@@ -1,12 +1,12 @@
-import { Given, When, Then, DataTable } from "quickpickle";
-import { type VitestBrowserWorld } from "./VitestBrowserWorld";
+import { Given, When, Then, DataTable, After, AfterAll, DocString } from "quickpickle";
+import { CachedComponent, ComponentVariant, isVariantType, variantTypes, type VitestBrowserWorld } from "./VitestBrowserWorld";
 import { expect } from 'vitest';
+import { commands } from '@vitest/browser/context';
 
 /// <reference types="@vitest/browser/providers/playwright" />
 
-/**
- * RENDERING COMPONENTS
- */
+// ================
+// Rendering
 
 Given('I render (the ){string}( component)', async(world:VitestBrowserWorld, name:string) => {
   await world.render(name);
@@ -24,6 +24,42 @@ Given('I render (the ){string}( component) with the following props/properties:'
     return acc
   }, {})
   await world.render(name, propsObj);
+})
+
+// ================
+// Storybook
+
+Given('the component {string} is in the storybook', async(world:VitestBrowserWorld, name:string) => {
+  world.cacheComponent(name)
+})
+
+Given('the component {string} is in the {string} storybook', async(world:VitestBrowserWorld, name:string, group:string) => {
+  world.cacheComponent(name, group)
+})
+
+Given('the component {string} is in the storybook with the following controls:', async(world:VitestBrowserWorld, name:string, data:DataTable) => {
+  world.cacheComponent(name, undefined, data)
+})
+
+Given('the component {string} is in the {string} storybook with the following controls:', async(world:VitestBrowserWorld, name:string, group:string, data:DataTable) => {
+  world.cacheComponent(name, group, data)
+})
+
+After(async (world:VitestBrowserWorld) => {
+  if (world.worldConfig.storybookDir) {
+    await commands.writeFile(
+      `${world.storybookDir}/${world.storybookFilename}.json`,
+      JSON.stringify({...world.info}, null, 2)
+    )
+    await world.page.screenshot({
+      element: document.documentElement.querySelector('body>div') ?? document.documentElement,
+      path: `${world.storybookDir}/${world.storybookFilename}.png`,
+    });
+  }
+})
+
+AfterAll(async (common:any) => {
+  console.log(common.componentsCache)
 })
 
 

@@ -24,6 +24,7 @@ export default [
     quickpickle: {
       worldConfig: {
         componentDir: 'tests/svelte',
+        storybookDir: 'tests/svelte/storybook',
       }
     },
     environment: 'browser',

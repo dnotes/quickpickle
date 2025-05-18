@@ -1,4 +1,4 @@
-import { Before, QuickPickleWorld, QuickPickleWorldInterface } from 'quickpickle';
+import { Before, DataTable, QuickPickleWorld, QuickPickleWorldInterface } from 'quickpickle';
 import type { BrowserPage, Locator, UserEvent, ScreenshotOptions } from '@vitest/browser/context'
 import { defaultsDeep } from 'lodash-es'
 import type { TestContext } from 'vitest';
@@ -6,16 +6,39 @@ import { InfoConstructor } from 'quickpickle/dist/world';
 
 /// <reference types="@vitest/browser/providers/playwright" />
 
+
+export const variantTypes = ['string','number','boolean','checkboxes','select','radios','object'] as const
+export type VariantType = typeof variantTypes[number]
+export type ComponentVariant = {
+  prop: string
+  type: VariantType
+  values: Array<string|number>
+}
+
+export function isVariantType(type:any):type is VariantType {
+  return variantTypes.includes(type)
+}
+
+export type CachedComponent = {
+  name: string
+  filepath: string
+  testpath: string
+  variants: ComponentVariant[]
+  group?: string
+}
+
 export type VitestWorldConfig = {
   componentDir?:        string;
   screenshotDir?:       string;
   screenshotOptions?:   Partial<ScreenshotOptions>;
+  storybookDir?:        string;
 }
 
 export const defaultVitestWorldConfig:VitestWorldConfig = {
   componentDir: '',               // directory in which components are kept, relative to project root
   screenshotDir: 'screenshots',   // directory in which to save screenshots, relative to project root (default: "screenshots")
   screenshotOptions: {},          // options for the default screenshot comparisons
+  storybookDir: 'storybook',      // directory in which storybook is saved, relative to project root
 }
 
 export type VitestBrowserWorldInterface = QuickPickleWorldInterface & {
@@ -42,6 +65,7 @@ export class VitestBrowserWorld extends QuickPickleWorld implements VitestBrowse
     }
     this.renderFn = ()=>{};
     this.cleanupFn = ()=>{};
+    this.common.componentsCache = new Map() as Map<string, CachedComponent>
   }
 
   async init() {
@@ -73,6 +97,18 @@ export class VitestBrowserWorld extends QuickPickleWorld implements VitestBrowse
     return `${this.toString().replace(/^.+?Feature: /, '').replace(' ' + this.info.step, '')}.png`
   }
 
+  get storybookDir() {
+    // TODO: transliterate the paths
+    return this.sanitizeFilepath(`${this.projectRoot}/${this.worldConfig.storybookDir}/${this.info.feature.replace(/.+?: /, '').replace(/\W/g, '-')}`)
+  }
+
+  get storybookFilename() {
+    return this.info.scenario.replace(/^.+?: /, '').replace(/\W/g, '-')
+  }
+
+  get componentDir() {
+    return this.sanitizeFilepath(`${this.projectRoot}/${this.worldConfig.componentDir}`)
+  }
 
   /**
     * Gets a locator based on a certain logic
@@ -192,6 +228,47 @@ export class VitestBrowserWorld extends QuickPickleWorld implements VitestBrowse
    */
   async waitForTimeout(ms:number) {
     await new Promise(r => setTimeout(r, ms))
+  }
+
+  /**
+   * Helper function to cache a component from the steps file.
+   *
+   * @param filepath string The path to the component file
+   * @param group string|undefined the group in which the component should appear
+   * @param controls DataTable|undefined the controls for the component, in the following format:
+   * ```
+   * | prop   | type                                                        | values                  |
+   * | string | string, number, boolean, checkboxes, select, radios, object | string, comma-separated |
+   * ```
+   */
+  cacheComponent(filepath:string, group?:string|undefined, controls?:DataTable, keys:string[] = ['prop','type','values']) {
+    let variants:ComponentVariant[] = []
+    filepath = this.sanitizeFilepath(`${this.componentDir}/${filepath}`)
+    let name =  filepath.replace(/.+\//, '').replace(/\.[^\.]*$/, '')
+    if (controls) {
+      let _ = controls.raw()
+      if (_.length) {
+        if (_[0][0] === keys[0] && _[0][1] === keys[1]) _.shift();
+        variants = _.map(row => {
+          let prop = row[0]
+          let type = row[1].toLowerCase()
+          if (!isVariantType(type)) throw new Error(`Invalid variant type: ${row[1]} (${variantTypes.join(', ')})`)
+          let values = row[2].split(/\s*,\s*/).map(v => {
+            if (v.match(/^\d+$/)) return Number(v)
+            else if (v.match(/^"\d+"$/)) return v.replace(/"/g,"")
+            else return v
+          })
+          return { prop, type, values }
+        })
+      }
+    }
+    this.common.componentsCache.set(name, {
+      filepath,
+      name,
+      group,
+      testpath:this.context.task.file.filepath,
+      variants,
+    })
   }
 
 }
