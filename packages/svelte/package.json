@@ -49,7 +49,6 @@
 	"types": "./dist/index.d.ts",
 	"type": "module",
 	"dependencies": {
-		"@cucumber/cucumber": "^11.0.0",
 		"@cucumber/cucumber-expressions": "^18.0.1",
 		"regexp-tree": "^0.1.27"
 	}
