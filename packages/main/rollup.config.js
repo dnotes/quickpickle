@@ -32,13 +32,11 @@ export default {
     }),
   ],
   external: [
-    '@cucumber/cucumber',
     '@cucumber/cucumber-expressions',
     '@cucumber/gherkin',
     '@cucumber/messages',
     '@cucumber/tag-expressions',
-    'lodash-es',
-    'lodash',
+    /^lodash/,
     'read-pkg',
     'unicorn-magic',
   ]

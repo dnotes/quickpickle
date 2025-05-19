@@ -1,9 +1,0 @@
-#!/bin/bash
-
-for i in `ls tests`; do
-    echo $i
-    pushd tests/$i
-    npm install || exit 1
-    npm test || exit 1
-    popd
-done
