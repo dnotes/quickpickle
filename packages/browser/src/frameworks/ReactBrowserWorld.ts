@@ -19,10 +19,9 @@ export class ReactBrowserWorld extends VitestBrowserWorld {
 
     if (typeof name === 'string') {
       // dynamic import returns the module object
-      const mod = await import(
-        `${this.projectRoot}/${this.worldConfig.componentDir}/${name}`.replace(/\/+/g,'/')
-        /* @vite-ignore */
-      );
+      let mod = typeof name === 'string'
+        ? await import(`${this.fullPath(`${this.worldConfig.componentDir}/${name}`)}` /* @vite-ignore */ )
+        : name;
       // try .default first, then fall back to any other export
       Component = mod.default ?? Object.values(mod)[0];
       if (!Component) {

@@ -1,6 +1,7 @@
 import type { TestContext } from 'vitest'
 import { tagsMatch } from './tags'
 import type { QuickPickleConfig } from '.'
+import sanitize from './shims/path-sanitizer'
 
 interface Common {
   info: {
@@ -30,19 +31,20 @@ export interface QuickPickleWorldInterface {
   worldConfig: QuickPickleConfig['worldConfig']   // (read only) configuration for the World
   data: {[key:string]:any}      // Data limited to the current Scenario
   common: Common                // Common data shared across ALL tests in one Feature file --- USE SPARINGLY
-  projectRoot: string           // (read only) the project root directory
-  init: () => Promise<void>                       // function called by QuickPickle when the world is created
-  tagsMatch(tags: string[]): string[]|null        // function to check if the Scenario tags match the given tags
+  init: () => Promise<void>                 // function called by QuickPickle when the world is created
+  tagsMatch(tags: string[]): string[]|null  // function to check if the Scenario tags match the given tags
+  sanitizePath:typeof sanitize              // function to sanitize a path string, from npm package "path-sanitizer" (shims)
+  fullPath(path:string):string              // function to ensure that a filepath is valid and a subdirectory of the project root
 }
 
 export type InfoConstructor = Omit<QuickPickleWorldInterface['info'], 'errors'> & { common:Common }
-
 export class QuickPickleWorld implements QuickPickleWorldInterface {
   private _projectRoot: string = ''
   info: QuickPickleWorldInterface['info']
   common: QuickPickleWorldInterface['common']
   context: TestContext
   data = {}
+  sanitizePath = sanitize
   constructor(context:TestContext, info:InfoConstructor) {
     this.context = context
     this.common = info.common
@@ -53,10 +55,32 @@ export class QuickPickleWorld implements QuickPickleWorldInterface {
   get config() { return this.info.config }
   get worldConfig() { return this.info.config.worldConfig }
   get isComplete() { return this.info.stepIdx === this.info.steps.length }
-  get projectRoot() { return this._projectRoot }
+  /**
+   * Checks the tags of the Scenario against a provided list of tags,
+   * and returns the shared tags, with the "@" prefix character.
+   *
+   * @param tags tags to check
+   * @returns string[]|null
+   */
   tagsMatch(tags: string[]) {
     return tagsMatch(tags, this.info.tags)
   }
+  /**
+   * Given a provided path-like string, returns a full path that:
+   *
+   * 1. contains no invalid characters.
+   * 2. is a subdirectory of the project root.
+   *
+   * This is intended for security when retrieving and saving files;
+   * it does not slugify filenames or check for a file's existence.
+   *
+   * @param path string the path to sanitize
+   * @return string the sanitized path, including the project root
+   */
+  fullPath(path: string):string {
+    return `${this._projectRoot}/${this.sanitizePath(path)}`
+  }
+
   toString() {
     let parts = [
       this.constructor.name,

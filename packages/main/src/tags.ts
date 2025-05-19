@@ -8,10 +8,12 @@ export function normalizeTags(tags?:string|string[]|undefined):string[] {
 }
 
 /**
+ * Compares two lists of tags and returns the ones that are shared by both,
+ * or null if there are no shared tags.
  *
  * @param confTags string[]
  * @param testTags string[]
- * @returns boolean
+ * @returns string[]|null
  */
 export function tagsMatch(confTags:string[], testTags:string[]) {
   let tags = intersection(confTags.map(t => t.toLowerCase()), testTags.map(t => t.toLowerCase()))

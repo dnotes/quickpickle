@@ -2,7 +2,7 @@ import { Before, QuickPickleWorld, QuickPickleWorldInterface } from 'quickpickle
 import type { BrowserPage, Locator, UserEvent, ScreenshotOptions } from '@vitest/browser/context'
 import { defaultsDeep } from 'lodash-es'
 import type { TestContext } from 'vitest';
-import { InfoConstructor } from 'quickpickle/dist/world';
+import type { InfoConstructor } from 'quickpickle/dist/world';
 
 /// <reference types="@vitest/browser/providers/playwright" />
 
@@ -52,7 +52,7 @@ export class VitestBrowserWorld extends QuickPickleWorld implements VitestBrowse
 
   async render(name:string|any, props?:any, renderOptions?:any) {
     let component = typeof name === 'string'
-      ? await import(`${this.projectRoot}/${this.worldConfig.componentDir}/${name}`.replace(/\/+/g, '/') /* @vite-ignore */ )
+      ? await import(`${this.fullPath(`${this.worldConfig.componentDir}/${name}`)}` /* @vite-ignore */ )
       : name
     await this.renderFn(component, props, renderOptions)
   };
@@ -61,12 +61,8 @@ export class VitestBrowserWorld extends QuickPickleWorld implements VitestBrowse
     await this.cleanupFn()
   }
 
-  sanitizeFilepath(filepath:string) {
-    return filepath.replace(/\/\/+/g, '/').replace(/\/[\.~]+\//g, '/')
-  }
-
   get screenshotDir() {
-    return this.sanitizeFilepath(`${this.projectRoot}/${this.worldConfig.screenshotDir}`)
+    return this.sanitizePath(this.worldConfig.screenshotDir)
   }
 
   get screenshotFilename() {

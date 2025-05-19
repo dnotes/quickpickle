@@ -174,7 +174,7 @@ Feature: Actions step definitions on a static page
 
     Scenario: Taking a default screenshot
       When I take a screenshot
-      Then the screenshot "Feature: Actions step definitions on a static page_Taking a default screenshot_01.png" should exist--delete it
+      Then the screenshot "Feature Actions step definitions on a static page_Taking a default screenshot_01.png" should exist--delete it
 
     Scenario: Taking a named screenshot
       When I take a screenshot named "pickles"
@@ -190,15 +190,15 @@ Feature: Actions step definitions on a static page
 
     @sequential
     Scenario: Cleaning up the screenshots with exploded tags
-      Then the screenshot "Feature: Actions step definitions on a static page_Taking a default screenshot with exploded tags (@concurrent,@sequential,@js)_01.png" should exist--delete it
-      And the screenshot "Feature: Actions step definitions on a static page_Taking a default screenshot with exploded tags (@concurrent,@sequential,@nojs)_01.png" should exist--delete it
+      Then the screenshot "Feature Actions step definitions on a static page_Taking a default screenshot with exploded tags (concurrent,sequential,js)_01.png" should exist--delete it
+      And the screenshot "Feature Actions step definitions on a static page_Taking a default screenshot with exploded tags (concurrent,sequential,nojs)_01.png" should exist--delete it
 
     @sequential @skip-ci
     Scenario: Cleaning up the screenshots with exploded tags
-      And the screenshot "temp_(@concurrent,@slowmo,@sequential,@skip-ci,@nojs,@webkit,@mobile).png" should exist--delete it
-      And the screenshot "temp_(@concurrent,@slowmo,@sequential,@skip-ci,@nojs,@webkit,@desktop).png" should exist--delete it
-      And the screenshot "temp_(@concurrent,@slowmo,@sequential,@skip-ci,@js,@webkit,@mobile).png" should exist--delete it
-      And the screenshot "temp_(@concurrent,@slowmo,@sequential,@skip-ci,@js,@webkit,@desktop).png" should exist--delete it
+      And the screenshot "temp_(concurrent,slowmo,sequential,skip-ci,nojs,webkit,mobile).png" should exist--delete it
+      And the screenshot "temp_(concurrent,slowmo,sequential,skip-ci,nojs,webkit,desktop).png" should exist--delete it
+      And the screenshot "temp_(concurrent,slowmo,sequential,skip-ci,js,webkit,mobile).png" should exist--delete it
+      And the screenshot "temp_(concurrent,slowmo,sequential,skip-ci,js,webkit,desktop).png" should exist--delete it
 
   @skip-ci @artifacts-todo
   Rule: Different browser sizes must be supported

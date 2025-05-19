@@ -18,8 +18,9 @@ When(`I navigate/go to {string}`, async function (world:PlaywrightWorld, path) {
   await world.page.goto(url.href, { timeout:world.worldConfig.stepTimeout })
 })
 
-When('I load the file {string}', async (world:PlaywrightWorld, path) => {
-  await world.page.goto(`file://${world.projectRoot}/${path}`, { timeout:world.worldConfig.stepTimeout })
+When('I load the file {string}', async (world:PlaywrightWorld, filepath) => {
+  filepath = world.fullPath(filepath).replace(/^.*?\/+/, 'file:///');
+  await world.page.goto(filepath, { timeout:world.worldConfig.stepTimeout })
 })
 
 When('I go back/forward/forwards', async function (world:PlaywrightWorld) {

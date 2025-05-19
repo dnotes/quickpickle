@@ -98,7 +98,7 @@ Feature: Basic tests of Playwright browser and steps
 
     Scenario: Taking a screenshot
       When I take a screenshot
-      Then the screenshot "Feature: Basic tests of Playwright browser and steps_Taking a screenshot_01.png" should exist--delete it
+      Then the screenshot "Feature Basic tests of Playwright browser and steps_Taking a screenshot_01.png" should exist--delete it
 
     Scenario: Taking a named screenshot
       When I take a screenshot named "test"
@@ -107,7 +107,7 @@ Feature: Basic tests of Playwright browser and steps
     Scenario: Taking a screenshot of an element
       Given I load the file "tests/examples/example.html"
       When I take a screenshot of the "Image" link
-      Then the screenshot "Feature: Basic tests of Playwright browser and steps_Taking a screenshot of an element_02.png" should exist--delete it
+      Then the screenshot "Feature Basic tests of Playwright browser and steps_Taking a screenshot of an element_02.png" should exist--delete it
 
     Scenario: Taking a named screenshot of an element
       Given I load the file "tests/examples/example.html"

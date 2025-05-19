@@ -22,11 +22,11 @@ Given('the following world config:', async (world:PlaywrightWorld, rawConf:DocSt
 
 // Screenshots
 Then('the screenshot {string} should exist(--delete it)', async function (world:PlaywrightWorld, filepath:string) {
-  let fullpath = world.sanitizeFilepath(`${world.screenshotDir}/${filepath}`)
+  let fullpath = world.fullPath(`${world.screenshotDir}/${filepath}`)
   await expect(fs.existsSync(fullpath)).toBeTruthy();
   if (world.info.step?.match(/--delete it$/)) fs.unlinkSync(fullpath)
 })
 Then('the screenshot {string} should not exist', async function (world:PlaywrightWorld, filepath:string) {
-  let fullpath = world.sanitizeFilepath(`${world.screenshotDir}/${filepath}`)
+  let fullpath = world.fullPath(`${world.screenshotDir}/${filepath}`)
   await expect(fs.existsSync(fullpath)).toBeFalsy();
 })

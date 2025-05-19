@@ -1,0 +1,2 @@
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+curl -fsSL https://raw.githubusercontent.com/cabraviva/path-sanitizer/refs/heads/main/lib/index.ts | sed 's/node:path/\.\/path/g' > "${SCRIPT_DIR}/../src/shims/path-sanitizer.ts" || { echo "Failed to download path-sanitizer"; exit 1; }

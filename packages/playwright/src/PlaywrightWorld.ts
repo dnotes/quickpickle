@@ -161,16 +161,12 @@ export class PlaywrightWorld extends QuickPickleWorld {
     return this.worldConfig
   }
 
-  sanitizeFilepath(filepath:string) {
-    return filepath.replace(/\/\/+/g, '/').replace(/\/[\.~]+\//g, '/')
-  }
-
   get screenshotDir() {
-    return this.sanitizeFilepath(`${this.projectRoot}/${this.worldConfig.screenshotDir}`)
+    return this.sanitizePath(this.worldConfig.screenshotDir)
   }
 
   get screenshotPath() {
-    return this.sanitizeFilepath(`${this.projectRoot}/${this.worldConfig.screenshotDir}/${this.toString().replace(/^.+?Feature: /, 'Feature: ').replace(' ' + this.info.step, '')}.png`)
+    return this.fullPath(`${this.worldConfig.screenshotDir}/${this.screenshotFilename}`)
   }
 
   get screenshotFilename() {
@@ -331,7 +327,7 @@ export class PlaywrightWorld extends QuickPickleWorld {
     locator?:Locator
   }) {
     let explodedTags = this.info.explodedIdx ? `_(${this.info.tags.join(',')})` : ''
-    let path = opts?.name ? this.sanitizeFilepath(`${this.screenshotDir}/${opts.name}${explodedTags}.png`) : this.screenshotPath
+    let path = opts?.name ? this.fullPath(`${this.screenshotDir}/${opts.name}${explodedTags}.png`) : this.screenshotPath
     let locator = opts?.locator ?? this.page
     return await locator.screenshot({ path, ...this.worldConfig.screenshotOpts })
   }

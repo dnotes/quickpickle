@@ -36,12 +36,12 @@
   ],
   "scripts": {
     "build": "rollup -c && FORMAT=cjs rollup -c",
+    "download:path-sanitizer": "scripts/path-sanitizer.sh",
     "type-check": "tsc --noEmit",
     "test:watch": "vitest",
     "test": "vitest --run"
   },
   "dependencies": {
-    "@cucumber/cucumber": "^11.2.0",
     "@cucumber/cucumber-expressions": "^18.0.1",
     "@cucumber/gherkin": "^32.1.0",
     "@cucumber/messages": "^27.2.0",
