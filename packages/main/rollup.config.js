@@ -32,6 +32,9 @@ export default {
     }),
   ],
   external: [
+    '@coderosh/image-size',
+    /^buffer/,
+    'pixelmatch',
     '@cucumber/cucumber-expressions',
     '@cucumber/gherkin',
     '@cucumber/messages',

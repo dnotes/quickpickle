@@ -15,7 +15,19 @@ import { DataTable } from './models/DataTable';
 import { DocString } from './models/DocString';
 import { normalizeTags, tagsMatch } from './tags';
 
-export { setWorldConstructor, getWorldConstructor, QuickPickleWorld, QuickPickleWorldInterface } from './world';
+export {
+  setWorldConstructor,
+  getWorldConstructor,
+  QuickPickleWorld,
+  QuickPickleWorldInterface,
+  ScreenshotComparisonOptions,
+  VisualConfigSetting,
+  VisualWorld,
+  VisualWorldInterface,
+  VisualDiffResult,
+  defaultScreenshotComparisonOptions,
+  InfoConstructor,
+} from './world';
 export { DocString, DataTable }
 export { explodeTags, tagsMatch, normalizeTags, applyHooks }
 export { defineParameterType } from './steps'
