@@ -1,5 +1,12 @@
 # @quickpickle/playwright
 
+## 0.13.1
+
+### Patch Changes
+
+- Updated dependencies [e617638]
+  - quickpickle@1.9.0
+
 ## 0.13.0
 
 ### Minor Changes

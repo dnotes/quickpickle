@@ -1,6 +1,6 @@
 {
   "name": "@quickpickle/vitest-browser",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Support files for running Gherkin/Cucumber tests in Vitest Browser mode, for testing components.",
   "keywords": [
     "BDD",
