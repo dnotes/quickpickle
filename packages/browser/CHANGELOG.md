@@ -1,5 +1,16 @@
 # @quickpickle/vitest-browser
 
+## 0.2.0
+
+### Minor Changes
+
+- 8273918: Switched to VisualWorld class for visual regression testing
+
+### Patch Changes
+
+- Updated dependencies [e617638]
+  - quickpickle@1.9.0
+
 ## 0.1.0
 
 ### Minor Changes
