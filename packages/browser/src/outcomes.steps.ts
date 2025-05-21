@@ -232,34 +232,16 @@ Then('a/an/the (value of )(the ){string} {word} should not/NOT be/equal {int}', 
 
 // Visual regression testing
 Then('(the )screenshot/snapshot should match', async function (world:VitestBrowserWorld) {
-  await expect(world.page).toMatchImageSnapshot({
-    ...world.worldConfig.screenshotOptions,
-    customSnapshotsDir: world.screenshotDir,
-    customSnapshotIdentifier: world.screenshotFilename,
-  })
+  await world.expectScreenshotMatch(world.page)
 })
 Then('(the )screenshot/snapshot {string} should match', async function (world:VitestBrowserWorld, name:string) {
-  let explodedTags = world.info.explodedIdx ? `_(${world.info.tags.join(',')})` : ''
-  await expect(world.page).toMatchImageSnapshot({
-    ...world.worldConfig.screenshotOptions,
-    customSnapshotsDir: world.screenshotDir,
-    customSnapshotIdentifier: `${name}${explodedTags}`,
-  })
+  await world.expectScreenshotMatch(world.page, name)
 })
 Then('(the )screenshot/snapshot of the {string} {word} should match', async function (world:VitestBrowserWorld, identifier, role) {
   let locator = await world.getLocator(world.page, identifier, role)
-  await expect(locator).toMatchImageSnapshot({
-    ...world.worldConfig.screenshotOptions,
-    customSnapshotsDir: world.screenshotDir,
-    customSnapshotIdentifier: world.screenshotFilename,
-  })
+  await world.expectScreenshotMatch(locator)
 })
 Then('(the )screenshot/snapshot {string} of the {string} {word} should match', async function (world:VitestBrowserWorld, name, identifier, role) {
   let locator = await world.getLocator(world.page, identifier, role)
-  let explodedTags = world.info.explodedIdx ? `_(${world.info.tags.join(',')})` : ''
-  await expect(locator).toMatchImageSnapshot({
-    ...world.worldConfig.screenshotOptions,
-    customSnapshotsDir: world.screenshotDir,
-    customSnapshotIdentifier: `${name}${explodedTags}`,
-  })
+  await world.expectScreenshotMatch(locator, name)
 })

@@ -2,20 +2,25 @@ import { Before, QuickPickleWorld, QuickPickleWorldInterface } from 'quickpickle
 import type { BrowserPage, Locator, UserEvent, ScreenshotOptions } from '@vitest/browser/context'
 import { defaultsDeep } from 'lodash-es'
 import type { TestContext } from 'vitest';
-import type { InfoConstructor } from 'quickpickle/dist/world';
+import { ScreenshotComparisonOptions, VisualConfigSetting, VisualWorld, VisualWorldInterface, type InfoConstructor } from 'quickpickle';
+import { commands } from '@vitest/browser/context';
+import { Buffer } from 'buffer'
+
 
 /// <reference types="@vitest/browser/providers/playwright" />
 
-export type VitestWorldConfig = {
+export interface VitestWorldConfigSetting extends VisualConfigSetting {
   componentDir?:        string;
-  screenshotDir?:       string;
-  screenshotOptions?:   Partial<ScreenshotOptions>;
 }
 
-export const defaultVitestWorldConfig:VitestWorldConfig = {
+export const defaultVitestWorldConfig:VitestWorldConfigSetting = {
   componentDir: '',               // directory in which components are kept, relative to project root
   screenshotDir: 'screenshots',   // directory in which to save screenshots, relative to project root (default: "screenshots")
-  screenshotOptions: {},          // options for the default screenshot comparisons
+  screenshotOpts: {               // options for the default screenshot comparisons
+    threshold: 0.1,
+    alpha: 0.6,
+    maxDiffPercentage: .01,
+  },
 }
 
 export type ActionsInterface = {
@@ -23,7 +28,7 @@ export type ActionsInterface = {
   doubleClicks: any[];
 }
 
-export type VitestBrowserWorldInterface = QuickPickleWorldInterface & {
+export interface VitestBrowserWorldInterface extends VisualWorldInterface {
   /**
    * The `render` function must be provided by the World Constructor
    * and must be tailored for the framework being used. It should render
@@ -49,7 +54,7 @@ export type VitestBrowserWorldInterface = QuickPickleWorldInterface & {
   userEvent: UserEvent;
 }
 
-export class VitestBrowserWorld extends QuickPickleWorld implements VitestBrowserWorldInterface {
+export class VitestBrowserWorld extends VisualWorld implements VitestBrowserWorldInterface {
 
   actions:ActionsInterface = {
     clicks: [],
@@ -59,7 +64,7 @@ export class VitestBrowserWorld extends QuickPickleWorld implements VitestBrowse
   userEvent!: UserEvent;
   async render(name:string|any,props?:any,renderOptions?:any){};
   async cleanup(){};
-  private _page:Locator|null = null;
+  _page!:Locator|null;
 
   constructor(context:TestContext, info:InfoConstructor) {
     info = defaultsDeep(info || {}, { config: { worldConfig: defaultVitestWorldConfig } } )
@@ -73,22 +78,6 @@ export class VitestBrowserWorld extends QuickPickleWorld implements VitestBrowse
     let browserContext = await import('@vitest/browser/context')
     this.browserPage = browserContext.page;
     this.userEvent = browserContext.userEvent;
-  }
-
-  get screenshotDir() {
-    return this.sanitizePath(this.worldConfig.screenshotDir)
-  }
-
-  get screenshotFilename() {
-    return `${this.toString().replace(/^.+?Feature: /, '').replace(' ' + this.info.step, '')}.png`
-  }
-
-  async screenshot(options:{name?:string, locator?:Locator} = {}) {
-    let locator = options.locator || this.page
-    let path = options.name
-      ? this.fullPath(`${this.screenshotDir}/${options.name}${(this.info.explodedIdx ? ` (${this.info.tags.join(',')})` : '')}.png`.replace(/\.png\.png$/i, '.png'))
-      : this.fullPath(`${this.screenshotDir}/${this.screenshotFilename}`)
-    await locator.screenshot({ path })
   }
 
   get page():Locator {
@@ -220,9 +209,75 @@ export class VitestBrowserWorld extends QuickPickleWorld implements VitestBrowse
     if (toBePresent === (matchingElements.length === 0)) throw new Error(`The${toBeVisible ? '' : ' hidden'} element "${locator}" was unexpectedly ${toBePresent ? 'not present' : 'present'}.`)
   }
 
+  async screenshot(opts?:{
+    bufferOnly?:boolean
+    name?:string
+    locator?:Locator
+  }):Promise<any> {
+    let path
+    if (!opts?.bufferOnly) path = this.getScreenshotPath(opts?.name)
+    let locator = opts?.locator ?? this.page
+    return locator.screenshot({ path })
+  }
+
+  async expectScreenshotMatch(locator:Locator, filename?:string, opts:ScreenshotComparisonOptions={}) {
+
+    const filepath = this.getScreenshotPath(filename)
+    let expectedImg:string
+
+    /**
+     * Load existing screenshot, or save it if it doesn't yet exist
+     */
+    try {
+      expectedImg = await commands.readFile(this.getScreenshotPath(filename), 'base64')
+    }
+    catch(e) {
+      // If the screenshot doesn't exist, save it and pass the test
+      await locator.screenshot()
+      console.warn(`new visual regression test: ${this.screenshotDir}/${this.screenshotFilename}`)
+      return
+    }
+
+    let expected = Buffer.from(expectedImg, 'base64')
+
+    /**
+     * Get the screenshot
+     */
+    // type does not include the "save" option in the docs: see https://vitest.dev/guide/browser/locators#screenshot
+    let screenshotOptions = { save:false, base64:true } as ScreenshotOptions
+    let actualImg = await locator.screenshot(screenshotOptions) as string|{ base64:string }
+    let actual = Buffer.from(typeof actualImg === 'string' ? actualImg : actualImg.base64, 'base64')
+
+    /**
+     * Compare the two screenshots
+     */
+    let screenshotOpts = defaultsDeep(opts, this.worldConfig.screenshotOpts)
+    let matchResult = null
+    try {
+      matchResult = await this.screenshotDiff(actual, expected, screenshotOpts)
+    }
+    catch(e) {}
+    console.log({
+      pass: matchResult?.pass,
+      diffPercentage: matchResult?.diffPercentage,
+      filename,
+      locator,
+    }.toString())
+
+    if (!matchResult?.pass) {
+      await commands.writeFile(`${filepath}.actual.png`, actual.toString('base64'), 'base64');
+      if (matchResult?.diff) await commands.writeFile(`${filepath}.diff.png`, matchResult.diff.toString('base64'), 'base64');
+      throw new Error(`Screenshot does not match the snapshot.
+  Diff percentage: ${matchResult?.diffPercentage?.toFixed(2) ?? '100'}%
+  Max allowed: ${screenshotOpts.maxDiffPercentage}%
+  Diffs at: ${filepath}.(diff|actual).png`)
+    }
+  }
+
   /**
    * Waits for a certain amount of time
    * @param ms number
+   * @deprecated use `wait` method instead
    */
   async waitForTimeout(ms:number) {
     await new Promise(r => setTimeout(r, ms))

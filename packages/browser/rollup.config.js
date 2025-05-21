@@ -43,6 +43,7 @@ export default {
     }),
   ],
   external: [
+    /^buffer/,
     'quickpickle',
     'vite',
     'vitest',

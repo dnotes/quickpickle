@@ -57,8 +57,9 @@ The following is a pretty basic setup for testing components in Svelte, Vue, or 
 ## Known Issues:
 
 * Reactivity is currently broken for Svelte and Vue tests.
-* Screenshot comparisons don't work yet.
 * Selecting elements by css selector doesn't work yet.
+* Performing screenshot comparisons may result in an extra screenshot
+  being created for @vitest/browser versions below 3.2.0
 
 ## Suspected Issues:
 
@@ -70,5 +71,5 @@ The following is a pretty basic setup for testing components in Svelte, Vue, or 
 
 [x] basic actions and outcomes in English, to match @quickpickle/playwright
 [x] basic tests for rendering Svelte, Vue, and React components
-[ ] full tests for all actions and outcomes, matching @quickpickle/playwright
+[x] full tests for all actions and outcomes, matching @quickpickle/playwright
 [ ] some sort of Storybook-esque presentation using Vitest UI

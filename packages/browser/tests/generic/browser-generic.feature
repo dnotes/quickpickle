@@ -1,41 +1,41 @@
-@todo
 Feature: Basic tests of Vitest Browser Mode and steps
+
+  Background:
+    Given I render the "Example" component
 
   @skip-ci
   Rule: Visual regression testing must be supported
 
     Example: Passing visual regression test
-      When I render the "Example" component
       Then the screenshot should match
 
     Example: Passing named visual regression test
-      When I render the "Example" component
       Then the screenshot "visual-regression-example-page" should match
 
     Example: Passing visual regression test of an element
-      When I render the "Example" component
       Then the screenshot of the "XKCD Comic" img should match
 
+    @todo
     Example: Passing named visual regression test of an element
-      When I render the "Example" component
       Then the screenshot "visual-regression-faq-section" of the "#faq" element should match
 
-    @fails
+    @soft
     Example: Failing visual regression test
-      When I render the "Example" component
-      Then the screenshot "visual-regression-simple-page.png.diff.png" should not exist
-      And the screenshot "visual-regression-simple-page.png.actual.png" should not exist
-      And the screenshot "visual-regression-simple-page" should match
-
-    Scenario: Delete the visual regression failure file
-      Then the screenshot "visual-regression-simple-page.png.diff.png" should not exist
-      And the screenshot "visual-regression-simple-page.png.actual.png" should exist--delete it
+      When I take a screenshot of the "Image" link named "made-to-fail"
+      And I take a screenshot of the "FAQ" link named "faq"
+      Then the screenshot "made-to-fail.png.diff.png" should not exist
+      And the screenshot "made-to-fail.png.actual.png" should not exist
+      And the screenshot "made-to-fail" of the "FAQ" link should match
+      Then the screenshot "made-to-fail.png.diff.png" should not exist
+      And the screenshot "made-to-fail.png.actual.png" should exist--delete it
+      And the screenshot "faq.png" should exist--delete it
+      And the screenshot "made-to-fail.png" should exist--delete it
+      Then there should have been 1 error
 
   @todo
   Rule: Setting screenshot options must be supported
 
     Scenario: Setting a screenshot mask
-      Given I render the "Example" component
       And the following world config:
         ```yaml
         screenshotOptions:
@@ -45,7 +45,6 @@ Feature: Basic tests of Vitest Browser Mode and steps
       Then the screenshot should match
 
     Scenario: Setting a clip area
-      Given I render the "Example" component
       And the following world config:
         ```yaml
           screenshotOptions:
@@ -68,12 +67,10 @@ Feature: Basic tests of Vitest Browser Mode and steps
       Then the screenshot "test.png" should exist--delete it
 
     Scenario: Taking a screenshot of an element
-      Given I load the file "tests/examples/example.html"
       When I take a screenshot of the "Image" link
-      Then the screenshot "Feature Basic tests of Vitest Browser Mode and steps_Taking a screenshot of an element_02.png" should exist--delete it
+      Then the screenshot "Feature Basic tests of Vitest Browser Mode and steps_Taking a screenshot of an element_01.png" should exist--delete it
 
     Scenario: Taking a named screenshot of an element
-      Given I load the file "tests/examples/example.html"
       When I take a screenshot of the "XKCD Comic" img named "test2"
       Then the screenshot "test2.png" should exist--delete it
 

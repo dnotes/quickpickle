@@ -148,10 +148,10 @@ When('I uncheck (the ){string}( checkbox)( box)', async function (world:VitestBr
 // })
 
 When('I wait (for ){int}ms', async function (world:VitestBrowserWorld, num) {
-  await world.waitForTimeout(num)
+  await world.wait(num)
 })
 When('I wait (for ){float} second(s)', async function (world:VitestBrowserWorld, num) {
-  await world.waitForTimeout(num * 1000)
+  await world.wait(num * 1000)
 })
 
 // ================

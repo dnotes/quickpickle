@@ -14,10 +14,14 @@ Then('the screenshot {string} should exist(--delete it)', async function (world:
 Then('the screenshot {string} should not exist', async function (world:VitestBrowserWorld, filepath:string) {
   let fullpath = world.fullPath(`${world.screenshotDir}/${filepath}`)
   try {
-    await expect(commands.readFile(fullpath)).toBeTruthy();
+    await commands.readFile(fullpath);
     throw new Error(`Screenshot ${filepath} should not exist`)
   }
   catch(e) {
-    if (e.message === `Screenshot ${filepath} should not exist`) throw e
+    if (!e.message.match(/ENOENT/i)) throw e
   }
+})
+Then('there should have been {int} error(s)', async (world:VitestBrowserWorld, int:number) => {
+  expect(world.info.errors.length).toBe(int)
+  world.info.errors = []
 })

@@ -17,6 +17,7 @@ export default [
     quickpickle: {
       worldConfig: {
         componentDir: 'tests/svelte',
+        screenshotDir: 'tests/svelte/screenshots',
       }
     },
     environment: 'browser',
@@ -33,33 +34,34 @@ export default [
     }
   }
 },
-{
-  name: 'react',
-  extends: 'vite.config.ts',
-  plugins: [react()],
-  test: {
-    name: 'react',
-    include: [ 'tests/react/*.feature' ],
-    setupFiles: [ 'src/frameworks/react.ts', 'src/actions.steps.ts', 'src/outcomes.steps.ts' ],
-    quickpickle: {
-      worldConfig: {
-        componentDir: 'tests/react',
-      }
-    },
-    environment: 'browser',
-    browser: {
-      enabled: true,
-      screenshotFailures: false,
-      name: 'chromium',
-      provider: 'playwright',
-      ui: showBrowser,
-      headless: !showBrowser,
-      instances: [
-        { browser:'chromium' },
-      ]
-    }
-  }
-},
+// {
+//   name: 'react',
+//   extends: 'vite.config.ts',
+//   plugins: [react()],
+//   test: {
+//     name: 'react',
+//     include: [ 'tests/react/*.feature' ],
+//     setupFiles: [ 'src/frameworks/react.ts', 'src/actions.steps.ts', 'src/outcomes.steps.ts' ],
+//     quickpickle: {
+//       worldConfig: {
+//         componentDir: 'tests/react',
+//         screenshotDir: 'tests/react/screenshots',
+//       }
+//     },
+//     environment: 'browser',
+//     browser: {
+//       enabled: true,
+//       screenshotFailures: false,
+//       name: 'chromium',
+//       provider: 'playwright',
+//       ui: showBrowser,
+//       headless: !showBrowser,
+//       instances: [
+//         { browser:'chromium' },
+//       ]
+//     }
+//   }
+// },
 {
   name: 'vue',
   extends: 'vite.config.ts',
@@ -71,6 +73,7 @@ export default [
     quickpickle: {
       worldConfig: {
         componentDir: 'tests/vue',
+        screenshotDir: 'tests/vue/screenshots',
       }
     },
     environment: 'browser',

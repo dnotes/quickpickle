@@ -168,7 +168,7 @@ Feature: Actions step definitions in Vitest Browser
 
     Scenario: Taking a default screenshot
       When I take a screenshot
-      Then the screenshot "Actions step definitions in Vitest Browser_Taking a default screenshot_01.png" should exist--delete it
+      Then the screenshot "Feature Actions step definitions in Vitest Browser_Taking a default screenshot_01.png" should exist--delete it
 
     Scenario: Taking a named screenshot
       When I take a screenshot named "pickles"
@@ -184,10 +184,10 @@ Feature: Actions step definitions in Vitest Browser
 
     @sequential
     Scenario: Cleaning up the screenshots with exploded tags
-      Then the screenshot "Actions step definitions in Vitest Browser_Taking a default screenshot with exploded tags (sequential,tag1)_01.png" should exist--delete it
-      And the screenshot "Actions step definitions in Vitest Browser_Taking a default screenshot with exploded tags (sequential,tag2)_01.png" should exist--delete it
+      Then the screenshot "Feature Actions step definitions in Vitest Browser_Taking a default screenshot with exploded tags (sequential,tag1)_01.png" should exist--delete it
+      And the screenshot "Feature Actions step definitions in Vitest Browser_Taking a default screenshot with exploded tags (sequential,tag2)_01.png" should exist--delete it
 
     @sequential @skip-ci
     Scenario: Cleaning up the screenshots with exploded tags
-      And the screenshot "temp (sequential,tag1).png" should exist--delete it
-      And the screenshot "temp (sequential,tag2).png" should exist--delete it
+      And the screenshot "temp_(sequential,tag1).png" should exist--delete it
+      And the screenshot "temp_(sequential,tag2).png" should exist--delete it

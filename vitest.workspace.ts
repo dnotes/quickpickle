@@ -63,29 +63,28 @@ export default defineWorkspace([
     }
   },
   // @TODO: once the browser tests are working from here, this should work
-  // ...componentConfig.map(conf => {
-  //   let name = conf.test.name
-  //   return defaultsDeep(
-  //     {
-  //       root: './packages/browser',
-  //       extends: './packages/browser/vite.config.ts',
-  //         optimizeDeps: {
-  //           include: [
-  //             name
-  //           ],
-  //         },
-
-  //       test: {
-  //         browser: {
-  //           ui: false,
-  //           headless: true,
-  //         }
-  //       },
-  //       quickpickle: {
-  //         skipTags: ['@skip','@wip','@skip-ci'],
-  //       },
-  //     },
-  //     conf
-  //   )
-  // })
+  ...componentConfig.filter(conf => conf.test.name === 'svelte').map(conf => {
+    let name = conf.test.name
+    return defaultsDeep(
+      {
+        root: './packages/browser',
+        extends: './packages/browser/vite.config.ts',
+        optimizeDeps: {
+          include: [
+            name
+          ],
+        },
+        test: {
+          browser: {
+            ui: false,
+            headless: true,
+          }
+        },
+        quickpickle: {
+          skipTags: ['@skip','@wip','@skip-ci'],
+        },
+      },
+      conf
+    )
+  })
 ])
