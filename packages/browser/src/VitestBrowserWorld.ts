@@ -18,21 +18,48 @@ export const defaultVitestWorldConfig:VitestWorldConfig = {
   screenshotOptions: {},          // options for the default screenshot comparisons
 }
 
+export type ActionsInterface = {
+  clicks: any[];
+  doubleClicks: any[];
+}
+
 export type VitestBrowserWorldInterface = QuickPickleWorldInterface & {
+  /**
+   * The `render` function must be provided by the World Constructor
+   * and must be tailored for the framework being used. It should render
+   * the component, and then use the parent element to set the `page` property
+   * of the World.
+   *
+   * @param name string|any The compoenent to render
+   * @param props any The properties to use when rendering the component
+   * @param renderOptions any Options to pass to the render function
+   * @returns Promise<void>
+   */
   render: (name:string|any, props?:any, renderOptions?:any)=>Promise<void>;
-  renderFn: (component:any, props?:any, renderOptions?:any)=>void|Promise<void>;
+  /**
+   * The `cleanup` function must be provided by the World Constructor
+   * and must be tailored for the framework being used.
+   *
+   * @returns void
+   */
   cleanup: ()=>Promise<void>;
-  cleanupFn: ()=>void|Promise<void>;
-  page: BrowserPage;
-  userEvent: UserEvent
+  actions: ActionsInterface
+  browserPage: BrowserPage;
+  page: Locator;
+  userEvent: UserEvent;
 }
 
 export class VitestBrowserWorld extends QuickPickleWorld implements VitestBrowserWorldInterface {
 
-  renderFn: (component:any, props:any, renderOptions:any)=>void;
-  cleanupFn: ()=>void;
-  page!: BrowserPage;
+  actions:ActionsInterface = {
+    clicks: [],
+    doubleClicks: [],
+  };
+  browserPage!: BrowserPage;
   userEvent!: UserEvent;
+  async render(name:string|any,props?:any,renderOptions?:any){};
+  async cleanup(){};
+  private _page:Locator|null = null;
 
   constructor(context:TestContext, info:InfoConstructor) {
     info = defaultsDeep(info || {}, { config: { worldConfig: defaultVitestWorldConfig } } )
@@ -40,25 +67,12 @@ export class VitestBrowserWorld extends QuickPickleWorld implements VitestBrowse
     if (!info.config.worldConfig.screenshotDir && info.config.worldConfig?.screenshotOptions?.customSnapshotsDir) {
       this.info.config.worldConfig.screenshotDir = info.config.worldConfig.screenshotOptions.customSnapshotsDir
     }
-    this.renderFn = ()=>{};
-    this.cleanupFn = ()=>{};
   }
 
   async init() {
     let browserContext = await import('@vitest/browser/context')
-    this.page = browserContext.page;
+    this.browserPage = browserContext.page;
     this.userEvent = browserContext.userEvent;
-  }
-
-  async render(name:string|any, props?:any, renderOptions?:any) {
-    let component = typeof name === 'string'
-      ? await import(`${this.fullPath(`${this.worldConfig.componentDir}/${name}`)}` /* @vite-ignore */ )
-      : name
-    await this.renderFn(component, props, renderOptions)
-  };
-
-  async cleanup() {
-    await this.cleanupFn()
   }
 
   get screenshotDir() {
@@ -69,6 +83,29 @@ export class VitestBrowserWorld extends QuickPickleWorld implements VitestBrowse
     return `${this.toString().replace(/^.+?Feature: /, '').replace(' ' + this.info.step, '')}.png`
   }
 
+  async screenshot(options:{name?:string, locator?:Locator} = {}) {
+    let locator = options.locator || this.page
+    let path = options.name
+      ? this.fullPath(`${this.screenshotDir}/${options.name}${(this.info.explodedIdx ? ` (${this.info.tags.join(',')})` : '')}.png`.replace(/\.png\.png$/i, '.png'))
+      : this.fullPath(`${this.screenshotDir}/${this.screenshotFilename}`)
+    await locator.screenshot({ path })
+  }
+
+  get page():Locator {
+    if (!this._page) throw new Error('You must render a component before running tests.')
+    return this._page
+  }
+
+  set page(value:HTMLElement) {
+    while (value.parentNode !== null && value.nodeName !== 'BODY') value = value.parentNode as HTMLBodyElement
+    this._page = this.browserPage.elementLocator(value)
+    value.addEventListener('click', (e)=>{
+      this.actions.clicks.push(e.target)
+    })
+    value.addEventListener('dblclick', (e)=>{
+      this.actions.doubleClicks.push(e.target)
+    })
+  }
 
   /**
     * Gets a locator based on a certain logic
@@ -134,6 +171,7 @@ export class VitestBrowserWorld extends QuickPickleWorld implements VitestBrowse
   async scroll(locator:Locator, direction:"up"|"down"|"left"|"right", px = 100) {
     let horiz = direction.includes('t')
     let el = await locator.element()
+    if (el.nodeName === 'BODY' && el.parentElement) el = el.parentElement
     if (horiz) await el.scrollBy(direction === 'right' ? px : -px, 0)
     else await el.scrollBy(0, direction === 'down' ? px : -px)
   }

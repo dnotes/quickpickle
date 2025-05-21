@@ -157,6 +157,14 @@ When('I wait (for ){float} second(s)', async function (world:VitestBrowserWorld,
 // ================
 // Scrolling
 
+When('I scroll down/up/left/right', async function (world:VitestBrowserWorld) {
+  let direction = world.info.step?.match(/(down|up|left|right)$/)![0] as 'down'|'up'|'left'|'right'
+  await world.scroll(world.page, direction)
+})
+When('I scroll down/up/left/right {int}(px)( pixels)', async function (world:VitestBrowserWorld, num) {
+  let direction = world.info.step?.match(/(down|up|left|right)(?= \d)/)![0] as 'down'|'up'|'left'|'right'
+  await world.scroll(world.page, direction, num)
+})
 When('I scroll (the ){string} {word} down/up/left/right', async function (world:VitestBrowserWorld, identifier:string, role:string) {
   let locator = world.getLocator(world.page, identifier, role)
   let direction = world.info.step?.match(/(down|up|left|right)$/)![0] as 'down'|'up'|'left'|'right'
@@ -166,4 +174,22 @@ When('I scroll (the ){string} {word} down/up/left/right {int}(px)( pixels)', asy
   let locator = world.getLocator(world.page, identifier, role)
   let direction = world.info.step?.match(/(down|up|left|right)(?= \d)/)![0] as 'down'|'up'|'left'|'right'
   await world.scroll(locator, direction, num)
+})
+
+// ================
+// Screenshots
+
+Then('(I )take (a )screenshot', async function (world:VitestBrowserWorld) {
+  await world.screenshot()
+})
+Then('(I )take (a )screenshot named {string}', async function (world:VitestBrowserWorld, name:string) {
+  await world.screenshot({ name })
+})
+Then('(I )take (a )screenshot of the {string} {word}', async function (world:VitestBrowserWorld, identifier:string, role:string) {
+  let locator = world.getLocator(world.page, identifier, role)
+  await world.screenshot({ locator })
+})
+Then('(I )take (a )screenshot of the {string} {word} named {string}', async function (world:VitestBrowserWorld, identifier:string, role:string, name:string) {
+  let locator = world.getLocator(world.page, identifier, role)
+  await world.screenshot({ locator, name })
 })

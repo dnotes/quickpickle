@@ -10,17 +10,10 @@ export default [
   name: 'svelte',
   extends: `vite.config.ts`,
   plugins: [svelte()],
-  optimizeDeps: {
-    include: [
-      'vue',
-      'react',
-      'svelte',
-    ],
-  },
   test: {
     name: 'svelte',
-    include: [ `tests/svelte/*.feature` ],
-    setupFiles: [ `src/frameworks/svelte.ts`, 'src/actions.steps.ts', 'src/outcomes.steps.ts' ],
+    include: [ `tests/svelte/*.feature`, `tests/generic/*.feature` ],
+    setupFiles: [ `src/frameworks/svelte.ts`, 'src/actions.steps.ts', 'src/outcomes.steps.ts', 'tests/generic/generic.steps.ts' ],
     quickpickle: {
       worldConfig: {
         componentDir: 'tests/svelte',
@@ -29,6 +22,7 @@ export default [
     environment: 'browser',
     browser: {
       enabled: true,
+      screenshotFailures: false,
       name: 'chromium',
       provider: 'playwright',
       ui: showBrowser,
@@ -55,6 +49,7 @@ export default [
     environment: 'browser',
     browser: {
       enabled: true,
+      screenshotFailures: false,
       name: 'chromium',
       provider: 'playwright',
       ui: showBrowser,
@@ -81,6 +76,7 @@ export default [
     environment: 'browser',
     browser: {
       enabled: true,
+      screenshotFailures: false,
       name: 'chromium',
       provider: 'playwright',
       ui: showBrowser,

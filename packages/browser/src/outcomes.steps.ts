@@ -1,8 +1,32 @@
 import { Then } from "quickpickle";
 import type { VitestBrowserWorld } from "./VitestBrowserWorld";
 import { expect } from 'vitest'
+import { BrowserPage, Locator } from "@vitest/browser/context";
 
 /// <reference types="@vitest/browser/providers/playwright" />
+
+expect.extend({
+  async toBeInTheViewport(locator:Locator) {
+    let frame = await locator.element()
+    while (frame.parentElement && frame.tagName !== 'HTML') {
+      frame = frame.parentElement
+    }
+    const viewport = await frame.getBoundingClientRect();
+    const rect = await locator.element().getBoundingClientRect();
+    if (rect) {
+      const inViewport = (rect.right > 0 && rect.bottom > 0 && rect.top < viewport.height && rect.left < viewport.width);
+      return {
+        message: () => `expected ${locator.toString()} to be in viewport`,
+        pass: inViewport,
+      };
+    } else {
+      return {
+        message: () => `could not get bounding box for ${locator.toString()}`,
+        pass: false,
+      };
+    }
+  }
+})
 
 // ================
 // Text on page
@@ -37,6 +61,21 @@ Then('I should see a/an/the {string} (element )with (the )(text ){string}', asyn
 Then('I should not/NOT see a/an/the {string} (element )with (the )(text ){string}', async function (world:VitestBrowserWorld, identifier, text) {
   let locator = await world.getLocator(world.page, identifier, 'element', text)
   await world.expectElement(locator, false)
+})
+
+// ================
+// Actions
+Then('{string} should have been clicked/doubleclicked/dblclicked', async function (world:VitestBrowserWorld, text) {
+  let single = world.info.step?.match(/ clicked$/)
+  if (single) expect(world.actions.clicks.find((el) => (el && el?.textContent === text))).not.toBeNull()
+  else expect(world.actions.doubleClicks.find((el) => (el && el?.textContent === text))).not.toBeNull()
+})
+
+Then('(the ){string} {word} should have been clicked/doubleclicked/dblclicked', async function (world:VitestBrowserWorld, identifier, role) {
+  let single = world.info.step?.match(/ clicked$/)
+  let element = world.getLocator(world.page, identifier, role)
+  if (single) expect(world.actions.clicks.find((el) => (el === element))).not.toBeNull()
+  else expect(world.actions.doubleClicks.find((el) => (el === element))).not.toBeNull()
 })
 
 // ================
@@ -116,6 +155,25 @@ Then('a/an/the {string} (element )with (the )(text ){string} should be unfocused
   await expect(locator).not.toHaveFocus()
 })
 
+Then('a/an/the {string} {word} should be in(side) (of )the viewport', async function (world:VitestBrowserWorld, identifier, role) {
+  let locator = await world.getLocator(world.page, identifier, role)
+  // @ts-ignore
+  await expect(locator).toBeInTheViewport()
+})
+Then('a/an/the {string} {word} should be out(side) (of )the viewport', async function (world:VitestBrowserWorld, identifier, role) {
+  let locator = await world.getLocator(world.page, identifier, role)
+  // @ts-ignore
+  expect(locator).not.toBeInTheViewport()
+})
+// Then('a/an/the {string} (element )with (the )(text ){string} should be in(side) (of )the viewport', async function (world:VitestBrowserWorld, identifier, text) {
+//   let locator = await world.getLocator(world.page, identifier, 'element', text)
+//   await isInViewport(world, locator)
+// })
+// Then('a/an/the {string} (element )with (the )(text ){string} should be out(side) (of )the viewport', async function (world:VitestBrowserWorld, identifier, text) {
+//   let locator = await world.getLocator(world.page, identifier, 'element', text)
+//   await isInViewport(world, locator)
+// })
+
 // Values
 Then('a/an/the (value of ){string} should contain/include/be/equal {string}', async function (world:VitestBrowserWorld, identifier, expected) {
   let exact = world.info.step?.match(/ should (?:be|equal) ['"]/) ? true : false
@@ -153,6 +211,23 @@ Then('a/an/the (value of )(the ){string} {word} should not/NOT contain/include/b
     let actual = (await locator.element() as HTMLInputElement)?.value ?? ''
     await expect(actual).not.toContain(expected)
   }
+})
+
+Then('a/an/the (value of ){string} should be/equal {int}', async function (world:VitestBrowserWorld, identifier, expected) {
+  let locator = await world.getLocator(world.page, identifier, 'input')
+  await expect(locator).toHaveValue(expected)
+})
+Then('a/an/the (value of )(the ){string} {word} should be/equal {int}', async function (world:VitestBrowserWorld, identifier, role, expected) {
+  let locator = await world.getLocator(world.page, identifier, role)
+  await expect(locator).toHaveValue(expected)
+})
+Then('a/an/the (value of )(the ){string} should not/NOT be/equal {int}', async function (world:VitestBrowserWorld, identifier, expected) {
+  let locator = await world.getLocator(world.page, identifier, 'input')
+  await expect(locator).not.toHaveValue(expected)
+})
+Then('a/an/the (value of )(the ){string} {word} should not/NOT be/equal {int}', async function (world:VitestBrowserWorld, identifier, role, expected) {
+  let locator = await world.getLocator(world.page, identifier, role)
+  await expect(locator).not.toHaveValue(expected)
 })
 
 // Visual regression testing
