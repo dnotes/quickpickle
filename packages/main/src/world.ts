@@ -5,8 +5,8 @@ import sanitize from './shims/path-sanitizer'
 import pixelmatch, { type PixelmatchOptions } from 'pixelmatch';
 import type { AriaRole } from '@a11y-tools/aria-roles';
 export type AriaRoleExtended = AriaRole & 'element'|'input'
-import imageSize from '@coderosh/image-size'
 import { Buffer } from 'buffer'
+import { PNG } from 'pngjs/browser'
 
 interface Common {
   info: {
@@ -129,13 +129,14 @@ export function setWorldConstructor(constructor: WorldConstructor) {
 }
 
 export type VisualDiffResult = {
-  pass: boolean,
   diff: Buffer,
-  diffPercentage: number,
+  pixels: number,
+  pct: number,
 }
 
 export type ScreenshotComparisonOptions = any & Partial<PixelmatchOptions> & {
   maxDiffPercentage?: number
+  maxDiffPixels?: number
 }
 
 export const defaultScreenshotComparisonOptions:ScreenshotComparisonOptions = {
@@ -320,32 +321,29 @@ export class VisualWorld extends QuickPickleWorld implements StubVisualWorldInte
 
   async screenshotDiff(actual:Buffer, expected:Buffer, opts:any): Promise<VisualDiffResult> {
 
-    // Convert Buffer to ArrayBuffer if needed
-    const actualBuffer = actual instanceof Buffer ?
-      actual.buffer.slice(actual.byteOffset, actual.byteOffset + actual.byteLength) :
-      actual;
+    // Parse PNG images to get raw pixel data
+    const actualPng = PNG.sync.read(actual)
+    const expectedPng = PNG.sync.read(expected)
+    const { width, height } = expectedPng
 
-    const expectedBuffer = expected instanceof Buffer ?
-      expected.buffer.slice(expected.byteOffset, expected.byteOffset + expected.byteLength) :
-      expected;
+    const diffPng = new PNG({ width, height })
 
-    const { width, height } = await imageSize(actualBuffer);
-    const diff = Buffer.from([])
-
-    const mismatchedPixels = pixelmatch(
-      new Uint8Array(actualBuffer),
-      new Uint8Array(expectedBuffer),
-      diff,
-      width,
-      height,
-      opts
-    );
-
-    const totalPixels = width * height;
-    const diffPercentage = (mismatchedPixels / totalPixels) * 100;
-    const pass = diffPercentage <= opts.maxDiffPercentage;
-
-    return { pass, diff, diffPercentage };
+    try {
+      const pixels = pixelmatch(
+        actualPng.data,
+        expectedPng.data,
+        diffPng.data,
+        width,
+        height,
+        opts
+      )
+      const pct = (pixels / (width * height)) * 100
+      return { diff:PNG.sync.write(diffPng), pixels, pct }
+    }
+    catch(e:any) {
+      e.message += `\n  expected: w:${width}px h:${height}px ${expectedPng.data.length}b\n    actual: w:${actualPng.width}px h:${actualPng.height}px ${actualPng.data.length}b`
+      throw e
+    }
   }
 
 }

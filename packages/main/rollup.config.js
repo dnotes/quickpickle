@@ -32,7 +32,7 @@ export default {
     }),
   ],
   external: [
-    '@coderosh/image-size',
+    /^pngjs/,
     /^buffer/,
     'pixelmatch',
     '@cucumber/cucumber-expressions',

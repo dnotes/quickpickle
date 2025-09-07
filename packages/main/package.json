@@ -43,14 +43,14 @@
   },
   "dependencies": {
     "@a11y-tools/aria-roles": "^1.0.0",
-    "@coderosh/image-size": "^2.0.1",
     "@cucumber/cucumber-expressions": "^18.0.1",
     "@cucumber/gherkin": "^32.1.0",
     "@cucumber/messages": "^27.2.0",
     "@cucumber/tag-expressions": "^6.1.2",
     "buffer": "^6.0.3",
     "lodash": "^4.17.21",
-    "lodash-es": "^4.17.21"
+    "lodash-es": "^4.17.21",
+    "pngjs": "^7.0.0"
   },
   "devDependencies": {
     "@optimize-lodash/esbuild-plugin": "^3.2.0",
