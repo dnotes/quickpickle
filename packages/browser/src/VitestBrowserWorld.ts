@@ -1,9 +1,9 @@
-import { Before, QuickPickleWorld, QuickPickleWorldInterface } from 'quickpickle';
+import { Before, QuickPickleWorld, QuickPickleWorldInterface, VisualDiffResult } from 'quickpickle';
 import type { BrowserPage, Locator, UserEvent, ScreenshotOptions } from '@vitest/browser/context'
 import { defaultsDeep } from 'lodash-es'
 import type { TestContext } from 'vitest';
 import { ScreenshotComparisonOptions, VisualConfigSetting, VisualWorld, VisualWorldInterface, type InfoConstructor } from 'quickpickle';
-import { commands } from '@vitest/browser/context';
+import { commands, server } from '@vitest/browser/context';
 import { Buffer } from 'buffer'
 
 
@@ -222,56 +222,60 @@ export class VitestBrowserWorld extends VisualWorld implements VitestBrowserWorl
 
   async expectScreenshotMatch(locator:Locator, filename?:string, opts:ScreenshotComparisonOptions={}) {
 
-    const filepath = this.getScreenshotPath(filename)
-    let expectedImg:string
+    let {
+      // @ts-ignore
+      maxDiffPercentage = 0,
+      maxDiffPixels = 0,
+      perBrowser = false,
+    } = opts
 
-    /**
-     * Load existing screenshot, or save it if it doesn't yet exist
-     */
+    let path = filename ? this.getScreenshotPath(filename) : this.screenshotPath
+    if (perBrowser) path = path.replace(/\.png$/, `.${server.browser}.png`)
+
+    // Get the expected image (or save a new one if none exists)
+    let expected:Buffer
     try {
-      expectedImg = await commands.readFile(this.getScreenshotPath(filename), 'base64')
+      let expectedImg = await commands.readFile(path, 'base64')
+      expected = Buffer.from(expectedImg, 'base64')
     }
-    catch(e) {
-      // If the screenshot doesn't exist, save it and pass the test
-      await locator.screenshot()
-      console.warn(`new visual regression test: ${this.screenshotDir}/${this.screenshotFilename}`)
+    catch(e:any) {
+      await locator.screenshot({ path })
+      throw new Error(`Visual regression test: ${e.message}`)
+    }
+
+    // Get the actual image
+    let actual:Buffer
+    try {
+      let screenshotOptions = { save:false, base64:true, path:`${path}.actual.png` }
+      let actualImg = await locator.screenshot(screenshotOptions) as string|{ base64:string }
+      actual = Buffer.from(typeof actualImg === 'string' ? actualImg : actualImg.base64, 'base64')
+    }
+    catch(e:any) {
+      throw new Error(`Could not get screenshot for ${locator.toString()}, (${e?.message})`)
+    }
+
+    let matchResult:VisualDiffResult
+    try {
+      matchResult = await this.screenshotDiff(actual, expected, opts)
+    }
+    catch(e:any) {
+      throw new Error(`Could not get screenshot for ${locator.toString()}, (${e?.message})`)
+    }
+
+    // If the screenshots match, pass the test
+    if (matchResult.pct <= maxDiffPercentage || matchResult.pixels <= maxDiffPixels) {
+      try { await commands.removeFile(`${path}.actual.png`) } catch(e){}
       return
     }
 
-    let expected = Buffer.from(expectedImg, 'base64')
+    // Otherwise, the test fails
+    await commands.writeFile(`${path}.diff.png`, matchResult.diff.toString('base64'), 'base64');
 
-    /**
-     * Get the screenshot
-     */
-    // type does not include the "save" option in the docs: see https://vitest.dev/guide/browser/locators#screenshot
-    let screenshotOptions = { save:false, base64:true } as ScreenshotOptions
-    let actualImg = await locator.screenshot(screenshotOptions) as string|{ base64:string }
-    let actual = Buffer.from(typeof actualImg === 'string' ? actualImg : actualImg.base64, 'base64')
-
-    /**
-     * Compare the two screenshots
-     */
-    let screenshotOpts = defaultsDeep(opts, this.worldConfig.screenshotOpts)
-    let matchResult = null
-    try {
-      matchResult = await this.screenshotDiff(actual, expected, screenshotOpts)
-    }
-    catch(e) {}
-    console.log({
-      pass: matchResult?.pass,
-      diffPercentage: matchResult?.diffPercentage,
-      filename,
-      locator,
-    }.toString())
-
-    if (!matchResult?.pass) {
-      await commands.writeFile(`${filepath}.actual.png`, actual.toString('base64'), 'base64');
-      if (matchResult?.diff) await commands.writeFile(`${filepath}.diff.png`, matchResult.diff.toString('base64'), 'base64');
-      throw new Error(`Screenshot does not match the snapshot.
-  Diff percentage: ${matchResult?.diffPercentage?.toFixed(2) ?? '100'}%
-  Max allowed: ${screenshotOpts.maxDiffPercentage}%
-  Diffs at: ${filepath}.(diff|actual).png`)
-    }
+    throw new Error([`Images were too different: ${path}`,
+      `Diff percentage: ${matchResult.pct.toFixed(2)}% (max ${maxDiffPercentage}%)`,
+      `Pixels: ${matchResult.pixels} (max ${maxDiffPixels})`,
+      `Diff paths: ${path}.{actual,diff}.png`,
+    ].join('\n'))
   }
 
   /**

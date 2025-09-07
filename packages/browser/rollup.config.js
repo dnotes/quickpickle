@@ -53,7 +53,6 @@ export default {
     'vitest-browser-react',
     /^lodash/,
     'react',
-    'pngjs',
     'pixelmatch',
   ]
 };
