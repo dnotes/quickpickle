@@ -63,6 +63,7 @@ export class QuickPickleWorld implements QuickPickleWorldInterface {
   get config() { return this.info.config }
   get worldConfig() { return this.info.config.worldConfig }
   get isComplete() { return this.info.stepIdx === this.info.steps.length }
+  get projectRoot() { return this._projectRoot }
   /**
    * Checks the tags of the Scenario against a provided list of tags,
    * and returns the shared tags, with the "@" prefix character.
@@ -327,8 +328,25 @@ export class VisualWorld extends QuickPickleWorld implements StubVisualWorldInte
 
   getScreenshotPath(name?:string) {
     if (!name) return this.screenshotPath
+
+    // If name is already a full absolute path (starts with project root), return as-is
+    if (name.startsWith(this.projectRoot)) {
+      return name
+    }
+
+    // If name starts with the screenshot directory, remove it
+    else if (name.startsWith(this.screenshotDir)) name = name.slice(this.screenshotDir.length)
+
+    // If name already ends with .png, remove it
+    const hasExtension = name.endsWith('.png')
+    const baseName = hasExtension ? name.slice(0, -4) : name
+
+    // Add the exploded tags if necessary
     let explodedTags = this.info.explodedIdx ? `_(${this.info.tags.join(',')})` : ''
-    return this.fullPath(`${this.screenshotDir}/${name}${explodedTags}.png`)
+    if (name.includes(explodedTags)) explodedTags = ''
+
+    // Return the full path
+    return this.fullPath(`${this.screenshotDir}/${baseName}${explodedTags}.png`)
   }
 
   async screenshotDiff(actual:Buffer, expected:Buffer, opts:any): Promise<VisualDiffResult> {
