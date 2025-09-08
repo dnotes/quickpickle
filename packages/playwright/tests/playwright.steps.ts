@@ -17,7 +17,6 @@ Given('the following world config:', async (world:PlaywrightWorld, rawConf:DocSt
     config = JSON.parse(rawConf.toString())
   else config = yaml.load(rawConf.toString())
   await world.reset(config)
-  console.log('world config', world.worldConfig)
 })
 
 // Screenshots

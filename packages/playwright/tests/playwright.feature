@@ -65,6 +65,7 @@ Feature: Basic tests of Playwright browser and steps
       And the screenshot "visual-regression-simple-page" should match
 
     Scenario: Delete the visual regression failure file
+      # the diff screenshot should not exist because the images are different sizes, so no diff can be created
       Then the screenshot "visual-regression-simple-page.png.diff.png" should not exist
       And the screenshot "visual-regression-simple-page.png.actual.png" should exist--delete it
 

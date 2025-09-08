@@ -4,9 +4,10 @@ import type { QuickPickleConfig } from '.'
 import sanitize from './shims/path-sanitizer'
 import pixelmatch, { type PixelmatchOptions } from 'pixelmatch';
 import type { AriaRole } from '@a11y-tools/aria-roles';
-export type AriaRoleExtended = AriaRole & 'element'|'input'
+export type AriaRoleExtended = AriaRole|'element'|'input'
 import { Buffer } from 'buffer'
-import { PNG } from 'pngjs/browser'
+import { getPNG } from './shims/png.js'
+import { defaultsDeep } from 'lodash-es';
 
 interface Common {
   info: {
@@ -169,6 +170,11 @@ interface StubVisualWorldInterface extends QuickPickleWorldInterface {
   screenshotPath:string
 
   /**
+   * The options for the default screenshot comparisons.
+   */
+  screenshotOptions:Partial<ScreenshotComparisonOptions>
+
+  /**
    * The full path to a screenshot file, from the root of the file system,
    * based on the custom name provided, and including information on any
    * exploded tags as necessary.
@@ -290,6 +296,8 @@ export interface VisualWorldInterface extends StubVisualWorldInterface {
    */
   expectScreenshotMatch(locator:any, screenshotName:string, options?:any):Promise<void>
 
+  screenshotOptions:Partial<ScreenshotComparisonOptions>
+
 }
 
 
@@ -313,6 +321,10 @@ export class VisualWorld extends QuickPickleWorld implements StubVisualWorldInte
     return this.fullPath(`${this.screenshotDir}/${this.screenshotFilename}`)
   }
 
+  get screenshotOptions() {
+    return defaultsDeep((this.worldConfig.screenshotOptions || {}), (this.worldConfig.screenshotOpts || {}), defaultScreenshotComparisonOptions)
+  }
+
   getScreenshotPath(name?:string) {
     if (!name) return this.screenshotPath
     let explodedTags = this.info.explodedIdx ? `_(${this.info.tags.join(',')})` : ''
@@ -320,6 +332,9 @@ export class VisualWorld extends QuickPickleWorld implements StubVisualWorldInte
   }
 
   async screenshotDiff(actual:Buffer, expected:Buffer, opts:any): Promise<VisualDiffResult> {
+
+    // Get the PNG constructor using the shim
+    const PNG = await getPNG()
 
     // Parse PNG images to get raw pixel data
     const actualPng = PNG.sync.read(actual)

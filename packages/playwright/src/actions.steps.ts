@@ -105,7 +105,7 @@ When('I enter/fill (in )the following( fields):', async function (world:Playwrig
       value = role
       role = 'input'
     }
-    let locator = world.getLocator(world.page, identifier, role)
+    let locator = world.getLocator(world.page, identifier, role as any)
     await world.setValue(locator, value)
   }
 })
@@ -145,11 +145,11 @@ When('I wait (for ){float} second(s)', async function (world:PlaywrightWorld, nu
 
 When('I scroll down/up/left/right', async function (world:PlaywrightWorld) {
   let direction = world.info.step?.match(/(down|up|left|right)$/)![0] as 'down'|'up'|'left'|'right'
-  await world.scroll(direction)
+  await world.scroll(world.page, direction)
 })
 When('I scroll down/up/left/right {int}(px)( pixels)', async function (world:PlaywrightWorld, num) {
   let direction = world.info.step?.match(/(down|up|left|right)(?= \d)/)![0] as 'down'|'up'|'left'|'right'
-  await world.scroll(direction, num)
+  await world.scroll(world.page, direction, num)
 })
 
 // ================
@@ -162,11 +162,11 @@ Then('(I )take (a )screenshot named {string}', async function (world:PlaywrightW
   await world.screenshot({ name })
 })
 Then('(I )take (a )screenshot of the {string} {word}', async function (world:PlaywrightWorld, identifier:string, role:string) {
-  let locator = world.getLocator(world.page, identifier, role)
+  let locator = world.getLocator(world.page, identifier, role as any)
   await world.screenshot({ locator })
 })
 Then('(I )take (a )screenshot of the {string} {word} named {string}', async function (world:PlaywrightWorld, identifier:string, role:string, name:string) {
-  let locator = world.getLocator(world.page, identifier, role)
+  let locator = world.getLocator(world.page, identifier, role as any)
   await world.screenshot({ locator, name })
 })
 

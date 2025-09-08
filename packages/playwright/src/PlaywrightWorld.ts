@@ -1,9 +1,10 @@
 import { chromium, firefox, Locator, webkit, type Browser, type BrowserContext, type Page } from 'playwright';
-import { normalizeTags, QuickPickleWorld, QuickPickleWorldInterface } from 'quickpickle';
+import { normalizeTags, VisualWorld, VisualWorldInterface, ScreenshotComparisonOptions, AriaRoleExtended } from 'quickpickle';
 import { After } from 'quickpickle';
 import type { TestContext } from 'vitest';
 import { defaultsDeep } from 'lodash-es'
 import { InfoConstructor } from 'quickpickle/dist/world';
+import { Buffer } from 'buffer';
 
 import { expect } from '@playwright/test';
 import { ScreenshotSetting } from './snapshotMatcher';
@@ -56,7 +57,7 @@ export type PlaywrightWorldConfig = typeof defaultPlaywrightWorldConfig & {
   browserSizes: Record<string,string>
 }
 
-export class PlaywrightWorld extends QuickPickleWorld {
+export class PlaywrightWorld extends VisualWorld implements VisualWorldInterface {
   browser!: Browser
   browserContext!: BrowserContext
   page!: Page
@@ -161,25 +162,6 @@ export class PlaywrightWorld extends QuickPickleWorld {
     return this.worldConfig
   }
 
-  get screenshotDir() {
-    return this.sanitizePath(this.worldConfig.screenshotDir)
-  }
-
-  get screenshotPath() {
-    return this.fullPath(`${this.worldConfig.screenshotDir}/${this.screenshotFilename}`)
-  }
-
-  get screenshotFilename() {
-    return `${this.toString().replace(/^.+?Feature: /, 'Feature: ').replace(' ' + this.info.step, '')}.png`
-  }
-
-  /**
-   * @deprecated Use `screenshotPath` instead
-   */
-  get fullScreenshotPath() {
-    return this.screenshotPath
-  }
-
   /**
     * Gets a locator based on a certain logic
     * @example getLocator(page, 'Cancel', 'button') => page.getByRole('button', { name: 'Cancel' })
@@ -192,7 +174,7 @@ export class PlaywrightWorld extends QuickPickleWorld {
     * @param text Optional text to match inside the locator
     * @returns Promise<void>
     */
-  getLocator(el:Locator|Page, identifier:string, role:string|'element'|'input', text:string|null=null) {
+  getLocator(el:Locator|Page, identifier:string, role:AriaRoleExtended, text:string|null=null) {
     let locator:Locator
     if (role === 'element') locator = el.locator(identifier)
     else if (role === 'input') locator = el.getByLabel(identifier).or(el.getByPlaceholder(identifier))
@@ -240,7 +222,7 @@ export class PlaywrightWorld extends QuickPickleWorld {
     * @param px The number of pixels to scroll (defaults to 100)
     * @returns Promise<void>
     */
-  async scroll(direction:"up"|"down"|"left"|"right", px = 100) {
+  async scroll(locator:Locator|Page, direction:"up"|"down"|"left"|"right", px = 100) {
     let horiz = direction.includes('t')
     if (horiz) await this.page.mouse.wheel(direction === 'right' ? px : -px, 0)
     else await this.page.mouse.wheel(0, direction === 'down' ? px : -px)
@@ -322,14 +304,15 @@ export class PlaywrightWorld extends QuickPickleWorld {
     }
   }
 
-  async screenshot(opts?:{
-    name?:string
-    locator?:Locator
-  }) {
+  async screenshot(opts?:{name?:string,locator?:any}):Promise<Buffer> {
     let explodedTags = this.info.explodedIdx ? `_(${this.info.tags.join(',')})` : ''
     let path = opts?.name ? this.fullPath(`${this.screenshotDir}/${opts.name}${explodedTags}.png`) : this.screenshotPath
     let locator = opts?.locator ?? this.page
-    return await locator.screenshot({ path, ...this.worldConfig.screenshotOpts })
+    return await locator.screenshot({ path, ...this.screenshotOptions })
+  }
+
+  async expectScreenshotMatch(locator:Locator|Page, screenshotName:string, options?:Partial<ScreenshotComparisonOptions>):Promise<void> {
+    await expect(locator).toMatchScreenshot(screenshotName, defaultsDeep(options || {}, this.screenshotOptions))
   }
 
 }
