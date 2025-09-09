@@ -3,8 +3,9 @@ import { normalizeTags, VisualWorld, VisualWorldInterface, ScreenshotComparisonO
 import { After } from 'quickpickle';
 import type { TestContext } from 'vitest';
 import { defaultsDeep } from 'lodash-es'
-import { InfoConstructor } from 'quickpickle/dist/world';
+import { InfoConstructor, VisualDiffResult } from 'quickpickle/dist/world';
 import { Buffer } from 'buffer';
+import { promises as fs } from 'node:fs';
 
 import { expect } from '@playwright/test';
 import { ScreenshotSetting } from './snapshotMatcher';
@@ -304,6 +305,12 @@ export class PlaywrightWorld extends VisualWorld implements VisualWorldInterface
     }
   }
 
+  get screenshotOptions() {
+    let opts = defaultsDeep(this.worldConfig.screenshotOptions || {}, this.worldConfig.screenshotOpts || {})
+    if (opts.mask) opts.mask = opts.mask.map((m:string) => this.page.locator(m))
+    return opts
+  }
+
   async screenshot(opts?:{name?:string,locator?:any}):Promise<Buffer> {
     let explodedTags = this.info.explodedIdx ? `_(${this.info.tags.join(',')})` : ''
     let path = opts?.name ? this.fullPath(`${this.screenshotDir}/${opts.name}${explodedTags}.png`) : this.screenshotPath
@@ -311,8 +318,60 @@ export class PlaywrightWorld extends VisualWorld implements VisualWorldInterface
     return await locator.screenshot({ path, ...this.screenshotOptions })
   }
 
-  async expectScreenshotMatch(locator:Locator|Page, screenshotName:string, options?:Partial<ScreenshotComparisonOptions>):Promise<void> {
-    await expect(locator).toMatchScreenshot(screenshotName, defaultsDeep(options || {}, this.screenshotOptions))
+  async expectScreenshotMatch(locator:Locator|Page, screenshotNameOrPath:string, options?:Partial<ScreenshotComparisonOptions>):Promise<void> {
+    const opts = defaultsDeep(options || {}, this.screenshotOptions)
+    let path = this.getScreenshotPath(screenshotNameOrPath)
+
+    // Get the expected image (or save a new one if none exists)
+    let expected:Buffer
+    try {
+      expected = await fs.readFile(path)
+    }
+    catch(e:any) {
+      await locator.screenshot({ path, ...opts })
+      throw new Error(`Visual regression test: ${e.message}`)
+    }
+
+    // Get the actual image
+    let actual:Buffer
+    actual = await locator.screenshot({ ...opts })
+
+    // Compare the images using the inherited screenshotDiff method
+    let matchResult:VisualDiffResult
+    try {
+      matchResult = await this.screenshotDiff(actual, expected, opts)
+    }
+    catch(e) {
+      await fs.writeFile(`${path}.actual.png`, actual)
+      throw e
+    }
+
+    // Check if the screenshots match within tolerance
+    const maxDiffPercentage = opts.maxDiffPercentage || 0
+    const maxDiffPixels = opts.maxDiffPixels || 0
+
+    if (matchResult.pct <= maxDiffPercentage || matchResult.pixels <= maxDiffPixels) {
+      // Screenshots match, clean up any previous failure files
+      try {
+        await fs.unlink(`${path}.actual.png`)
+      } catch(e){}
+      try {
+        await fs.unlink(`${path}.diff.png`)
+      } catch(e){}
+      return
+    }
+
+    // Screenshots don't match, save diff and actual files
+    try {
+      await fs.writeFile(`${path}.actual.png`, actual)
+      await fs.writeFile(`${path}.diff.png`, matchResult.diff)
+    } catch(e){}
+
+    throw new Error([`Images were too different: ${path}`,
+      `Diff percentage: ${matchResult.pct.toFixed(2)}% (max ${maxDiffPercentage}%)`,
+      `Pixels: ${matchResult.pixels} (max ${maxDiffPixels})`,
+      `Diff paths: ${path}.{actual,diff}.png`,
+    ].join('\n'))
   }
 
 }

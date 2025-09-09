@@ -190,11 +190,11 @@ Then('the meta( )tag {string} should not/NOT contain/include/be/equal {string}',
 
 // Visual regression testing
 Then('(the )screenshot should match', async function (world:PlaywrightWorld) {
-  await world.expectScreenshotMatch(world.page, world.screenshotPath)
+  await world.expectScreenshotMatch(world.page, world.screenshotPath, { fullPage:true })
 })
 Then('(the )screenshot {string} should match', async function (world:PlaywrightWorld, name:string) {
   let explodedTags = world.info.explodedIdx ? `_(${world.info.tags.join(',')})` : ''
-  await world.expectScreenshotMatch(world.page, `${world.screenshotDir}/${name}${explodedTags}.png`)
+  await world.expectScreenshotMatch(world.page, `${world.screenshotDir}/${name}${explodedTags}.png`, { fullPage:true })
 })
 Then('(the )screenshot of the {string} {word} should match', async function (world:PlaywrightWorld, identifier, role) {
   let locator = world.getLocator(world.page, identifier, role)
