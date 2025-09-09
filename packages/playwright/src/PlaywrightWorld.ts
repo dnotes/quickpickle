@@ -2,7 +2,7 @@ import { chromium, firefox, Locator, webkit, type Browser, type BrowserContext, 
 import { normalizeTags, VisualWorld, VisualWorldInterface, ScreenshotComparisonOptions, AriaRoleExtended } from 'quickpickle';
 import { After } from 'quickpickle';
 import type { TestContext } from 'vitest';
-import { defaultsDeep } from 'lodash-es'
+import { cloneDeep, defaultsDeep } from 'lodash-es'
 import { InfoConstructor, VisualDiffResult } from 'quickpickle/dist/world';
 import { Buffer } from 'buffer';
 import { promises as fs } from 'node:fs';
@@ -306,8 +306,8 @@ export class PlaywrightWorld extends VisualWorld implements VisualWorldInterface
   }
 
   get screenshotOptions() {
-    let opts = defaultsDeep(this.worldConfig.screenshotOptions || {}, this.worldConfig.screenshotOpts || {})
-    if (opts.mask) opts.mask = opts.mask.map((m:string|Locator) => typeof m === 'string' ? this.page.locator(m) : m)
+    let opts = cloneDeep(defaultsDeep(this.worldConfig.screenshotOptions || {}, this.worldConfig.screenshotOpts || {}))
+    if (opts.mask) opts.mask = opts.mask.map((m:string) => this.page.locator(m))
     return opts
   }
 
