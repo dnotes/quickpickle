@@ -249,7 +249,7 @@ export class PlaywrightWorld extends VisualWorld implements VisualWorldInterface
       await this.expectElement(locator.getByText(text), toBePresent, toBeVisible)
     }
     catch(e) {
-      throw new Error(`The${toBeVisible ? ' hidden' :''} text "${text}" was unexpectedly ${toBePresent ? 'not present' : 'present'}.`)
+      throw new Error(`The${toBeVisible ? '' : ' hidden'} text "${text}" was unexpectedly ${toBePresent ? 'not present' : 'present'}.`)
     }
   }
 
@@ -273,7 +273,7 @@ export class PlaywrightWorld extends VisualWorld implements VisualWorldInterface
       else await expect(locator.locator(`visible=${visibleText}`)).toHaveCount(0, { timeout:this.worldConfig.stepTimeout })
     }
     catch(e) {
-      throw new Error(`The${toBeVisible ? ' hidden' :''} element "${locator}" was unexpectedly ${toBePresent ? 'not present' : 'present'}.`)
+      throw new Error(`The${toBeVisible ? '' : ' hidden'} element "${locator}" was unexpectedly ${toBePresent ? 'not present' : 'present'}.`)
     }
   }
 
