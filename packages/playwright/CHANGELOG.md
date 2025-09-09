@@ -1,5 +1,46 @@
 # @quickpickle/playwright
 
+## 0.14.0
+
+### Minor Changes
+
+- cdc087d: Use the new custom screenshot comparison engine from VisualWorld.
+  IMPORTANT: This upgrade may result in minor changes to existing visual regression baselines.
+- 596516b: Added an "AriaRole" parameter type, matching all Aria roles
+  as well as the quickpickle-specific extensions "input" and "element"
+
+  @quickpickle/playwright now uses this matcher instead of {word} for
+  matching visual elements on the page.
+
+- 1619ff4: Added a "weight" property to Hooks for ordering.
+
+  @quickpickle/playwright uses the new weight property to ensure that
+  its After hook gets run last (weight:99), so that there will still
+  be a browser in other After hooks. The upshot of this is that now
+  you can write hooks like the following, which takes a screenshot
+  after any Scenario with the proper tag:
+
+  ```ts
+  After("@screenshot", async (world: PlaywrightWorld) => {
+    await world.screenshot();
+  });
+  ```
+
+- cead779: This release adds new interfaces and world constructor class for a "VisualWorld"
+  to QuickPickle main library. All visual testing libraries (Playwright, Vitest Browser)
+  should implement the VisualWorldInterface, and may extend the VisualWorld class,
+  which encapsulates helpful functionality for screenshots.
+
+### Patch Changes
+
+- 3afe782: Fix the improper error messages in expectText and expectElement
+- 093d3eb: Marking playwright expect.toMatchScreenshot() as deprecated
+- Updated dependencies [f14aafc]
+- Updated dependencies [596516b]
+- Updated dependencies [1619ff4]
+- Updated dependencies [cead779]
+  - quickpickle@1.10.0
+
 ## 0.13.1
 
 ### Patch Changes
