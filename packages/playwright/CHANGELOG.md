@@ -1,5 +1,11 @@
 # @quickpickle/playwright
 
+## 0.14.1
+
+### Patch Changes
+
+- 61d43fa: Fix an error that arises when a mask is set and two screenshots are taken within one test.
+
 ## 0.14.0
 
 ### Minor Changes
