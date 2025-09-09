@@ -141,6 +141,14 @@ declare global {
 
 // Override the default implementation
 playwrightExpect.extend({
+  /**
+   * A custom matcher to check if a screenshot matches a snapshot.
+   * @param received the page or locator to take the screenshot from
+   * @param nameOrOptions the name of the screenshot or the options for the screenshot
+   * @param optOptions the options for the screenshot
+   * @returns the result of the screenshot comparison
+   * @deprecated Use world.expectScreenshotMatch instead
+   */
   async toMatchScreenshot(received: Page | Locator, nameOrOptions?: string | Partial<ToHaveScreenshotOptions>, optOptions?: Partial<ToHaveScreenshotOptions>) {
     const name = typeof nameOrOptions === 'string' ? nameOrOptions : 'screenshot';
     const options = typeof nameOrOptions === 'object' ? nameOrOptions : optOptions;
