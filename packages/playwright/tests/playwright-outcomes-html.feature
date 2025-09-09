@@ -28,7 +28,6 @@ Feature: Outcome step definitions on a static page
 
   Scenario: test that elements are not visible
     Then I should not see a "FWAH!!!" textbox
-    And I should not see a "Form" notheading
 
   Scenario: test that an element hidden with display:none is not visible
     Then I should not see "Hidden item"
@@ -79,7 +78,7 @@ Feature: Outcome step definitions on a static page
 
     @should-fail
     Scenario: "the {string} should be hidden" FAILS when elements are not present
-      Then the "li.imaginary" should be invisible
+      Then the "li.imaginary" element should be invisible
 
   Rule: Testing for disabled / enabled state should be possible
 

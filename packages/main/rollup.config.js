@@ -34,6 +34,7 @@ export default {
   external: [
     /^pngjs/,
     /^buffer/,
+    '@a11y-tools/aria-roles',
     'pixelmatch',
     '@cucumber/cucumber-expressions',
     '@cucumber/gherkin',

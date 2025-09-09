@@ -4,6 +4,8 @@ import type { QuickPickleConfig } from '.'
 import sanitize from './shims/path-sanitizer'
 import pixelmatch, { type PixelmatchOptions } from 'pixelmatch';
 import type { AriaRole } from '@a11y-tools/aria-roles';
+import { ariaRoles } from '@a11y-tools/aria-roles';
+import { defineParameterType } from './steps'
 export type AriaRoleExtended = AriaRole|'element'|'input'
 import { Buffer } from 'buffer'
 import { getPNG } from './shims/png.js'
@@ -380,3 +382,8 @@ export class VisualWorld extends QuickPickleWorld implements StubVisualWorldInte
   }
 
 }
+
+defineParameterType({
+  name: 'AriaRole',
+  regexp: new RegExp(`(${([ 'element', 'input', ...Object.keys(ariaRoles)]).join('|')})`),
+})
