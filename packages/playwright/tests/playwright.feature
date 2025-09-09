@@ -95,6 +95,19 @@ Feature: Basic tests of Playwright browser and steps
         ```
       Then the screenshot should match
 
+    Scenario: Two screenshots with a mask
+      Given I load the file "tests/examples/example.html"
+      And the following world config:
+        ```yaml
+        screenshotOptions:
+          mask:
+            - form
+        ```
+      When I take a screenshot named "mask"
+      And I take a screenshot named "mask"
+      Then the screenshot "mask.png" should exist--delete it
+
+
   Rule: Screenshots should be placed in the proper directory
 
     Scenario: Taking a screenshot

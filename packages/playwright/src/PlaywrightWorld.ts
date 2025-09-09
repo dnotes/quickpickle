@@ -307,7 +307,7 @@ export class PlaywrightWorld extends VisualWorld implements VisualWorldInterface
 
   get screenshotOptions() {
     let opts = defaultsDeep(this.worldConfig.screenshotOptions || {}, this.worldConfig.screenshotOpts || {})
-    if (opts.mask) opts.mask = opts.mask.map((m:string) => this.page.locator(m))
+    if (opts.mask) opts.mask = opts.mask.map((m:string|Locator) => typeof m === 'string' ? this.page.locator(m) : m)
     return opts
   }
 
