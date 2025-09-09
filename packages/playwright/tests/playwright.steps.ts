@@ -1,4 +1,4 @@
-import { Given, When, Then, DocString, DataTable, AfterAll } from 'quickpickle'
+import { Given, When, Then, DocString, DataTable, AfterAll, After } from 'quickpickle'
 import type { PlaywrightWorld, PlaywrightWorldConfig, PlaywrightWorldConfigSetting } from '../src/PlaywrightWorld'
 import yaml from 'js-yaml'
 import { expect } from '@playwright/test'
@@ -28,4 +28,8 @@ Then('the screenshot {string} should exist(--delete it)', async function (world:
 Then('the screenshot {string} should not exist', async function (world:PlaywrightWorld, filepath:string) {
   let fullpath = world.fullPath(`${world.screenshotDir}/${filepath}`)
   await expect(fs.existsSync(fullpath)).toBeFalsy();
+})
+
+After('@screenshot', async (world:PlaywrightWorld) => {
+  await world.screenshot()
 })

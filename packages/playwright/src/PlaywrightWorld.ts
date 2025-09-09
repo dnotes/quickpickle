@@ -381,6 +381,9 @@ function getDimensions(size:string) {
   return {width,height}
 }
 
-After(async (world:PlaywrightWorld) => {
-  await world.browserContext.close()
+After({
+  f: async (world:PlaywrightWorld) => {
+    await world.browserContext.close()
+  },
+  weight: 99,
 })

@@ -43,6 +43,10 @@ Feature: Outcome step definitions on a static page
     Then I should NOT see an "h1" element with the text "FWAH!!!"
     And I should NOT see a "fwah" element with the text "FWEEE!!!"
 
+  @screenshot
+  Scenario: The After hook has to still have a browser
+    Given I load the file "tests/examples/simple.html"
+
   Rule: All of the ways of addressing an element should be tested
 
     Example: it works to address an element with css selector

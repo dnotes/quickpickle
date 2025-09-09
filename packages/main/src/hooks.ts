@@ -1,4 +1,4 @@
-import { isFunction, isString, isObject, concat } from 'lodash-es'
+import { isFunction, isString, isObject, concat, sortBy } from 'lodash-es'
 import { tagsFunction } from './tags';
 
 type HookFunction = (state: any) => Promise<void>
@@ -8,6 +8,7 @@ interface Hook {
   f: HookFunction
   tags: string
   tagsFunction: (tags:string[]) => boolean
+  weight: number
 }
 
 interface HookCollection {
@@ -33,7 +34,7 @@ const hookNames: { [key: string]: string } = {
 };
 
 export const applyHooks = async (hooksName: string, state: any): Promise<void> => {
-  const hooks = allHooks[hooksName];
+  const hooks = sortBy(allHooks[hooksName], 'weight');
   for (let i = 0; i < hooks.length; i++) {
     let hook = hooks[i]
     const result = hook.tagsFunction(state.info.tags.map((t:string) => t.toLowerCase()));
@@ -44,9 +45,9 @@ export const applyHooks = async (hooksName: string, state: any): Promise<void> =
   return state;
 };
 
-const addHook = (hooksName: string, p1: string | Hook | HookFunction, p2?: string | string[] | HookFunction): void => {
+const addHook = (hooksName: string, p1: string | Partial<Hook> & { f: HookFunction } | HookFunction, p2?: string | string[] | HookFunction): void => {
 
-  let hook:Hook = { name:'', f:async ()=>{}, tags:'', tagsFunction: () => true }
+  let hook:Hook = { name:'', f:async ()=>{}, tags:'', tagsFunction: () => true, weight: 0 }
 
   if (isFunction(p1)) hook = { ...hook, f: p1}
   else if (isString(p1)) hook.tags = p1
@@ -61,7 +62,7 @@ const addHook = (hooksName: string, p1: string | Hook | HookFunction, p2?: strin
   allHooks[hooksName] = concat(allHooks[hooksName], hook);
 };
 
-type AddHookFunction = (p1: string | Hook | HookFunction, p2?: HookFunction) => void
+type AddHookFunction = (p1: string | Partial<Hook> & { f: HookFunction } | HookFunction, p2?: HookFunction) => void
 
 export const BeforeAll:AddHookFunction = (p1,p2): void => { addHook('beforeAll', p1, p2) };
 
