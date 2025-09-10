@@ -1,5 +1,12 @@
 # @quickpickle/vitest-browser
 
+## 0.2.2
+
+### Patch Changes
+
+- Updated dependencies [6713729]
+  - quickpickle@1.10.1
+
 ## 0.2.1
 
 ### Patch Changes

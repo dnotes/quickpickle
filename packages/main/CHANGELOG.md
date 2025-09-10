@@ -1,5 +1,11 @@
 # quickpickle
 
+## 1.10.1
+
+### Patch Changes
+
+- 6713729: Fix improper type for world.data - no more TS errors for storing arbitrary data there.
+
 ## 1.10.0
 
 ### Minor Changes
