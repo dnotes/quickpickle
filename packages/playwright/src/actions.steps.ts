@@ -5,6 +5,9 @@ import { expect } from '@playwright/test'
 // ================
 // Navigation
 
+Given('I am on the home/front page', async function (world:PlaywrightWorld) {
+  await world.page.goto(world.baseUrl.toString(), { timeout:world.worldConfig.stepTimeout })
+})
 Given('I am on {string}', async function (world:PlaywrightWorld, path) {
   let url = new URL(path, world.baseUrl)
   await world.page.goto(url.href, { timeout:world.worldConfig.stepTimeout })
@@ -30,26 +33,25 @@ When('I go back/forward/forwards', async function (world:PlaywrightWorld) {
 })
 
 // ================
-// Interaction
+// Identities
 
-Given('a/an/the {string}( user)( role)( browser)( identity)', async function (world:PlaywrightWorld, identity) {
-  await world.newIdentity(identity)
+Given('(as )a/an/the (user ){string}', async function (world:PlaywrightWorld, identity) {
+  await world.setIdentity(identity)
 })
-Given('I am (logged in as ){string}', async function (world:PlaywrightWorld, identity) {
-  if (!world.identities.has(identity)) await world.newIdentity(identity)
-  world.identity = identity
+Given('(as )a/an/the {string} user/role/browser/identity', async function (world:PlaywrightWorld, identity) {
+  await world.setIdentity(identity)
 })
-Given('I am (logged in as )a/an/the {string}( user)( role)( browser)( identity)', async function (world:PlaywrightWorld, identity) {
-  if (!world.identities.has(identity)) await world.newIdentity(identity)
-  world.identity = identity
+Given('I am {string}', async function (world:PlaywrightWorld, identity) {
+  await world.setIdentity(identity)
+})
+Given('I am a/an/the (user ){string}', async function (world:PlaywrightWorld, identity) {
+  await world.setIdentity(identity)
+})
+Given('I am a/an/the {string} user/role/browser/identity', async function (world:PlaywrightWorld, identity) {
+  await world.setIdentity(identity)
 })
 Then('as {string}', async function (world:PlaywrightWorld, identity) {
-  if (!world.identities.has(identity)) await world.newIdentity(identity)
-    world.identity = identity
-})
-Then('as a/an/the {string}( user)( role)( browser)( identity)', async function (world:PlaywrightWorld, identity) {
-  if (!world.identities.has(identity)) await world.newIdentity(identity)
-    world.identity = identity
+  await world.setIdentity(identity)
 })
 
 // ================

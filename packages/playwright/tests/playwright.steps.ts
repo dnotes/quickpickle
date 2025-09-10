@@ -89,7 +89,7 @@ Given('the following world config:', async (world:PlaywrightWorld, rawConf:DocSt
 })
 
 // IndexedDB
-Given('a(n) (indexed)db record for {string} with value {string}', async (world:PlaywrightWorld, key:string, value:string) => {
+Given('(there is )a(n) (indexed)db record for {string} with value {string}', async (world:PlaywrightWorld, key:string, value:string) => {
   await world.page.evaluate(async ([key, value]) => {
     return new Promise<void>((resolve, reject) => {
       const request = indexedDB.open('testing', 1);

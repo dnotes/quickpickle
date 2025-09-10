@@ -66,7 +66,7 @@ export class PlaywrightWorld extends VisualWorld implements VisualWorldInterface
   browser!: Browser
 
   identities: Map<string, BrowserMap> = new Map()
-  private _identity:string = 'default'
+  _identity:string = 'default'
 
   constructor(context:TestContext, info:InfoConstructor) {
     super(context, info)
@@ -79,19 +79,6 @@ export class PlaywrightWorld extends VisualWorld implements VisualWorldInterface
     await this.newIdentity('default')
     await this.setViewportSize()
   }
-
-  async newIdentity(name:string) {
-    let context = await this.browser.newContext({
-      serviceWorkers: 'block',
-      javaScriptEnabled: this.tagsMatch(this.worldConfig.nojsTags) ? false : true,
-    })
-    let page = await context.newPage()
-    this.identities.set(name, {
-      context,
-      page
-    })
-  }
-
   get browserContext() {
     return this.identities.get(this.identity)!.context
   }
@@ -103,7 +90,26 @@ export class PlaywrightWorld extends VisualWorld implements VisualWorldInterface
   }
   set identity(name:string) {
     if (this.identities.has(name)) this._identity = name
-    else throw new Error(`There is no browser for "${name}"; please call \`await world.newIdentity('${name}')\` first.`)
+    else throw new Error(`There is no browser for "${name}"; please call \`await world.setIdentity('${name}')\` instead.`)
+  }
+  async newIdentity(name:string) {
+    let context = await this.browser.newContext({
+      serviceWorkers: 'block',
+      javaScriptEnabled: this.tagsMatch(this.worldConfig.nojsTags) ? false : true,
+    })
+    let page = await context.newPage()
+    if (name !== 'default') {
+      let url = this.identities.get('default')!.page.url()
+      await page.goto(url, { timeout: this.worldConfig.stepTimeout })
+    }
+    this.identities.set(name, {
+      context,
+      page
+    })
+  }
+  async setIdentity(name:string) {
+    if (!this.identities.has(name)) await this.newIdentity(name)
+    this._identity = name
   }
 
   get browserName() {
