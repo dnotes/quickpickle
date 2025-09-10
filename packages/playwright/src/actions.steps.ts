@@ -32,6 +32,29 @@ When('I go back/forward/forwards', async function (world:PlaywrightWorld) {
 // ================
 // Interaction
 
+Given('a/an/the {string}( user)( role)( browser)( identity)', async function (world:PlaywrightWorld, identity) {
+  await world.newIdentity(identity)
+})
+Given('I am (logged in as ){string}', async function (world:PlaywrightWorld, identity) {
+  if (!world.identities.has(identity)) await world.newIdentity(identity)
+  world.identity = identity
+})
+Given('I am (logged in as )a/an/the {string}( user)( role)( browser)( identity)', async function (world:PlaywrightWorld, identity) {
+  if (!world.identities.has(identity)) await world.newIdentity(identity)
+  world.identity = identity
+})
+Then('as {string}', async function (world:PlaywrightWorld, identity) {
+  if (!world.identities.has(identity)) await world.newIdentity(identity)
+    world.identity = identity
+})
+Then('as a/an/the {string}( user)( role)( browser)( identity)', async function (world:PlaywrightWorld, identity) {
+  if (!world.identities.has(identity)) await world.newIdentity(identity)
+    world.identity = identity
+})
+
+// ================
+// Interaction
+
 When('I click/press/tap/touch (on ){string}', async function (world:PlaywrightWorld, identifier) {
   let locator = world.page.getByText(identifier, { exact:true })
   await locator.click({ timeout:world.worldConfig.stepTimeout })

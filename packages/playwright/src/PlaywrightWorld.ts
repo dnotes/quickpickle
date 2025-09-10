@@ -58,10 +58,15 @@ export type PlaywrightWorldConfig = typeof defaultPlaywrightWorldConfig & {
   browserSizes: Record<string,string>
 }
 
+export type BrowserMap = {
+  context: BrowserContext
+  page: Page
+}
 export class PlaywrightWorld extends VisualWorld implements VisualWorldInterface {
   browser!: Browser
-  browserContext!: BrowserContext
-  page!: Page
+
+  identities: Map<string, BrowserMap> = new Map()
+  private _identity:string = 'default'
 
   constructor(context:TestContext, info:InfoConstructor) {
     super(context, info)
@@ -71,12 +76,34 @@ export class PlaywrightWorld extends VisualWorld implements VisualWorldInterface
   async init() {
     await super.init()
     await this.startBrowser()
-    this.browserContext = await this.browser.newContext({
+    await this.newIdentity('default')
+    await this.setViewportSize()
+  }
+
+  async newIdentity(name:string) {
+    let context = await this.browser.newContext({
       serviceWorkers: 'block',
       javaScriptEnabled: this.tagsMatch(this.worldConfig.nojsTags) ? false : true,
     })
-    this.page = await this.browserContext.newPage()
-    await this.setViewportSize()
+    let page = await context.newPage()
+    this.identities.set(name, {
+      context,
+      page
+    })
+  }
+
+  get browserContext() {
+    return this.identities.get(this.identity)!.context
+  }
+  get page() {
+    return this.identities.get(this.identity)!.page
+  }
+  get identity() {
+    return this._identity
+  }
+  set identity(name:string) {
+    if (this.identities.has(name)) this._identity = name
+    else throw new Error(`There is no browser for "${name}"; please call \`await world.newIdentity('${name}')\` first.`)
   }
 
   get browserName() {
@@ -135,17 +162,15 @@ export class PlaywrightWorld extends VisualWorld implements VisualWorldInterface
 
   async reset(conf?:PlaywrightWorldConfigSetting) {
     let url = this.page.url() || this.baseUrl.toString()
-    await this.page?.close()
-    await this.browserContext?.close()
-    if (conf) {
-      await this.browser.close()
-      await this.setConfig(conf)
-      await this.startBrowser()
+    for (let identity of this.identities.keys()) {
+      await this.identities.get(identity)!.context.close()
     }
-    this.browserContext = await this.browser.newContext({
-      serviceWorkers: 'block'
-    })
-    this.page = await this.browserContext.newPage()
+    await this.browser.close()
+    if (conf) await this.setConfig(conf)
+    await this.startBrowser()
+    this.identities = new Map()
+    await this.newIdentity('default')
+    this.identity = 'default'
     await this.page.goto(url, { timeout: this.worldConfig.stepTimeout })
   }
 
@@ -383,7 +408,10 @@ function getDimensions(size:string) {
 
 After({
   f: async (world:PlaywrightWorld) => {
-    await world.browserContext.close()
+    for (let identity of world.identities.keys()) {
+      await world.identities.get(identity)!.context.close()
+    }
+    await world.browser.close()
   },
   weight: 99,
 })
