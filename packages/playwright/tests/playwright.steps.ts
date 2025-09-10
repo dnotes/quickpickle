@@ -1,9 +1,78 @@
-import { Given, When, Then, DocString, DataTable, AfterAll, After } from 'quickpickle'
+import { Given, When, Then, DocString, DataTable, AfterAll, After, Before, BeforeAll } from 'quickpickle'
 import type { PlaywrightWorld, PlaywrightWorldConfig, PlaywrightWorldConfigSetting } from '../src/PlaywrightWorld'
 import yaml from 'js-yaml'
 import { expect } from '@playwright/test'
+import http from 'node:http'
+import fs from 'node:fs'
 
-import fs from 'fs'
+// Global server manager to handle server lifecycle across multiple test files
+class ServerManager {
+  private static instance: ServerManager
+  private server: http.Server | null = null
+  private port = 8087
+  private refCount = 0
+
+  static getInstance(): ServerManager {
+    if (!ServerManager.instance) {
+      ServerManager.instance = new ServerManager()
+    }
+    return ServerManager.instance
+  }
+
+  async startServer(): Promise<void> {
+    this.refCount++
+
+    if (this.server) {
+      // Server already running, just increment reference count
+      return
+    }
+
+    return new Promise((resolve, reject) => {
+      this.server = http.createServer((req, res) => {
+        res.writeHead(200, { 'Content-Type': 'text/plain' })
+        res.end('Hello, world!')
+      })
+
+      this.server.listen(this.port, '127.0.0.1', () => {
+        console.log(`Test server started on port ${this.port}`)
+        resolve()
+      })
+
+      this.server.on('error', (err: any) => {
+        if (err.code === 'EADDRINUSE') {
+          console.warn(`Port ${this.port} already in use, assuming server is already running`)
+          this.server = null // Mark as not managed by us
+          resolve()
+        } else {
+          reject(err)
+        }
+      })
+    })
+  }
+
+  async stopServer(): Promise<void> {
+    this.refCount--
+
+    if (this.refCount > 0 || !this.server) {
+      // Still have references or server not managed by us
+      return
+    }
+
+    return new Promise((resolve) => {
+      this.server!.close(() => {
+        console.log('Test server stopped')
+        this.server = null
+        resolve()
+      })
+    })
+  }
+
+  getPort(): number {
+    return this.port
+  }
+}
+
+const serverManager = ServerManager.getInstance()
 
 Given('the following world config:', async (world:PlaywrightWorld, rawConf:DocString|DataTable) => {
   let config:PlaywrightWorldConfigSetting
@@ -115,6 +184,19 @@ Then('the screenshot {string} should exist(--delete it)', async function (world:
 Then('the screenshot {string} should not exist', async function (world:PlaywrightWorld, filepath:string) {
   let fullpath = world.fullPath(`${world.screenshotDir}/${filepath}`)
   await expect(fs.existsSync(fullpath)).toBeFalsy();
+})
+
+BeforeAll(async () => {
+  await serverManager.startServer()
+})
+
+Before('@webserver', async (world:PlaywrightWorld) => {
+  world.worldConfig.host = 'http://127.0.0.1'
+  world.worldConfig.port = serverManager.getPort()
+})
+
+AfterAll(async () => {
+  await serverManager.stopServer()
 })
 
 After('@screenshot', async (world:PlaywrightWorld) => {
