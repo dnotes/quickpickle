@@ -67,14 +67,14 @@
     "test": "vitest --run"
   },
   "dependencies": {
-    "@playwright/test": "^1.52.0",
+    "@playwright/test": "^1.55.1",
     "lodash": "^4.17.21",
     "lodash-es": "^4.17.21",
     "pixelmatch": "^6.0",
-    "playwright": "^1.52.0",
+    "playwright": "^1.55.1",
     "pngjs": "^7.0.0",
     "quickpickle": "workspace:^",
-    "vite": "^6.3.5"
+    "vite": "^6.4.1"
   },
   "devDependencies": {
     "@optimize-lodash/rollup-plugin": "^5.0.2",
