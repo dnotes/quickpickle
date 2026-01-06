@@ -215,7 +215,7 @@ export const defaultConfig: QuickPickleConfig = {
   /**
    * Tags to mark as failing, using Vitest's `test.failing` implementation.
    */
-  failTags: ['@fails', '@failing'],
+  failTags: ['@fails', '@failing', '@should-fail'],
 
   /**
    * Tags to mark as soft failing, allowing further steps to run until the end of the scenario.
