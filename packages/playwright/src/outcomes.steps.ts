@@ -20,11 +20,11 @@ Then('the text {string} should not/NOT be visible( on the page)', async function
 
 // ================
 // Elements on page
-Then('I should see a/an/the {string} {AriaRole}', async function (world:PlaywrightWorld, identifier, role) {
+Then('I should see a/an/the {string} {word}', async function (world:PlaywrightWorld, identifier, role) {
   let locator = world.getLocator(world.page, identifier, role)
   await world.expectElement(locator)
 })
-Then('I should not/NOT see a/an/the {string} {AriaRole}', async function (world:PlaywrightWorld, identifier, role) {
+Then('I should not/NOT see a/an/the {string} {word}', async function (world:PlaywrightWorld, identifier, role) {
   let locator = world.getLocator(world.page, identifier, role)
   await world.expectElement(locator, false)
 })
@@ -39,7 +39,7 @@ Then('I should not/NOT see a/an/the {string} (element )with (the )(text ){string
 
 // ================
 // Element state
-Then('a/an/the {string} {AriaRole} should be visible/hidden/invisible', async function (world:PlaywrightWorld, identifier, role) {
+Then('a/an/the {string} {word} should be visible/hidden/invisible', async function (world:PlaywrightWorld, identifier, role) {
   let state = world.info.step?.match(/(\w+)$/)![0]
   let locator = world.getLocator(world.page, identifier, role)
   await world.expectElement(locator, true, state === 'visible')
@@ -49,7 +49,7 @@ Then('a/an/the {string} (element )with (the )(text ){string} should be visible/h
   let locator = world.getLocator(world.page, identifier, 'element' as any, text)
   await world.expectElement(locator, true, state === 'visible')
 })
-Then('a/an/the {string} {AriaRole} should be attached/detatched', async function (world:PlaywrightWorld, identifier, role) {
+Then('a/an/the {string} {word} should be attached/detatched', async function (world:PlaywrightWorld, identifier, role) {
   let state = world.info.step?.match(/(\w)$/)![0] as 'attached'|'detached'
   let locator = world.getLocator(world.page, identifier, role)
   await locator.waitFor({ state, timeout:world.worldConfig.stepTimeout })
@@ -61,11 +61,11 @@ Then('a/an/the {string} (element )with (the )(text ){string} should be attached/
 })
 
 // disabled / enabled
-Then('a/an/the {string} {AriaRole} should be disabled', async function (world:PlaywrightWorld, identifier, role) {
+Then('a/an/the {string} {word} should be disabled', async function (world:PlaywrightWorld, identifier, role) {
   let locator = world.getLocator(world.page, identifier, role)
   await expect(locator).toBeDisabled()
 })
-Then('a/an/the {string} {AriaRole} should be enabled', async function (world:PlaywrightWorld, identifier, role) {
+Then('a/an/the {string} {word} should be enabled', async function (world:PlaywrightWorld, identifier, role) {
   let locator = world.getLocator(world.page, identifier, role)
   await expect(locator).toBeEnabled()
 })
@@ -79,11 +79,11 @@ Then('a/an/the {string} (element )with (the )(text ){string} should be enabled',
 })
 
 // checked / unchecked
-Then('a/an/the {string} {AriaRole} should be checked', async function (world:PlaywrightWorld, identifier, role) {
+Then('a/an/the {string} {word} should be checked', async function (world:PlaywrightWorld, identifier, role) {
   let locator = world.getLocator(world.page, identifier, role)
   await expect(locator).toBeChecked()
 })
-Then('a/an/the {string} {AriaRole} should be unchecked', async function (world:PlaywrightWorld, identifier, role) {
+Then('a/an/the {string} {word} should be unchecked', async function (world:PlaywrightWorld, identifier, role) {
   let locator = world.getLocator(world.page, identifier, role)
   await expect(locator).not.toBeChecked()
 })
@@ -97,11 +97,11 @@ Then('a/an/the {string} (element )with (the )(text ){string} should be unchecked
 })
 
 // focused / unfocused
-Then('a/an/the {string} {AriaRole} should be focused/active', async function (world:PlaywrightWorld, identifier, role) {
+Then('a/an/the {string} {word} should be focused/active', async function (world:PlaywrightWorld, identifier, role) {
   let locator = world.getLocator(world.page, identifier, role)
   await expect(locator).toBeFocused()
 })
-Then('a/an/the {string} {AriaRole} should be unfocused/blurred', async function (world:PlaywrightWorld, identifier, role) {
+Then('a/an/the {string} {word} should be unfocused/blurred', async function (world:PlaywrightWorld, identifier, role) {
   let locator = world.getLocator(world.page, identifier, role)
   await expect(locator).not.toBeFocused()
 })
@@ -115,11 +115,11 @@ Then('a/an/the {string} (element )with (the )(text ){string} should be unfocused
 })
 
 // in viewport / out of viewport
-Then('a/an/the {string} {AriaRole} should be in(side) (of )the viewport', async function (world:PlaywrightWorld, identifier, role) {
+Then('a/an/the {string} {word} should be in(side) (of )the viewport', async function (world:PlaywrightWorld, identifier, role) {
   let locator = world.getLocator(world.page, identifier, role)
   await expect(locator).toBeInViewport()
 })
-Then('a/an/the {string} {AriaRole} should be out(side) (of )the viewport', async function (world:PlaywrightWorld, identifier, role) {
+Then('a/an/the {string} {word} should be out(side) (of )the viewport', async function (world:PlaywrightWorld, identifier, role) {
   let locator = world.getLocator(world.page, identifier, role)
   await expect(locator).not.toBeInViewport()
 })
@@ -143,7 +143,7 @@ Then('a/an/the (value of ){string} should contain/include/be/equal {string}', as
     await expect(actual).toContain(expected)
   }
 })
-Then('a/an/the (value of )(the ){string} {AriaRole} should contain/include/be/equal {string}', async function (world:PlaywrightWorld, identifier, role, expected) {
+Then('a/an/the (value of )(the ){string} {word} should contain/include/be/equal {string}', async function (world:PlaywrightWorld, identifier, role, expected) {
   let exact = world.info.step?.match(/ should (?:be|equal) ['"]/) ? true : false
   if (role === 'metatag') await world.expectMetatag(world.page, identifier, expected, exact)
   else {
@@ -165,7 +165,7 @@ Then('a/an/the (value of )(the ){string} should not/NOT contain/include/be/equal
     await expect(actual).not.toContain(expected)
   }
 })
-Then('a/an/the (value of )(the ){string} {AriaRole} should not/NOT contain/include/be/equal {string}', async function (world:PlaywrightWorld, identifier, role, expected) {
+Then('a/an/the (value of )(the ){string} {word} should not/NOT contain/include/be/equal {string}', async function (world:PlaywrightWorld, identifier, role, expected) {
   let exact = world.info.step?.match(/ should (?:not|NOT) (?:be|equal) ['"]/) ? true : false
   if (role === 'metatag') await world.expectMetatag(world.page, identifier, expected, exact, false)
   else {
@@ -204,11 +204,11 @@ Then('(the )screenshot {string} should match', async function (world:PlaywrightW
   let explodedTags = world.info.explodedIdx ? `_(${world.info.tags.join(',')})` : ''
   await world.expectScreenshotMatch(world.page, `${world.screenshotDir}/${name}${explodedTags}.png`, { fullPage:true })
 })
-Then('(the )screenshot of the {string} {AriaRole} should match', async function (world:PlaywrightWorld, identifier, role) {
+Then('(the )screenshot of the {string} {word} should match', async function (world:PlaywrightWorld, identifier, role) {
   let locator = world.getLocator(world.page, identifier, role)
   await world.expectScreenshotMatch(locator, world.screenshotPath)
 })
-Then('(the )screenshot {string} of the {string} {AriaRole} should match', async function (world:PlaywrightWorld, name, identifier, role) {
+Then('(the )screenshot {string} of the {string} {word} should match', async function (world:PlaywrightWorld, name, identifier, role) {
   let locator = world.getLocator(world.page, identifier, role)
   let explodedTags = world.info.explodedIdx ? `_(${world.info.tags.join(',')})` : ''
   await world.expectScreenshotMatch(locator, `${world.screenshotDir}/${name}${explodedTags}.png`)

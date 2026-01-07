@@ -61,7 +61,7 @@ When('I click/press/tap/touch (on ){string}', async function (world:PlaywrightWo
   let locator = world.page.getByText(identifier, { exact:true })
   await locator.click({ timeout:world.worldConfig.stepTimeout })
 })
-When('I click/press/tap/touch (on )the {string} {AriaRole}', async function (world:PlaywrightWorld, identifier, role) {
+When('I click/press/tap/touch (on )the {string} {word}', async function (world:PlaywrightWorld, identifier, role) {
   let locator = world.getLocator(world.page, identifier, role)
   await locator.click({ timeout:world.worldConfig.stepTimeout })
 })
@@ -71,7 +71,7 @@ When('I focus/select/activate (on ){string}', async function (world:PlaywrightWo
   await locator.focus({ timeout:world.worldConfig.stepTimeout })
   await expect(locator).toBeFocused()
 })
-When('I focus/select/activate (on )the {string} {AriaRole}', async function (world:PlaywrightWorld, identifier, role) {
+When('I focus/select/activate (on )the {string} {word}', async function (world:PlaywrightWorld, identifier, role) {
   let locator = world.getLocator(world.page, identifier, role)
   await locator.focus({ timeout:world.worldConfig.stepTimeout })
   await expect(locator).toBeFocused()
@@ -84,7 +84,7 @@ When("for/in/on (the ){string} I type {string}", async function (world:Playwrigh
   let locator = world.getLocator(world.page, identifier, 'input')
   await locator.pressSequentially(value, { delay:world.worldConfig.keyboardDelay, timeout:world.worldConfig.stepTimeout })
 })
-When("for/in/on (the ){string} {AriaRole} I type {string}", async function (world:PlaywrightWorld, identifier, role, value) {
+When("for/in/on (the ){string} {word} I type {string}", async function (world:PlaywrightWorld, identifier, role, value) {
   let locator = world.getLocator(world.page, identifier, role)
   await locator.pressSequentially(value, { delay:world.worldConfig.keyboardDelay, timeout:world.worldConfig.stepTimeout })
 })
@@ -97,7 +97,7 @@ When("for/in/on (the ){string} I type the following keys: {}", async function (w
   let locator = world.getLocator(world.page, identifier, 'input')
   for (let key of keys.split(' ')) await locator.press(key, { delay:world.worldConfig.keyboardDelay, timeout:world.worldConfig.stepTimeout })
 })
-When("for/in/on (the ){string} {AriaRole} I type the following keys: {}", async function (world:PlaywrightWorld, identifier, role, keys) {
+When("for/in/on (the ){string} {word} I type the following keys: {}", async function (world:PlaywrightWorld, identifier, role, keys) {
   let locator = world.getLocator(world.page, identifier, role)
   for (let key of keys.split(' ')) await locator.press(key, { delay:world.worldConfig.keyboardDelay, timeout:world.worldConfig.stepTimeout })
 })
@@ -109,7 +109,7 @@ When("for/in/on (the ){string} I enter/fill/select (in ){string}", async functio
   let locator = world.getLocator(world.page, identifier, 'input')
   await world.setValue(locator, value)
 })
-When("for/in/on (the ){string} {AriaRole} I enter/fill/select (in ){string}", async function (world:PlaywrightWorld, identifier, role, value) {
+When("for/in/on (the ){string} {word} I enter/fill/select (in ){string}", async function (world:PlaywrightWorld, identifier, role, value) {
   let locator = world.getLocator(world.page, identifier, role)
   await world.setValue(locator, value)
 })
@@ -117,7 +117,7 @@ When("for/in/on (the ){string} I enter/fill/select (in )the following( text):", 
   let locator = world.getLocator(world.page, identifier, 'input')
   await world.setValue(locator, value.toString())
 })
-When("for/in/on (the ){string} {AriaRole} I enter/fill/select (in )the following( text):", async function (world:PlaywrightWorld, identifier, role, value) {
+When("for/in/on (the ){string} {word} I enter/fill/select (in )the following( text):", async function (world:PlaywrightWorld, identifier, role, value) {
   let locator = world.getLocator(world.page, identifier, role)
   await world.setValue(locator, value.toString())
 })
@@ -152,7 +152,7 @@ When('I wait for {string} to be attached/detatched/visible/hidden', async functi
   let locator = world.page.getByText(text)
   await locator.waitFor({ state, timeout:world.worldConfig.stepTimeout })
 })
-When('I wait for a/an/the {string} {AriaRole} to be attached/detatched/visible/hidden', async function (world:PlaywrightWorld, identifier, role) {
+When('I wait for a/an/the {string} {word} to be attached/detatched/visible/hidden', async function (world:PlaywrightWorld, identifier, role) {
   let state = world.info.step?.match(/(attached|detatched|visible|hidden)$/)![0] as 'attached'|'detached'|'visible'|'hidden'
   let locator = world.getLocator(world.page, identifier, role)
   await locator.waitFor({ state, timeout:world.worldConfig.stepTimeout })
@@ -186,11 +186,11 @@ Then('(I )take (a )screenshot', async function (world:PlaywrightWorld) {
 Then('(I )take (a )screenshot named {string}', async function (world:PlaywrightWorld, name:string) {
   await world.screenshot({ name })
 })
-Then('(I )take (a )screenshot of the {string} {AriaRole}', async function (world:PlaywrightWorld, identifier:string, role:string) {
+Then('(I )take (a )screenshot of the {string} {word}', async function (world:PlaywrightWorld, identifier:string, role:string) {
   let locator = world.getLocator(world.page, identifier, role as any)
   await world.screenshot({ locator })
 })
-Then('(I )take (a )screenshot of the {string} {AriaRole} named {string}', async function (world:PlaywrightWorld, identifier:string, role:string, name:string) {
+Then('(I )take (a )screenshot of the {string} {word} named {string}', async function (world:PlaywrightWorld, identifier:string, role:string, name:string) {
   let locator = world.getLocator(world.page, identifier, role as any)
   await world.screenshot({ locator, name })
 })

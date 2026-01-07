@@ -3,13 +3,15 @@ import { tagsMatch } from './tags'
 import type { QuickPickleConfig } from '.'
 import sanitize from './shims/path-sanitizer'
 import pixelmatch, { type PixelmatchOptions } from 'pixelmatch';
-import type { AriaRole } from '@a11y-tools/aria-roles';
-import { ariaRoles } from '@a11y-tools/aria-roles';
-import { defineParameterType } from './steps'
+import { ariaRoles, type AriaRole } from '@a11y-tools/aria-roles';
 export type AriaRoleExtended = AriaRole|'element'|'input'
 import { Buffer } from 'buffer'
 import { getPNG } from './shims/png.js'
 import { defaultsDeep } from 'lodash-es';
+
+export function isAriaRoleExtended(role:string): role is AriaRoleExtended {
+  return role === 'element' || role === 'input' || ariaRoles.hasOwnProperty(role)
+}
 
 interface Common {
   info: {
@@ -217,7 +219,7 @@ export interface VisualWorldInterface extends StubVisualWorldInterface {
    * @param text string
    * A string that the element must contain.
    */
-  getLocator(locator:any, identifier:string, role:AriaRoleExtended, text?:string|null):any
+  getLocator(locator:any, identifier:string, role:AriaRoleExtended|string, text?:string|null):any
 
   /**
    * Sets a value on a form element based on its type (select, checkbox/radio, or other input).
@@ -382,8 +384,3 @@ export class VisualWorld extends QuickPickleWorld implements StubVisualWorldInte
   }
 
 }
-
-defineParameterType({
-  name: 'AriaRole',
-  regexp: new RegExp(`(${([ 'element', 'input', ...Object.keys(ariaRoles)]).join('|')})`),
-})

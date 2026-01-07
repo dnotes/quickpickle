@@ -28,6 +28,7 @@ export {
   defaultScreenshotComparisonOptions,
   InfoConstructor,
   AriaRoleExtended,
+  isAriaRoleExtended,
 } from './world';
 export { DocString, DataTable }
 export { explodeTags, tagsMatch, normalizeTags, applyHooks }

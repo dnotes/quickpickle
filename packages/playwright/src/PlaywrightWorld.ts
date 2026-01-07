@@ -1,5 +1,5 @@
 import { chromium, firefox, Locator, webkit, type Browser, type BrowserContext, type Page } from 'playwright';
-import { normalizeTags, VisualWorld, VisualWorldInterface, ScreenshotComparisonOptions, AriaRoleExtended } from 'quickpickle';
+import { normalizeTags, VisualWorld, VisualWorldInterface, ScreenshotComparisonOptions, AriaRoleExtended, isAriaRoleExtended } from 'quickpickle';
 import { After } from 'quickpickle';
 import type { TestContext } from 'vitest';
 import { cloneDeep, defaultsDeep } from 'lodash-es'
@@ -206,11 +206,12 @@ export class PlaywrightWorld extends VisualWorld implements VisualWorldInterface
     * @param text Optional text to match inside the locator
     * @returns Promise<void>
     */
-  getLocator(el:Locator|Page, identifier:string, role:AriaRoleExtended, text:string|null=null) {
+  getLocator(el:Locator|Page, identifier:string, role:AriaRoleExtended|string, text:string|null=null) {
     let locator:Locator
+    if (!isAriaRoleExtended(role)) throw new Error(`Invalid ARIA role: ${role}`)
     if (role === 'element') locator = el.locator(identifier)
     else if (role === 'input') locator = el.getByLabel(identifier).or(el.getByPlaceholder(identifier))
-    else locator = el.getByRole(role as any, { name: identifier })
+    else locator = el.getByRole(role, { name: identifier })
     if (text && role !== 'input') return locator.filter({ hasText: text })
     return locator
   }
