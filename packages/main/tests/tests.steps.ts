@@ -116,6 +116,17 @@ When('a step takes too long', async function (world) {
   await new Promise(resolve => setTimeout(resolve, 10000));
 });
 
+// PRIORITY
+Given('a step definition with a higher/lower priority passes/fails', async function (world){
+  throw new Error('a step with a higher/lower priority passes/fails')
+}, -1);
+Given('a step definition with a higher/lower priority passes/fails', async function (world){
+  // this step always passes
+});
+Given('a step definition with a higher priority fails', async function (world) {
+  throw new Error('a step with a higher priority fails')
+}, 1000);
+
 // RENDERER
 
 Given("the following feature( file)( is rendered):", (world, feature:DocString) => {

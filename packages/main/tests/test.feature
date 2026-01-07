@@ -271,3 +271,19 @@ Feature: Basic Test
       Then error 1 should contain "a step takes too long"
       And error 1 should contain "timed out after"
       And clear error 1
+
+  @priority
+  Rule: Steps can override others through priority
+
+    Example: A step with a higher priority overrides a lower one
+      Given a step definition with a lower priority fails
+      And a step definition with a higher priority passes
+      Then the tests should pass
+
+    @soft
+    Example: A step with a higher priority can be more specific
+      Given a step definition with a lower priority passes
+      And a step definition with a higher priority fails
+      Then error 1 should contain "a step definition with a higher priority fails"
+      And clear error 1
+      And the tests should pass

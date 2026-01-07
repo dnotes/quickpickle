@@ -5,6 +5,7 @@ interface StepDefinition {
   expression: string|RegExp;
   f: (state: any, ...args: any[]) => any;
   cucumberExpression: Expression;
+  priority: number;
 }
 
 interface Step {
@@ -48,22 +49,30 @@ export const defineParameterType = (parameterType: IParameterTypeDefinition<any>
   parameterTypeRegistry.defineParameterType(buildParameterType(parameterType));
 };
 
-export const addStepDefinition = (expression: string|RegExp, f: (state: any, ...args: any[]) => any): void => {
+export const addStepDefinition = (expression: string|RegExp, f: (state: any, ...args: any[]) => any, priority: number = 0): void => {
   const cucumberExpression = expressionFactory.createExpression(expression);
-  steps.push({ expression, f, cucumberExpression });
+  steps.push({ expression, f, cucumberExpression, priority });
 };
 
 const findStepDefinitionMatches = (step:string): StepDefinitionMatch[] => {
   return steps.reduce((accumulator: StepDefinitionMatch[], stepDefinition: StepDefinition) => {
+    // Get the highest priority from the accumulator
+    const priority = accumulator?.[0]?.stepDefinition.priority ?? -9999;
+    // If the StepDefinition has a lower priority, don't even check it
+    if (stepDefinition.priority < priority) return accumulator;
+    // Check the StepDefinition for matches
     const matches = stepDefinition.cucumberExpression.match(step);
-    if (matches) {
-      return [...accumulator, {
-        stepDefinition,
-        parameters: matches.map((match: any) => match.getValue())
-      }];
-    } else {
-      return accumulator;
+    // If there are no matches, skip it
+    if (!matches) return accumulator;
+    // If the StepDefinition matches the step, create a StepDefinitionMatch
+    const stepDefinitionMatch: StepDefinitionMatch = {
+      stepDefinition,
+      parameters: matches.map((match: any) => match.getValue())
     }
+    // Add to or replace the accumulator, depending on the priority
+    return stepDefinition.priority === priority
+      ? [...accumulator, stepDefinitionMatch]
+      : [stepDefinitionMatch];
   }, []);
 };
 
@@ -83,7 +92,14 @@ ${snippet}
   }
 
   if (stepDefinitionMatches.length > 1) {
-    throw new Error(`More than one step which matches: '${step}'`);
+    const priority = stepDefinitionMatches[0].stepDefinition?.priority ?? 0;
+    const patterns = stepDefinitionMatches.map(m => m.stepDefinition.expression).join('\n - ');
+    throw new Error(
+      `Ambiguous step: '${step}'\n` +
+      `Multiple patterns match with equal priority (${priority}):\n - ${patterns}\n\n` +
+      `Resolve by adding a higher priority to one of them:\n` +
+      `  Given('${step}', yourFunction, ${priority + 1});`
+    );
   }
 
   return stepDefinitionMatches[0];

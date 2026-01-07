@@ -129,8 +129,7 @@ Feature: Outcome step definitions on a static page
 
     Scenario: date values
       Then the value of the "Date" textbox should be "2024-10-19"
-      When I focus on the "Date" textbox
-      And I type the following keys: ArrowLeft ArrowLeft ArrowLeft ArrowUp
+      When for "Date" I enter "2024-11-19"
       Then the value of the "Date" textbox should be "2024-11-19"
 
   Rule: Testing for metatags should be possible
