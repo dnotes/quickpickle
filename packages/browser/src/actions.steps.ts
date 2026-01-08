@@ -33,22 +33,22 @@ Given('I render (the ){string}( component) with the following props/properties:'
 When('I click/press/tap/touch (on ){string}', async function (world:VitestBrowserWorld, identifier) {
   let locator = world.page.getByText(identifier, { exact:true })
   await locator.click()
-})
+}, -10)
 When('I click/press/tap/touch (on )the {string} {word}', async function (world:VitestBrowserWorld, identifier, role) {
   let locator = world.getLocator(world.page, identifier, role)
   await locator.click()
-})
+}, -10)
 
 When('I focus/select/activate (on ){string}', async function (world:VitestBrowserWorld, identifier) {
   let locator = world.page.getByText(identifier, { exact:true });
   (locator.element() as HTMLElement)?.focus()
   await expect(locator).toHaveFocus()
-})
+}, -10)
 When('I focus/select/activate (on )the {string} {word}', async function (world:VitestBrowserWorld, identifier, role) {
   let locator = world.getLocator(world.page, identifier, role);
   (locator.element() as HTMLElement).focus()
   await expect(locator).toHaveFocus()
-})
+}, -10)
 
 // ================
 // Typing
@@ -58,20 +58,20 @@ When("for/in/on (the ){string} I type {string}", async function (world: VitestBr
   const element = locator.element() as HTMLElement;
   element.focus();
   await world.userEvent.keyboard(value);
-})
+}, -10)
 When("for/in/on (the ){string} {word} I type {string}", async function (world: VitestBrowserWorld, identifier: string, role: string, value: string) {
   const locator = world.getLocator(world.page, identifier, role);
   const element = locator.element() as HTMLElement;
   element.focus();
   await world.userEvent.keyboard(value);
-})
+}, -10)
 
 When('I type the following keys: {}', async function (world: VitestBrowserWorld, keys: string) {
   for (let key of keys.split(' ')) {
     if (key !== '{{' && key !== '[[' && !key.match(/^[\{\[].+[\}\]]$/)) key = `{${key}}`
     await world.userEvent.keyboard(key);
   }
-})
+}, -10)
 When("for/in/on (the ){string} I type the following keys: {}", async function (world:VitestBrowserWorld, identifier: string, keys: string) {
   const locator = world.getLocator(world.page, identifier, 'input');
   const element = locator.element() as HTMLElement;
@@ -80,7 +80,7 @@ When("for/in/on (the ){string} I type the following keys: {}", async function (w
     if (key !== '{{' && key !== '[[' && !key.match(/^[\{\[].+[\}\]]$/)) key = `{${key}}`
     await world.userEvent.keyboard(key);
   }
-})
+}, -10)
 When("for/in/on (the ){string} {word} I type the following keys: {}", async function (world:VitestBrowserWorld, identifier: string, role: string, keys: string) {
   const locator = world.getLocator(world.page, identifier, role);
   const element = locator.element() as HTMLElement;
@@ -89,7 +89,7 @@ When("for/in/on (the ){string} {word} I type the following keys: {}", async func
     if (key !== '{{' && key !== '[[' && !key.match(/^[\{\[].+[\}\]]$/)) key = `{${key}}`
     await world.userEvent.keyboard(key);
   }
-})
+}, -10)
 
 // ================
 // Forms
@@ -97,19 +97,19 @@ When("for/in/on (the ){string} {word} I type the following keys: {}", async func
 When("for/in/on (the ){string} I enter/fill/select (in ){string}", async function (world:VitestBrowserWorld, identifier, value) {
   let locator = world.getLocator(world.page, identifier, 'input')
   await world.setValue(locator, value)
-})
+}, -10)
 When("for/in/on (the ){string} {word} I enter/fill/select (in ){string}", async function (world:VitestBrowserWorld, identifier, role, value) {
   let locator = world.getLocator(world.page, identifier, role)
   await world.setValue(locator, value)
-})
+}, -10)
 When("for/in/on (the ){string} I enter/fill/select (in )the following( text):", async function (world:VitestBrowserWorld, identifier, value) {
   let locator = world.getLocator(world.page, identifier, 'input')
   await world.setValue(locator, value.toString())
-})
+}, -10)
 When("for/in/on (the ){string} {word} I enter/fill/select (in )the following( text):", async function (world:VitestBrowserWorld, identifier, role, value) {
   let locator = world.getLocator(world.page, identifier, role)
   await world.setValue(locator, value.toString())
-})
+}, -10)
 When('I enter/fill (in )the following( fields):', async function (world:VitestBrowserWorld, table:DataTable) {
   let rows = table.raw()
   let hasRole = rows[0].length === 3
@@ -122,16 +122,16 @@ When('I enter/fill (in )the following( fields):', async function (world:VitestBr
     let locator = world.getLocator(world.page, identifier, role)
     await world.setValue(locator, value)
   }
-})
+}, -10)
 
 When('I check (the ){string}( radio)( checkbox)( box)', async function (world:VitestBrowserWorld, indentifier) {
   let locator = world.getLocator(world.page, indentifier, 'input')
   await world.setValue(locator, 'on')
-})
+}, -10)
 When('I uncheck (the ){string}( checkbox)( box)', async function (world:VitestBrowserWorld, indentifier) {
   let locator = world.getLocator(world.page, indentifier, 'input')
   await world.setValue(locator, 'off')
-})
+}, -10)
 
 // ================
 // Waiting
@@ -149,10 +149,10 @@ When('I uncheck (the ){string}( checkbox)( box)', async function (world:VitestBr
 
 When('I wait (for ){int}ms', async function (world:VitestBrowserWorld, num) {
   await world.wait(num)
-})
+}, -10)
 When('I wait (for ){float} second(s)', async function (world:VitestBrowserWorld, num) {
   await world.wait(num * 1000)
-})
+}, -10)
 
 // ================
 // Scrolling
@@ -160,36 +160,36 @@ When('I wait (for ){float} second(s)', async function (world:VitestBrowserWorld,
 When('I scroll down/up/left/right', async function (world:VitestBrowserWorld) {
   let direction = world.info.step?.match(/(down|up|left|right)$/)![0] as 'down'|'up'|'left'|'right'
   await world.scroll(world.page, direction)
-})
+}, -10)
 When('I scroll down/up/left/right {int}(px)( pixels)', async function (world:VitestBrowserWorld, num) {
   let direction = world.info.step?.match(/(down|up|left|right)(?= \d)/)![0] as 'down'|'up'|'left'|'right'
   await world.scroll(world.page, direction, num)
-})
+}, -10)
 When('I scroll (the ){string} {word} down/up/left/right', async function (world:VitestBrowserWorld, identifier:string, role:string) {
   let locator = world.getLocator(world.page, identifier, role)
   let direction = world.info.step?.match(/(down|up|left|right)$/)![0] as 'down'|'up'|'left'|'right'
   await world.scroll(locator, direction)
-})
+}, -10)
 When('I scroll (the ){string} {word} down/up/left/right {int}(px)( pixels)', async function (world:VitestBrowserWorld, identifier, role, num) {
   let locator = world.getLocator(world.page, identifier, role)
   let direction = world.info.step?.match(/(down|up|left|right)(?= \d)/)![0] as 'down'|'up'|'left'|'right'
   await world.scroll(locator, direction, num)
-})
+}, -10)
 
 // ================
 // Screenshots
 
 Then('(I )take (a )screenshot', async function (world:VitestBrowserWorld) {
   await world.screenshot()
-})
+}, -10)
 Then('(I )take (a )screenshot named {string}', async function (world:VitestBrowserWorld, name:string) {
   await world.screenshot({ name })
-})
+}, -10)
 Then('(I )take (a )screenshot of the {string} {word}', async function (world:VitestBrowserWorld, identifier:string, role:string) {
   let locator = world.getLocator(world.page, identifier, role)
   await world.screenshot({ locator })
-})
+}, -10)
 Then('(I )take (a )screenshot of the {string} {word} named {string}', async function (world:VitestBrowserWorld, identifier:string, role:string, name:string) {
   let locator = world.getLocator(world.page, identifier, role)
   await world.screenshot({ locator, name })
-})
+}, -10)
