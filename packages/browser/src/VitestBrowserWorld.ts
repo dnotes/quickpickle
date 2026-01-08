@@ -10,10 +10,32 @@ import { Buffer } from 'buffer'
 /// <reference types="@vitest/browser/providers/playwright" />
 
 export interface VitestWorldConfigSetting extends VisualConfigSetting {
+  /**
+   * The directory in which components are kept, relative to the project root.
+   */
   componentDir?:        string;
+  /**
+   * The default timeout in milliseconds for all methods that accept a timeout option.
+   * This should always be lower than the QuickPickle stepTimeout, or After functions may fail to run.
+   * @default 1000
+   */
+  defaultTimeout?: number;
+  /**
+   * The default timeout in milliseconds for actions like click, fill, etc.
+   * If 0 or not set, uses defaultTimeout.
+   */
+  actionTimeout?: number;
+  /**
+   * The default timeout in milliseconds for navigation actions like goto, reload, etc.
+   * If 0 or not set, uses defaultTimeout.
+   * @default 3000
+   */
+  navigationTimeout?: number;
 }
 
 export const defaultVitestWorldConfig:VitestWorldConfigSetting = {
+  defaultTimeout: 1000,
+  navigationTimeout: 3000,
   componentDir: '',               // directory in which components are kept, relative to project root
   screenshotDir: 'screenshots',   // directory in which to save screenshots, relative to project root (default: "screenshots")
   screenshotOpts: {               // options for the default screenshot comparisons
@@ -78,6 +100,13 @@ export class VitestBrowserWorld extends VisualWorld implements VitestBrowserWorl
     let browserContext = await import('@vitest/browser/context')
     this.browserPage = browserContext.page;
     this.userEvent = browserContext.userEvent;
+    // Set default timeouts on browserPage if it supports it (Playwright provider)
+    if (typeof (this.browserPage as any).setDefaultTimeout === 'function') {
+      (this.browserPage as any).setDefaultTimeout(this.worldConfig.actionTimeout || this.worldConfig.defaultTimeout)
+    }
+    if (typeof (this.browserPage as any).setDefaultNavigationTimeout === 'function') {
+      (this.browserPage as any).setDefaultNavigationTimeout(this.worldConfig.navigationTimeout || this.worldConfig.defaultTimeout)
+    }
   }
 
   get page():Locator {

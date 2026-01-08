@@ -13,23 +13,97 @@ import { ScreenshotSetting } from './snapshotMatcher';
 const browsers = { chromium, firefox, webkit }
 
 export type PlaywrightWorldConfigSetting = Partial<{
-  host: string, // default host, including protocol (default: http://localhost)
-  port: number, // port to which the browser should connect (default: undefined)
-  screenshotDir: string, // directory in which to save screenshots (default: "screenshots")
-  screenshotOptions?: ScreenshotSetting // options for the default screenshot comparisons
-  nojsTags: string|string[] // tags for scenarios to run without javascript (default: @nojs, @noscript)
+  /**
+   * The host to connect to.
+   * @default http://localhost
+   */
+  host: string,
+  /**
+   * The port to connect to.
+   * @default undefined
+   */
+  port: number,
+  /**
+   * The directory in which to save screenshots.
+   * @default "screenshots"
+   */
+  screenshotDir: string,
+  /**
+   * Options for the default screenshot comparisons.
+   * @default undefined
+   */
+  screenshotOptions?: ScreenshotSetting,
+  /**
+   * Tags for scenarios to run without javascript.
+   * @default ["@nojs","@noscript"]
+   */
+  nojsTags: string|string[],
+  /**
+   * Tags for scenarios to run with browser visible.
+   * @default ["@browser","@show-browser","@showbrowser"]
+   */
   showBrowserTags: string|string[] // tags for scenarios to run with browser visible (default: @browser, @show-browser, @showbrowser)
-  slowMoTags: string|string[] // tags for scenarios to be run with slow motion enabled (default: @slowmo)
-  headless: boolean // whether to run the browser in headless mode (default true)
+  /**
+   * Tags for scenarios to be run with slow motion enabled.
+   * @default ["@slowmo"]
+   */
+  slowMoTags: string|string[],
+  /**
+   * Whether to run the browser in headless mode.
+   * @default true
+   */
+  headless: boolean,
+  /**
+   * Whether to run the browser with slow motion enabled.
+   * @default false
+   */
   slowMo: boolean|number // whether to run the browser with slow motion enabled (default false)
-  slowMoMs: number // the number of milliseconds to slow down the browser by (default 500)
-  keyboardDelay: number // the number of milliseconds between key presses (default:20)
+  /**
+   * The number of milliseconds to slow down the browser by.
+   * @default 500
+   */
+  slowMoMs: number,
+  /**
+   * The number of milliseconds between key presses.
+   * @default 20
+   */
+  keyboardDelay: number,
+  /**
+   * The default browser to use.
+   * @default "chromium"
+   */
   defaultBrowser: 'chromium'|'firefox'|'webkit' // the default browser to use (default: chromium)
-  browserSizes: Record<string,string> // the default browser sizes to use, in the form "widthxheight"
-  // (default: { mobile: "480x640", tablet: "1024x768", desktop: "1920x1080", widescreen: "3440x1440" })
-  defaultBrowserSize: string // the default browser size to use (default: desktop)
-  // Timeouts!
-  stepTimeout: number // the number of milliseconds to wait for PROVIDED (not custom) steps to complete (default:5000)
+  /**
+   * The default browser sizes to use, in the form "widthxheight".
+   * @default {mobile:"480x640",tablet:"1024x768",desktop:"1920x1080",widescreen:"3440x1440"}
+   */
+  browserSizes: Record<string,string>,
+  /**
+   * The default browser size to use.
+   * @default "desktop"
+   */
+  defaultBrowserSize: string,
+  /**
+   * @deprecated alias for defaultTimeout.
+   */
+  stepTimeout: number,
+  /**
+   * The default timeout in milliseconds for all methods that accept a timeout option.
+   * This should always be lower than the QuickPickle stepTimeout, or After functions may fail to run.
+   * @default 1000
+   */
+  defaultTimeout: number,
+  /**
+   * The default timeout in milliseconds for actions like click, fill, etc.
+   * If 0 or not set, uses defaultTimeout.
+   */
+  actionTimeout: number,
+  /**
+   * The default timeout in milliseconds for navigation actions like goto, reload, etc.
+   * If 0 or not set, uses defaultTimeout.
+   * @default 3000
+   */
+  navigationTimeout: number,
 }>
 
 export const defaultPlaywrightWorldConfig = {
@@ -50,7 +124,8 @@ export const defaultPlaywrightWorldConfig = {
     widescreen: '3440x1440',
   },
   defaultBrowserSize: 'desktop',
-  stepTimeout: 5000,
+  defaultTimeout: 1000,
+  navigationTimeout: 3000,
 }
 
 export type PlaywrightWorldConfig = typeof defaultPlaywrightWorldConfig & {
@@ -71,6 +146,10 @@ export class PlaywrightWorld extends VisualWorld implements VisualWorldInterface
   constructor(context:TestContext, info:InfoConstructor) {
     super(context, info)
     this.setConfig(info.config.worldConfig)
+    // Handle deprecated stepTimeout and timeout
+    if (info.config.worldConfig.stepTimeout && !info.config.worldConfig.defaultTimeout) {
+      info.config.worldConfig.defaultTimeout = info.config.worldConfig.stepTimeout
+    }
   }
 
   async init() {
@@ -97,10 +176,15 @@ export class PlaywrightWorld extends VisualWorld implements VisualWorldInterface
       serviceWorkers: 'block',
       javaScriptEnabled: this.tagsMatch(this.worldConfig.nojsTags) ? false : true,
     })
+    // Set default timeouts on the context
+    context.setDefaultTimeout(this.worldConfig.actionTimeout || this.worldConfig.defaultTimeout)
+    context.setDefaultNavigationTimeout(this.worldConfig.navigationTimeout || this.worldConfig.defaultTimeout)
+    
     let page = await context.newPage()
+    
     if (name !== 'default') {
       let url = this.identities.get('default')!.page.url()
-      await page.goto(url, { timeout: this.worldConfig.stepTimeout })
+      await page.goto(url)
     }
     this.identities.set(name, {
       context,
@@ -141,6 +225,10 @@ export class PlaywrightWorld extends VisualWorld implements VisualWorldInterface
       newConfig.slowMoMs = newConfig.slowMo
       newConfig.slowMo = newConfig.slowMoMs > 0
     }
+    // Migrate deprecated timeout properties to defaultTimeout
+    if (newConfig.stepTimeout && !newConfig.defaultTimeout) {
+      newConfig.defaultTimeout = newConfig.stepTimeout
+    }
     this.info.config.worldConfig = newConfig
   }
   async setViewportSize(size?:string) {
@@ -177,7 +265,7 @@ export class PlaywrightWorld extends VisualWorld implements VisualWorldInterface
     this.identities = new Map()
     await this.newIdentity('default')
     this.identity = 'default'
-    await this.page.goto(url, { timeout: this.worldConfig.stepTimeout })
+    await this.page.goto(url)
   }
 
   async close() {
@@ -228,19 +316,19 @@ export class PlaywrightWorld extends VisualWorld implements VisualWorldInterface
     * @returns Promise<void>
     */
   async setValue(locator:Locator, value:string|any) {
-    let { tag, type, role } = await locator.evaluate((el) => ({ tag:el.tagName.toLowerCase(), type:el.getAttribute('type')?.toLowerCase(), role:el.getAttribute('role')?.toLowerCase() }), undefined, { timeout: this.worldConfig.stepTimeout })
+    let { tag, type, role } = await locator.evaluate((el) => ({ tag:el.tagName.toLowerCase(), type:el.getAttribute('type')?.toLowerCase(), role:el.getAttribute('role')?.toLowerCase() }), undefined, { timeout: this.worldConfig.actionTimeout || this.worldConfig.defaultTimeout })
     if (!tag) throw new Error(`Could not find element with locator: ${locator.toString()}`)
     if (tag === 'select') {
       let values = value.split(/\s*(?<!\\),\s*/).map((v:string) => v.replace(/\\,/g, ','))
-      await locator.selectOption(values, { timeout: this.worldConfig.stepTimeout })
+      await locator.selectOption(values)
     }
     else if (type === 'checkbox' || type === 'radio' || role === 'checkbox') {
       let check = !( ['false','no','unchecked','','null','undefined','0'].includes(value.toString().toLowerCase()) )
-      if (check) await locator.check({ timeout: this.worldConfig.stepTimeout })
-      else await locator.uncheck({ timeout: this.worldConfig.stepTimeout })
+      if (check) await locator.check()
+      else await locator.uncheck()
     }
     else {
-      await locator.fill(value, { timeout: this.worldConfig.stepTimeout })
+      await locator.fill(value)
     }
   }
 
@@ -301,8 +389,8 @@ export class PlaywrightWorld extends VisualWorld implements VisualWorldInterface
   async expectElement(locator:Locator|Page, toBePresent:boolean=true, toBeVisible:boolean=true) {
     let visibleText = toBeVisible ? 'true' : ''
     try {
-      if (toBePresent) await expect(locator.locator(`visible=${visibleText}`).first()).toBeAttached({ timeout:this.worldConfig.stepTimeout })
-      else await expect(locator.locator(`visible=${visibleText}`)).toHaveCount(0, { timeout:this.worldConfig.stepTimeout })
+      if (toBePresent) await expect(locator.locator(`visible=${visibleText}`).first()).toBeAttached()
+      else await expect(locator.locator(`visible=${visibleText}`)).toHaveCount(0)
     }
     catch(e) {
       throw new Error(`The${toBeVisible ? '' : ' hidden'} element "${locator}" was unexpectedly ${toBePresent ? 'not present' : 'present'}.`)

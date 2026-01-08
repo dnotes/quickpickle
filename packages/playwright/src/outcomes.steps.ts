@@ -52,12 +52,12 @@ Then('a/an/the {string} (element )with (the )(text ){string} should be visible/h
 Then('a/an/the {string} {word} should be attached/detatched', async function (world:PlaywrightWorld, identifier, role) {
   let state = world.info.step?.match(/(\w)$/)![0] as 'attached'|'detached'
   let locator = world.getLocator(world.page, identifier, role)
-  await locator.waitFor({ state, timeout:world.worldConfig.stepTimeout })
+  await locator.waitFor({ state })
 }, -10)
 Then('a/an/the {string} (element )with (the )(text ){string} should be attached/detatched', async function (world:PlaywrightWorld, identifier, text) {
   let state = world.info.step?.match(/(\w)$/)![0] as 'attached'|'detached'
   let locator = world.getLocator(world.page, identifier, 'element' as any, text)
-  await locator.waitFor({ state, timeout:world.worldConfig.stepTimeout })
+  await locator.waitFor({ state })
 }, -10)
 
 // disabled / enabled

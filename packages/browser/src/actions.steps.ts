@@ -32,11 +32,11 @@ Given('I render (the ){string}( component) with the following props/properties:'
 
 When('I click/press/tap/touch (on ){string}', async function (world:VitestBrowserWorld, identifier) {
   let locator = world.page.getByText(identifier, { exact:true })
-  await locator.click({ timeout:world.worldConfig.stepTimeout })
+  await locator.click()
 })
 When('I click/press/tap/touch (on )the {string} {word}', async function (world:VitestBrowserWorld, identifier, role) {
   let locator = world.getLocator(world.page, identifier, role)
-  await locator.click({ timeout:world.worldConfig.stepTimeout })
+  await locator.click()
 })
 
 When('I focus/select/activate (on ){string}', async function (world:VitestBrowserWorld, identifier) {
@@ -139,12 +139,12 @@ When('I uncheck (the ){string}( checkbox)( box)', async function (world:VitestBr
 // When('I wait for {string} to be attached/detatched/visible/hidden', async function (world:VitestBrowserWorld, text) {
 //   let state = world.info.step?.match(/(attached|detatched|visible|hidden)$/)![0] as 'attached'|'detached'|'visible'|'hidden'
 //   let locator = world.page.getByText(text)
-//   await locator.waitFor({ state, timeout:world.worldConfig.stepTimeout })
+//   await locator.waitFor({ state })
 // })
 // When('I wait for a/an/the {string} {word} to be attached/detatched/visible/hidden', async function (world:VitestBrowserWorld, identifier, role) {
 //   let state = world.info.step?.match(/(attached|detatched|visible|hidden)$/)![0] as 'attached'|'detached'|'visible'|'hidden'
 //   let locator = world.getLocator(world.page, identifier, role)
-//   await locator.waitFor({ state, timeout:world.worldConfig.stepTimeout })
+//   await locator.waitFor({ state })
 // })
 
 When('I wait (for ){int}ms', async function (world:VitestBrowserWorld, num) {

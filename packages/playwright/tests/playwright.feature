@@ -128,3 +128,27 @@ Feature: Basic tests of Playwright browser and steps
       When I take a screenshot of the "XKCD Comic" img named "test2"
       Then the screenshot "test2.png" should exist--delete it
 
+  Rule: Playwright timeouts must be supported
+
+    Background:
+      Given the following world config:
+        ```yaml
+          defaultTimeout: 1000
+          actionTimeout: 2000
+          navigationTimeout: 3000
+        ```
+      Given I am a user "new"
+      When I load the file "tests/examples/example.html"
+
+    @soft
+    Scenario: Action takes too long
+      When I click on the "Not a link!" link
+      Then error 1 should contain "2000ms"
+      And clear error 1
+
+    @soft @chromium
+    Scenario: Navigation takes too long
+      Given the network latency is 4000ms
+      When I visit "https://xkcd.com/2928/"
+      Then error 1 should contain "3000ms"
+      And clear error 1

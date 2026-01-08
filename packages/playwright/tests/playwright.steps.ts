@@ -186,6 +186,18 @@ Then('the screenshot {string} should not exist', async function (world:Playwrigh
   await expect(fs.existsSync(fullpath)).toBeFalsy();
 })
 
+// Network
+Given('the network latency is {int}ms', async function (world:PlaywrightWorld, latency:number) {
+  // Create a CDP Session
+  const client = await world.page.context().newCDPSession(world.page);
+  await client.send('Network.emulateNetworkConditions', {
+    offline: false,
+    downloadThroughput: (15 * 1024 * 1024) / 8,   // 15 Mbps to byte/s
+    uploadThroughput: (3 * 1024 * 1024) / 8,      // 3 Mbps to byte/s
+    latency,
+  });
+});
+
 BeforeAll(async () => {
   await serverManager.startServer()
 })
