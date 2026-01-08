@@ -48,7 +48,7 @@
     "@cucumber/messages": "^27.2.0",
     "@cucumber/tag-expressions": "^6.1.2",
     "buffer": "^6.0.3",
-    "js-yaml": "^4.1.0",
+    "js-yaml": "^4.1.1",
     "lodash": "^4.17.21",
     "lodash-es": "^4.17.21",
     "pngjs": "^7.0.0"
