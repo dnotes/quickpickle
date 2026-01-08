@@ -114,7 +114,7 @@ export const defaultPlaywrightWorldConfig = {
   slowMoTags: ['@slowmo'],
   headless: true,
   slowMo: false,
-  slowMoMs: 500,
+  slowMoMs: 100,
   keyboardDelay: 20,
   defaultBrowser: 'chromium',
   browserSizes: {
@@ -123,7 +123,7 @@ export const defaultPlaywrightWorldConfig = {
     desktop: '1920x1080',
     widescreen: '3440x1440',
   },
-  defaultBrowserSize: 'desktop',
+  defaultBrowserSize: 'mobile',
   defaultTimeout: 1000,
   navigationTimeout: 3000,
 }
