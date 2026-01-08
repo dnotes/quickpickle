@@ -1,6 +1,5 @@
 import { Given, When, Then, DocString, DataTable, AfterAll, After, Before, BeforeAll } from 'quickpickle'
 import type { PlaywrightWorld, PlaywrightWorldConfig, PlaywrightWorldConfigSetting } from '../src/PlaywrightWorld'
-import yaml from 'js-yaml'
 import { expect } from '@playwright/test'
 import http from 'node:http'
 import fs from 'node:fs'
@@ -78,13 +77,7 @@ Given('the following world config:', async (world:PlaywrightWorld, rawConf:DocSt
   let config:PlaywrightWorldConfigSetting
   if (rawConf instanceof DataTable)
     config = rawConf.rowsHash()
-  else if (rawConf.mediaType.match(/^json/))
-    config = JSON.parse(rawConf.toString())
-  else if (rawConf.mediaType.match(/^ya?ml$/))
-    config = yaml.load(rawConf.toString())
-  else if (rawConf.match(/\s*\{/))
-    config = JSON.parse(rawConf.toString())
-  else config = yaml.load(rawConf.toString())
+  else config = rawConf?.data ?? {}
   await world.reset(config)
 })
 

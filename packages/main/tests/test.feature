@@ -87,6 +87,48 @@ Feature: Basic Test
       And the variable "text.mediaType" should be "md"
       And the typeof "text" should be "object"
 
+    Example: DocStrings expand json into an object
+      Given the following text:
+        ```json
+          {
+            "foo": "bar"
+          }
+        ```
+      Then the value "text.data.foo" should be "bar"
+      And the variable "text.mediaType" should be "json"
+      And the typeof "text" should be "object"
+
+    @soft
+    Example: DocStrings throw an error if json data doesn't parse properly
+      Given the following text:
+        ```json
+          {
+            foo: "invalid json"
+          }
+        ```
+      Then the error 1 should contain "parsing json content failed"
+      And clear error 1
+
+    Example: DocStrings expand yaml into an object
+      Given the following text:
+        ```yaml
+          foo: bar
+        ```
+      Then the value "text.data.foo" should be "bar"
+      And the variable "text.mediaType" should be "yaml"
+      And the typeof "text" should be "object"
+
+    @soft
+    Example: DocStrings throw an error if yaml data doesn't parse properly
+      Given the following text:
+        ```yaml
+          foo: bar: baz #invalid yaml!
+        ```
+      Then the error 1 should contain "parsing yaml content failed"
+      And clear error 1
+
+    
+
   Rule: Scenario Outlines must work
 
     Scenario Outline: Adding numbers: <int1> + <int2> = <sum>

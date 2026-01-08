@@ -40,7 +40,7 @@ Feature: Basic tests of Playwright browser and steps
 
   @sequential @skip-ci @artifacts-todo
   Rule: Visual regression testing must be supported
-
+    
     Example: Passing visual regression test
       When I load the file "tests/examples/simple.html"
       Then the screenshot should match
