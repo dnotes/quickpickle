@@ -57,17 +57,73 @@ Feature: Basic tests of Playwright browser and steps
       When I load the file "tests/examples/example.html"
       Then the screenshot "visual-regression-faq-section" of the "#faq" element should match
 
-    @fails
+    @soft
     Example: Failing visual regression test
       When I load the file "tests/examples/example.html"
       Then the screenshot "visual-regression-simple-page.png.diff.png" should not exist
       And the screenshot "visual-regression-simple-page.png.actual.png" should not exist
       And the screenshot "visual-regression-simple-page" should match
+      Then error 1 should contain "expected: w:"
+      And clear error 1
 
     Scenario: Delete the visual regression failure file
-      # the diff screenshot should not exist because the images are different sizes, so no diff can be created
+      # the diff screenshot should not exist because the images are different sizes, so no diff gets created
       Then the screenshot "visual-regression-simple-page.png.diff.png" should not exist
       And the screenshot "visual-regression-simple-page.png.actual.png" should exist--delete it
+
+  @sequential @skip-ci @artifacts-todo @soft
+  Rule: Visual regression testing with different sized images should be supported
+    
+    Background:
+      Given I load the file "tests/examples/simple.html"
+
+    Example: Setting a baseline image
+      Given the browser size is 200 x 800
+      Then I take a screenshot named "visual-regression-different-sizes"
+
+    Example: Comparing images with different dimensions can pass if maxDiffPercentage is set
+      Given the following world config:
+        ```yaml
+        screenshotOptions:
+          maxDiffPercentage: 1
+          resizeEnabled: true
+        ```
+      And the browser size is 200 x 805
+      Then the screenshot "visual-regression-different-sizes" should match
+    
+    Example: Comparing images with different dimensions can pass if maxDiffPixels is set
+      Given the following world config:
+        ```yaml
+        screenshotOptions:
+          maxDiffPixels: 1000
+          resizeEnabled: true
+        ```
+      And the browser size is 200 x 805
+      Then the screenshot "visual-regression-different-sizes" should match
+
+    Example: Comparing images with different dimensions still fails, but with a diff 
+      Given the following world config:
+        ```yaml
+          screenshotOptions:
+            resizeEnabled: true
+        ```
+      Given the browser size is 200 x 805
+      When the screenshot "visual-regression-different-sizes" should match
+      Then error 1 should NOT contain "expected: w:"
+      And error 1 should contain "Images were too different"
+      And clear error 1
+      And the screenshot "visual-regression-different-sizes.png.diff.png" should exist--delete it
+      And the screenshot "visual-regression-different-sizes.png.actual.png" should exist--delete it
+
+    Example: Ignoring the resized area results in a passing test
+      Given the following world config:
+        ```yaml
+          screenshotOptions:
+            resizeEnabled: true
+            resizeIgnored: true
+        ```
+      Given the browser size is 200 x 805
+      When the screenshot "visual-regression-different-sizes" should match
 
   @skip-ci @artifacts-todo
   Rule: Setting screenshot options must be supported

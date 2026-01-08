@@ -8,6 +8,8 @@ export type AriaRoleExtended = AriaRole|'element'|'input'
 import { Buffer } from 'buffer'
 import { getPNG } from './shims/png.js'
 import { defaultsDeep } from 'lodash-es';
+// @ts-ignore https://github.com/dnotes/image-crop-or-pad/issues/1
+import { resizeImage } from 'image-crop-or-pad';
 
 export function isAriaRoleExtended(role:string): role is AriaRoleExtended {
   return role === 'element' || role === 'input' || ariaRoles.hasOwnProperty(role)
@@ -141,14 +143,43 @@ export type VisualDiffResult = {
 }
 
 export type ScreenshotComparisonOptions = any & Partial<PixelmatchOptions> & {
+  /**
+   * The maximum difference between the actual and expected images, as a percentage of the total number of pixels.
+   */
   maxDiffPercentage?: number
+  /**
+   * The maximum difference between the actual and expected images, as the number of pixels.
+   */
   maxDiffPixels?: number
+  /**
+   * Whether to compare the images even if they are of different sizes by resizing them as necessary.
+   * @default false
+   */
+  resizeEnabled?: boolean
+  /**
+   * Whether to ignore the resized area when comparing images.
+   */
+  resizeIgnored?: boolean
+  /**
+   * The color to use for resizing images, in [r,g,b] format, with values from 0 to 255. 
+   * If this number is too similar to the color of the larger image, the resized area 
+   * will be ignored by the pixelmatch algorithm.
+   * @default [255,0,128]
+   */
+  resizeColor?: [number, number, number]
+  /**
+   * The anchor point to use if the images are of different size.
+   * @default "top left"
+   */
+  resizeAnchor?: 'top left'|'top right'|'bottom left'|'bottom right'|'center'|'top'|'bottom'|'left'|'right'
 }
 
 export const defaultScreenshotComparisonOptions:ScreenshotComparisonOptions = {
   maxDiffPercentage: 0,
+  resizeColor: [255,0,128],
+  anchor: 'top left',
   threshold: 0.1,
-  alpha: 0.6
+  alpha: 0.6,
 }
 
 export interface VisualConfigSetting {
@@ -359,10 +390,48 @@ export class VisualWorld extends QuickPickleWorld implements StubVisualWorldInte
     const PNG = await getPNG()
 
     // Parse PNG images to get raw pixel data
-    const actualPng = PNG.sync.read(actual)
-    const expectedPng = PNG.sync.read(expected)
-    const { width, height } = expectedPng
+    let actualPng = PNG.sync.read(actual)
+    let expectedPng = PNG.sync.read(expected)
 
+    // Check if dimensions differ and resize if necessary
+    if ((opts?.resizeEnabled || this?.worldConfig?.screenshotOptions?.resizeEnabled) 
+    && (actualPng.width !== expectedPng.width || actualPng.height !== expectedPng.height)) {
+      // Calculate the maximum dimensions
+      const maxWidth = Math.max(actualPng.width, expectedPng.width)
+      const maxHeight = Math.max(actualPng.height, expectedPng.height)
+
+      // Get the anchor setting
+      const rgba = opts?.resizeColor || this.screenshotOptions.resizeColor || [255,0,128]
+      rgba[3] = (opts?.resizeIgnored || this.screenshotOptions.resizeIgnored) ? 0 : 255
+      const anchor = opts?.anchor || this.screenshotOptions.anchor || 'top left'
+
+      // Resize both images to the maximum dimensions
+      if (actualPng.width !== maxWidth || actualPng.height !== maxHeight) {
+        const resizedActualData = resizeImage(
+          actualPng.data,
+          actualPng.width,
+          actualPng.height,
+          maxWidth,
+          maxHeight,
+          { rgba, anchor }
+        )
+        actualPng = { ...actualPng, data: resizedActualData, width: maxWidth, height: maxHeight }
+      }
+
+      if (expectedPng.width !== maxWidth || expectedPng.height !== maxHeight) {
+        const resizedExpectedData = resizeImage(
+          expectedPng.data,
+          expectedPng.width,
+          expectedPng.height,
+          maxWidth,
+          maxHeight,
+          { rgba, anchor }
+        )
+        expectedPng = { ...expectedPng, data: resizedExpectedData, width: maxWidth, height: maxHeight }
+      }
+    }
+
+    const { width, height } = expectedPng
     const diffPng = new PNG({ width, height })
 
     try {
@@ -378,7 +447,10 @@ export class VisualWorld extends QuickPickleWorld implements StubVisualWorldInte
       return { diff:PNG.sync.write(diffPng), pixels, pct }
     }
     catch(e:any) {
-      e.message += `\n  expected: w:${width}px h:${height}px ${expectedPng.data.length}b\n    actual: w:${actualPng.width}px h:${actualPng.height}px ${actualPng.data.length}b`
+      e.message += `
+        expected: w:${width}px h:${height}px ${expectedPng.data.length}b
+        actual: w:${actualPng.width}px h:${actualPng.height}px ${actualPng.data.length}b
+        - NOTE: set screenshotOptions.resizeEnabled to compare images of different sizes.`
       throw e
     }
   }

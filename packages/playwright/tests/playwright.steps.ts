@@ -161,6 +161,9 @@ Then('the (indexed)db record for {string} should be {string}', async (world:Play
 Then('error {int} should contain {string}', async (world, idx, expected) => {
   await expect(world.info.errors[idx-1].message).toContain(expected)
 })
+Then('error {int} should not/NOT contain {string}', async (world, idx, expected) => {
+  await expect(world.info.errors[idx-1].message).not.toContain(expected)
+})
 Then('clear error {int}', async (world, idx) => {
   world.info.errors.splice(idx-1, 1)
 })

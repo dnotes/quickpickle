@@ -35,6 +35,8 @@ export default {
     /^pngjs/,
     /^buffer/,
     '@a11y-tools/aria-roles',
+    'image-crop-or-pad',
+    'js-yaml',
     'pixelmatch',
     '@cucumber/cucumber-expressions',
     '@cucumber/gherkin',
