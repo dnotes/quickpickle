@@ -161,6 +161,112 @@ Feature: Basic Test
       Given I run the tests
       Then the tests should fail
 
+  @explodeTags
+  Rule: Vitest extensions like "skip" should respect explodeTags definitions
+
+    Background:
+      # We define tests for "@legacy" and "@next", then run tests only for "@next".
+      # This can be done with two separate Vitest project configurations, running
+      # "@legacy" tests in one config, and "@next" tests in the other.
+      Given the following quickpickle config json
+        ```json
+        {
+          "skipTags": [ "@legacy" ],
+          "explodeTags": [
+            [ "@legacy", "@next" ]
+          ]
+        }
+        ```
+
+      Scenario: A scenario for both "@legacy" and "@next"
+        When the following feature is rendered:
+          ```gherkin
+          Feature: Test
+
+            @legacy @next
+            Scenario: Test for both
+              Then the scenario should be both skipped and run
+          ```
+        Then the rendered feature should contain "test.skip('Scenario: Test for both (@legacy)',"
+        And the rendered feature should contain "test('Scenario: Test for both (@next)',"
+        And the rendered feature file should match the snapshot
+
+      Scenario: A "@legacy" feature with a "@next" scenario
+        When the following feature is rendered:
+          ```gherkin
+          @legacy
+          Feature: Legacy test
+
+            Scenario: Test for legacy
+              Then the scenario should be skipped
+            
+            @next
+            Scenario: Test for both
+              Then the scenario should be both skipped and run
+          ```
+        Then the rendered feature should contain "test.skip('Scenario: Test for legacy (@legacy)',"
+        And the rendered feature should contain "test.skip('Scenario: Test for both (@legacy)',"
+        And the rendered feature should contain "test('Scenario: Test for both (@next)',"
+        And the rendered feature file should match the snapshot
+
+      Scenario: A "@legacy" rule with a "@next" scenario
+        When the following feature is rendered:
+          ```gherkin
+          Feature: Test
+
+            @legacy
+            Rule: Legacy rule
+
+              Scenario: Test for legacy
+                Then the scenario should be skipped
+              
+              @next
+              Scenario: Test for both
+                Then the scenario should be both skipped and run
+          ```
+        Then the rendered feature should contain "test.skip('Scenario: Test for legacy (@legacy)',"
+        And the rendered feature should contain "test.skip('Scenario: Test for both (@legacy)',"
+        And the rendered feature should contain "test('Scenario: Test for both (@next)',"
+        And the rendered feature file should match the snapshot
+
+      Scenario: A "@next" feature with a "@legacy" scenario
+        When the following feature is rendered:
+          ```gherkin
+          @next
+          Feature: Next test
+
+            Scenario: Test for next
+              Then the scenario should be run
+
+            @legacy
+            Scenario: Test for both
+              Then the scenario should be both skipped and run
+          ```
+        Then the rendered feature should contain "test('Scenario: Test for next (@next)',"
+        And the rendered feature should contain "test('Scenario: Test for both (@next)',"
+        And the rendered feature should contain "test.skip('Scenario: Test for both (@legacy)',"
+        And the rendered feature file should match the snapshot
+
+      Scenario: A "@next" rule with a "@legacy" scenario
+        When the following feature is rendered:
+          ```gherkin
+          Feature: Test
+ 
+            @next
+            Rule: Next rule
+
+              Scenario: Test for next
+                Then the scenario should be run
+
+              @legacy
+              Scenario: Test for both
+                Then the scenario should be both skipped and run
+          ```
+        Then the rendered feature should contain "test('Scenario: Test for next (@next)',"
+        And the rendered feature should contain "test('Scenario: Test for both (@next)',"
+        And the rendered feature should contain "test.skip('Scenario: Test for both (@legacy)',"
+        And the rendered feature file should match the snapshot
+
   Rule: Tests must have appropriate guards against escaping
     #        | character 14 - 13 = 1                                                   character 113 - 13 = 100 |
     Example: `someone` is ${sneaky} \${with} \\${backslashes} \\\${and} \$\{other} \`things\\` 'like' \'quotes\\'

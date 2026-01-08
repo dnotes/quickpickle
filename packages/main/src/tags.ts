@@ -16,6 +16,7 @@ export function normalizeTags(tags?:string|string[]|undefined):string[] {
  * @returns string[]|null
  */
 export function tagsMatch(confTags:string[], testTags:string[]) {
+  if (!confTags || !testTags) return null
   let tags = intersection(confTags.map(t => t.toLowerCase()), testTags.map(t => t.toLowerCase()))
   return tags?.length ? tags : null
 }

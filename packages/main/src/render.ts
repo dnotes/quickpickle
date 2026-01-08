@@ -136,17 +136,17 @@ function renderScenario(child:FeatureChild, config:QuickPickleConfig, tags:strin
   let initFn = sp.length > 2 ? 'initRuleScenario' : 'initScenario'
   tags = [...tags, ...child.scenario!.tags.map(t => t.name)]
 
+  // Deal with exploding tags
+  let taglists = explodeTags(config.explodeTags as string[][], tags)
+  let isExploded = taglists.length > 1 ? true : false
+  return taglists.map((tags,explodedIdx) => {
+
   let todo = tagsMatch(config.todoTags, tags) ? '.todo' : ''
   let skip = tagsMatch(config.skipTags, tags) ? '.skip' : ''
   let fails = tagsMatch(config.failTags, tags) ? '.fails' : ''
   let sequential = tagsMatch(config.sequentialTags, tags) ? '.sequential' : ''
   let concurrent = (!sequential && tagsMatch(config.concurrentTags, tags)) ? '.concurrent' : ''
-  let attrs = todo + skip + fails + concurrent + sequential
-
-  // Deal with exploding tags
-  let taglists = explodeTags(config.explodeTags as string[][], tags)
-  let isExploded = taglists.length > 1 ? true : false
-  return taglists.map((tags,explodedIdx) => {
+  let attrs = todo + skip + fails + concurrent + sequential  
 
   let tagTextForVitest = tags.length ? ` (${tags.join(' ')})` : ''
 

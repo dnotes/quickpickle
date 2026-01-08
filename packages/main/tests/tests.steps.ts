@@ -1,6 +1,6 @@
 import { expect } from "vitest";
 import { Given, Then, When, defaultConfig, defineParameterType } from "../src";
-import type { DataTable } from "../src";
+import type { DataTable, QuickPickleWorld } from "../src";
 import { clone, get, set, escapeRegExp } from "lodash-es";
 import type { DocString } from "../src/models/DocString";
 import { renderGherkin } from "../src/render";
@@ -131,7 +131,13 @@ Given('a step definition with a higher priority fails', async function (world) {
 
 Given("the following feature( file)( is rendered):", (world, feature:DocString) => {
   world.data.featureText = feature;
-  world.data.featureRendered = renderGherkin(world.data.featureText, world.data.featureConfig ?? {}, (world.data.featureText?.mediaType === 'md' || world.data.featureText?.mediaType === 'markdown'));
+  try {
+    world.data.featureRendered = renderGherkin(world.data.featureText, world.data.featureConfig ?? {}, (world.data.featureText?.mediaType === 'md' || world.data.featureText?.mediaType === 'markdown'));
+  }
+  catch(e) {
+    console.log(e?.stack ?? '');
+    throw e;
+  }
 });
 Given("the following feature( file)( is rendered): {string}", (world, feature:string) => {
   world.data.featureText = feature;
@@ -155,4 +161,7 @@ Then("the rendered feature (file )should contain:", (world, expected) => {
       // Ignore newlines and spacing at the start of the test string
       .replace(/^/gm, '[\\n\\s]*'))
     );
+})
+Then("the rendered feature (file )should match the snapshot", (world:QuickPickleWorld) => {
+  expect(world.data.featureRendered).toMatchSnapshot();
 })
