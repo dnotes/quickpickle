@@ -85,7 +85,6 @@
     "@types/pixelmatch": "^5.2.6",
     "@types/pngjs": "^6.0.5",
     "fast-glob": "^3.3.3",
-    "js-yaml": "^4.1.0",
     "playwright-core": "^1.52.0",
     "rollup": "^4.40.2",
     "typescript": "^5.8.3",
