@@ -184,6 +184,22 @@ Feature: Basic tests of Playwright browser and steps
       When I take a screenshot of the "XKCD Comic" img named "test2"
       Then the screenshot "test2.png" should exist--delete it
 
+    Scenario: Scenario with / slash in the name does not create a directory
+      Given I take a screenshot
+      Then the screenshot "Feature Basic tests of Playwright browser and steps_Scenario with   slash in the name does not create a directory_01.png" should exist--delete it
+
+    Scenario: Scenario with /../../../ traversal in the name does not escape the directory
+      Given I take a screenshot
+      Then the screenshot "Feature Basic tests of Playwright browser and steps_Scenario with  .. .. ..  traversal in the name does not escape the directory_01.png" should exist--delete it
+
+    Scenario: Named screenshot with / slash in the name creates a directory
+      Given I take a screenshot named "test/slash"
+      Then the screenshot "test/slash.png" should exist--delete it
+
+    Scenario: Named screenshot with /../../../ traversal in the name does not escape the screenshot directory
+      Given I take a screenshot named "test/../../../traversal"
+      Then the screenshot "traversal.png" should exist--delete it
+
   Rule: Playwright timeouts must be supported
 
     Background:

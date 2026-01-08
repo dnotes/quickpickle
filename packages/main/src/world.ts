@@ -350,7 +350,7 @@ export class VisualWorld extends QuickPickleWorld implements StubVisualWorldInte
   }
 
   get screenshotFilename() {
-    return `${this.toString().replace(/^.+?Feature: /, 'Feature: ').replace(' ' + this.info.step, '')}.png`
+    return `${this.toString().replace(/^.+?Feature: /, 'Feature: ').replace(' ' + this.info.step, '').replace(/\//g, ' ')}.png`
   }
 
   get screenshotPath() {
