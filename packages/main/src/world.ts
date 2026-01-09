@@ -8,7 +8,6 @@ export type AriaRoleExtended = AriaRole|'element'|'input'
 import { Buffer } from 'buffer'
 import { getPNG } from './shims/png.js'
 import { defaultsDeep } from 'lodash-es';
-// @ts-ignore https://github.com/dnotes/image-crop-or-pad/issues/1
 import { resizeImage } from 'image-crop-or-pad';
 
 export function isAriaRoleExtended(role:string): role is AriaRoleExtended {
@@ -415,7 +414,13 @@ export class VisualWorld extends QuickPickleWorld implements StubVisualWorldInte
           maxHeight,
           { rgba, anchor }
         )
-        actualPng = { ...actualPng, data: resizedActualData, width: maxWidth, height: maxHeight }
+        /**
+         * There are a couple of choices for initializing the data property:
+         * 1. We could use Buffer.from(), except that causes problems if QuickPickle is run in a browser.
+         * 2. We can set up a new PNG instance and use the fill method, but that seems like unnecessary overkill.
+         * 3. I've chosen to use the any cast, since the downstream doesn't use the Buffer capabilities.
+         */
+        actualPng = { ...actualPng, data:resizedActualData as any, width: maxWidth, height: maxHeight }
       }
 
       if (expectedPng.width !== maxWidth || expectedPng.height !== maxHeight) {
@@ -427,7 +432,7 @@ export class VisualWorld extends QuickPickleWorld implements StubVisualWorldInte
           maxHeight,
           { rgba, anchor }
         )
-        expectedPng = { ...expectedPng, data: resizedExpectedData, width: maxWidth, height: maxHeight }
+        expectedPng = { ...expectedPng, data:resizedExpectedData as any, width: maxWidth, height: maxHeight }
       }
     }
 
