@@ -1,5 +1,54 @@
 # @quickpickle/playwright
 
+## 1.1.0
+
+### Minor Changes
+
+- 4f1d105: Add a "priority" for step definitions, settable when the steps are added with `Given`, `When`, or `Then`. This is a non-breaking change for the QuickPickle API, allowing some step definitions to overlap and override others. An example from the playwright library follows: These two step definitions would overlap for the step `the "description" metatag should contain "this text"`, so the second step definition is added with a higher priority.
+
+  ```ts
+  // File: packages/playwright/src/outcomes.steps.ts
+  Then(
+    "a/an/the (value of )(the ){string} {word} should contain/include/be/equal {string}",
+    fn,
+    -10
+  );
+  Then(
+    "the {string} meta( )tag should contain/include/be/equal {string}",
+    fn,
+    -9
+  );
+  ```
+
+  If two matching step definitions have the same priority, an error is thrown.
+
+  All step definitions provided by QuickPickle modules should have a priority below 0 (the default priority), so that custom step definitions should override any standard step definitions by default.
+
+- 910537f: Added support for visual regression testing even for images of different sizes. To enable this, add `screenshotOptions.resizeEnabled: true` in the worldConfig.
+- 7a5d256: Removed the AriaRole parameter type, in favor of a standard {word} and an override system (next)
+- 67179b7: Change default settings for PlaywrightWorld. The following default settings have been changed:
+
+  - slowMoMs: `100` - long enough as a default when slowMo is enabled (which shouldn't be necessary anyhow)
+  - defaultBrowserSize: `mobile` - this was `desktop` before, which resulted in larger images and less mobile testing
+  - defaultTimeout: `1000` - this is a new setting for the timeout for actions (waiting for locators, etc.)
+  - navigationTimeout: `3000` - this is a new setting for the timeout for navigations
+
+  NOTE: If you use visual regression testing and haven't specifically set browser sizes, this will break those baselines.
+
+- eacd7f4: Refactor timeout configuration to avoid confusion with QuickPickle's `stepTimeout` setting: the Playwright/Browser world config's property (previously also confusingly named `stepTimeout`) has been renamed to `defaultTimeout`, and new `actionTimeout` and `navigationTimeout` options have been added to allow separate configuration of action and navigation timeouts. Default timeouts are now automatically set on BrowserContext/Page when created, eliminating the need to pass timeout parameters to individual actions, and this should work for both the Playwright library and the Vitest Browser library, both of which use Playwright in the backend. The defaults are now 1000ms for actions and 3000ms for navigation.
+
+### Patch Changes
+
+- 6361a20: Update js-yaml for security alert
+- Updated dependencies [4f1d105]
+- Updated dependencies [910537f]
+- Updated dependencies [7a5d256]
+- Updated dependencies [6361a20]
+- Updated dependencies [453fc99]
+- Updated dependencies [d028ff2]
+- Updated dependencies [ce4d62b]
+  - quickpickle@1.11.0
+
 ## 1.0.0
 
 ### Major Changes

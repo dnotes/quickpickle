@@ -1,5 +1,23 @@
 # @quickpickle/vitest-browser
 
+## 0.3.0
+
+### Minor Changes
+
+- eacd7f4: Refactor timeout configuration to avoid confusion with QuickPickle's `stepTimeout` setting: the Playwright/Browser world config's property (previously also confusingly named `stepTimeout`) has been renamed to `defaultTimeout`, and new `actionTimeout` and `navigationTimeout` options have been added to allow separate configuration of action and navigation timeouts. Default timeouts are now automatically set on BrowserContext/Page when created, eliminating the need to pass timeout parameters to individual actions, and this should work for both the Playwright library and the Vitest Browser library, both of which use Playwright in the backend. The defaults are now 1000ms for actions and 3000ms for navigation.
+- ff8b175: Add priority for step definitions, to enable overlaps and overrides. See https://github.com/dnotes/quickpickle/commit/4f1d1055cd46e48174d6bc0d47fd9d2e1c535d30.
+
+### Patch Changes
+
+- Updated dependencies [4f1d105]
+- Updated dependencies [910537f]
+- Updated dependencies [7a5d256]
+- Updated dependencies [6361a20]
+- Updated dependencies [453fc99]
+- Updated dependencies [d028ff2]
+- Updated dependencies [ce4d62b]
+  - quickpickle@1.11.0
+
 ## 0.2.2
 
 ### Patch Changes
