@@ -1,5 +1,48 @@
 # quickpickle
 
+## 1.11.0
+
+### Minor Changes
+
+- 4f1d105: Add a "priority" for step definitions, settable when the steps are added with `Given`, `When`, or `Then`. This is a non-breaking change for the QuickPickle API, allowing some step definitions to overlap and override others. An example from the playwright library follows: These two step definitions would overlap for the step `the "description" metatag should contain "this text"`, so the second step definition is added with a higher priority.
+
+  ```ts
+  // File: packages/playwright/src/outcomes.steps.ts
+  Then(
+    "a/an/the (value of )(the ){string} {word} should contain/include/be/equal {string}",
+    fn,
+    -10
+  );
+  Then(
+    "the {string} meta( )tag should contain/include/be/equal {string}",
+    fn,
+    -9
+  );
+  ```
+
+  If two matching step definitions have the same priority, an error is thrown.
+
+  All step definitions provided by QuickPickle modules should have a priority below 0 (the default priority), so that custom step definitions should override any standard step definitions by default.
+
+- 910537f: Added support for visual regression testing even for images of different sizes. To enable this, add `screenshotOptions.resizeEnabled: true` in the worldConfig.
+- 7a5d256: Removed the AriaRole parameter type, in favor of a standard {word} and an override system (next)
+- 453fc99: Added "@should-fail" to the default list of fail tags.
+- d028ff2: Add parsing for DocString data with media types of `json` or `yaml`. Gherkin 6 syntax specifies that a `DocString` data type can have a `mediaType` property; this is an expansion to that syntax, providing automated parsing for data of types `json` or `yaml` (or `yml`). The parsed data will be available under the `data` property of the DocString variable. If the data doesn't parse properly, the parser will throw an error.
+
+  ````gherkin
+    Given the following data:
+      ```yaml
+        foo: bar
+      ```
+    Then the value of docString.data.foo should be "bar"
+  ````
+
+- ce4d62b: Fix: Vitest test extensions (skip,todo,etc.) work with QuickPickle explodeTags config. Before this, any tags in the `skipTags` config would skip all of the descendant scenarios, regardless of whether they were eventually exploded out of the tags array for the individual scenario.
+
+### Patch Changes
+
+- 6361a20: Update js-yaml for security alert
+
 ## 1.10.1
 
 ### Patch Changes
