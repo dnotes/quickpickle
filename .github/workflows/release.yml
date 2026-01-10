@@ -39,15 +39,6 @@ jobs:
       - name: Run Tests
         run: pnpm -w run test
 
-      # - name: Upload artifacts
-      #   uses: actions/upload-artifact@v4
-      #   if: always()
-      #   with:
-      #     name: visual-regressions
-      #     path: '**/*.png.*.png'
-      #     retention-days: 3
-      #     overwrite: true
-
   release:
     needs: test
     environment: npm-publish
@@ -55,6 +46,7 @@ jobs:
       contents: write
       pull-requests: write
       issues: write
+      id-token: write
     timeout-minutes: 20
     name: Release
     runs-on: ubuntu-latest
@@ -89,4 +81,4 @@ jobs:
           title: "chore: new release candidate"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NPM_TOKEN: '' # https://github.com/changesets/changesets/issues/1152#issuecomment-3190884868
