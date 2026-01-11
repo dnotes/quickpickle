@@ -1,8 +1,13 @@
 {
   "name": "quickpickle",
+  "private": true,
   "version": "0.0.1",
   "description": "A suite of tools for behavioral testing (BDD) using Gherkin for Javascript.",
   "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dnotes/quickpickle"
+  },
   "scripts": {
     "changeset": "changeset",
     "changeset:release": "changeset publish",
