@@ -20,7 +20,7 @@ jobs:
 
       - uses: pnpm/action-setup@v4
         with:
-          version: 9
+          version: 10
 
       - name: Setup Node.js
         uses: actions/setup-node@v3
@@ -58,12 +58,12 @@ jobs:
 
       - uses: pnpm/action-setup@v4
         with:
-          version: 9
+          version: 10
 
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '20.x'
+          node-version: '24.x'
 
       - name: Install Dependencies
         run: pnpm install --frozen-lockfile
@@ -75,7 +75,7 @@ jobs:
         id: changesets
         uses: changesets/action@v1
         with:
-          publish: pnpm changeset:release
+          publish: pnpm publish -r --access public
           version: pnpm changeset:version
           commit: "chore: new release"
           title: "chore: new release candidate"
