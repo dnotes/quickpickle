@@ -1,0 +1,6 @@
+{
+  "cucumber.glue": [
+    "**/playwright/**/*.steps.ts",
+    "**/main/**/*.steps.ts",
+  ]
+}

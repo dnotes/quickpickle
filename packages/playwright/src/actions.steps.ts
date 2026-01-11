@@ -35,12 +35,25 @@ When('I go back/forward/forwards', async function (world:PlaywrightWorld) {
 // ================
 // Identities
 
-Given('(as )a/an/the (user ){string}', async function (world:PlaywrightWorld, identity) {
+Given('a/an/the {string}', async function (world:PlaywrightWorld, identity) {
   await world.setIdentity(identity)
 }, -10)
-Given('(as )a/an/the {string} user/role/browser/identity', async function (world:PlaywrightWorld, identity) {
+Given('a/an/the user {string}', async function (world:PlaywrightWorld, identity) {
   await world.setIdentity(identity)
 }, -10)
+Then('as a/an/the {string}', async function (world:PlaywrightWorld, identity) {
+  await world.setIdentity(identity)
+}, -10)
+Then('as a/an/the user {string}', async function (world:PlaywrightWorld, identity) {
+  await world.setIdentity(identity)
+}, -10)
+Given('a/an/the {string} user/role/browser/identity', async function (world:PlaywrightWorld, identity) {
+  await world.setIdentity(identity)
+}, -10)
+Then('as a/an/the {string} user/role/browser/identity', async function (world:PlaywrightWorld, identity) {
+  await world.setIdentity(identity)
+}, -10)
+
 Given('I am {string}', async function (world:PlaywrightWorld, identity) {
   await world.setIdentity(identity)
 }, -10)
