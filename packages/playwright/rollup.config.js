@@ -46,6 +46,7 @@ export default {
     '@playwright/test',
     'playwright',
     'quickpickle',
+    '@axe-core/playwright',
     'vite',
     'node:path',
     'node:url',
