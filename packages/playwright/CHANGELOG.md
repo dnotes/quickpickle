@@ -1,5 +1,11 @@
 # @quickpickle/playwright
 
+## 1.2.1
+
+### Patch Changes
+
+- f136b5f: Fix actions step definitions so that autocomplete works with official Cucumber plugin for VS Code.
+
 ## 1.2.0
 
 ### Minor Changes
