@@ -229,5 +229,14 @@ Feature: Basic tests of Playwright browser and steps
 
     @dark
     Scenario: Dark mode should be enabled
+      Given the following world config:
+        ```yaml
+          screenshotOptions:
+            clip:
+              x: 0
+              y: 0
+              width: 10
+              height: 10
+        ```
       Given I load the file "tests/examples/simple.html"
       Then the screenshot should match
