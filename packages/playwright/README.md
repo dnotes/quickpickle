@@ -118,6 +118,7 @@ export default {
       // General quickpickle configuration
       explodeTags: [
         ['nojs','js'],
+        ['dark','light'],
         ['chromium','firefox','webkit'],
         ['mobile','tablet','desktop','widescreen'],
       ],
@@ -140,6 +141,7 @@ export default {
       // General quickpickle configuration
       explodeTags: [
         ['nojs','js'],
+        ['dark','light'],
         ['chromium','firefox','webkit'],
         ['mobile','tablet','desktop','widescreen'],
       ],
@@ -165,6 +167,8 @@ export type PlaywrightWorldConfigSetting = Partial<{
   nojsTags: string|string[] // tags for scenarios to run without javascript (default: @nojs, @noscript)
   showBrowserTags: string|string[] // tags for scenarios to run with browser visible (default: @browser, @show-browser, @showbrowser)
   slowMoTags: string|string[] // tags for scenarios to be run with slow motion enabled (default: @slowmo)
+  darkModeTags: string|string[] // tags for scenarios to run in dark mode (default: @dark)
+  lightModeTags: string|string[] // tags for scenarios to run in light mode (default: @light)
   headless: boolean // whether to run the browser in headless mode (default true)
   slowMo: boolean|number // whether to run the browser with slow motion enabled (default false)
   slowMoMs: number // the number of milliseconds to slow down the browser by (default 500)
@@ -173,6 +177,7 @@ export type PlaywrightWorldConfigSetting = Partial<{
   browserSizes: Record<string,string> // the default browser sizes to use, in the form "widthxheight"
   // (default: { mobile: "480x640", tablet: "1024x768", desktop: "1920x1080", widescreen: "3440x1440" })
   defaultBrowserSize: string // the default browser size to use (default: desktop)
+  accessibilityExcludes: string|string[] // any elements to exclude from accessibility testing
 }>
 ```
 

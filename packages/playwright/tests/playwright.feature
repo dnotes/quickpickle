@@ -224,3 +224,10 @@ Feature: Basic tests of Playwright browser and steps
       When I visit "https://xkcd.com/2928/"
       Then error 1 should contain "3000ms"
       And clear error 1
+
+  Rule: Dark mode should be supported
+
+    @dark
+    Scenario: Dark mode should be enabled
+      Given I load the file "tests/examples/simple.html"
+      Then the screenshot should match

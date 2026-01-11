@@ -49,6 +49,16 @@ export type PlaywrightWorldConfigSetting = Partial<{
    */
   slowMoTags: string|string[],
   /**
+   * Tags for scenarios to run with dark mode enabled.
+   * @default ["@dark"]
+   */
+  darkModeTags: string|string[],
+  /**
+   * Tags for scenarios to run with light mode enabled.
+   * @default ["@light"]
+   */
+  lightModeTags: string|string[],
+  /**
    * Whether to run the browser in headless mode.
    * @default true
    */
@@ -117,6 +127,8 @@ export const defaultPlaywrightWorldConfig = {
   nojsTags: ['@nojs', '@noscript'],
   showBrowserTags: ['@browser','@show-browser','@showbrowser'],
   slowMoTags: ['@slowmo'],
+  darkModeTags: ['@dark'],
+  lightModeTags: ['@light'],
   headless: true,
   slowMo: false,
   slowMoMs: 100,
@@ -187,7 +199,10 @@ export class PlaywrightWorld extends VisualWorld implements VisualWorldInterface
     context.setDefaultNavigationTimeout(this.worldConfig.navigationTimeout || this.worldConfig.defaultTimeout)
     
     let page = await context.newPage()
-    
+    if (this.tagsMatch(this.worldConfig.darkModeTags)) {
+      await page.emulateMedia({ colorScheme: 'dark' });
+    }
+      
     if (name !== 'default') {
       let url = this.identities.get('default')!.page.url()
       await page.goto(url)
