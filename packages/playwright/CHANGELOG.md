@@ -1,5 +1,14 @@
 # @quickpickle/playwright
 
+## 1.2.0
+
+### Minor Changes
+
+- 35e783b: Add tags for dark and light mode.
+- 31e43b5: Added step definition, settings and tests for accessibility testing. Test accessibility with the step
+  "all accessibility tests should pass". For any elements that should be excluded, add them to the
+  worldConfig.accessibilityExclude array.
+
 ## 1.1.0
 
 ### Minor Changes
