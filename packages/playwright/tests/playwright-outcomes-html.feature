@@ -145,3 +145,28 @@ Feature: Outcome step definitions on a static page
       And the meta tag "viewport" should NOT be "width=device-width"
       Then the "viewport" metatag should contain "width=device-width"
       And the "viewport" metatag should NOT be "width=device-width"
+
+  Rule: Accessibility testing should be possible
+
+    Scenario: passing accessibility tests
+      Then all accessibility tests should pass
+
+    @soft
+    Scenario: failing accessibility tests
+      Given I load the file "tests/examples/simple.html"
+      When all accessibility tests should pass
+      Then error 1 should contain "Some page content is not contained by landmarks"
+      And clear error 1
+
+    @soft
+    Scenario: accessibility tests can be excluded
+      Given the following world config:
+        ```yaml
+        accessibilityExcludes:
+          - h1
+          - p
+        ```
+      Given I load the file "tests/examples/simple.html"
+      When all accessibility tests should pass
+      Then error 1 should NOT contain "Some page content is not contained by landmarks"
+      And clear error 1

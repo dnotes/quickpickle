@@ -67,6 +67,7 @@
     "test": "vitest --run"
   },
   "dependencies": {
+    "@axe-core/playwright": "^4.11.0",
     "@playwright/test": "^1.52.0",
     "lodash": "^4.17.21",
     "lodash-es": "^4.17.21",

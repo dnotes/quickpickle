@@ -104,6 +104,11 @@ export type PlaywrightWorldConfigSetting = Partial<{
    * @default 3000
    */
   navigationTimeout: number,
+  /**
+   * Elements to exclude during accessibility tests.
+   * @default []
+   */
+  accessibilityExcludes: string|string[]
 }>
 
 export const defaultPlaywrightWorldConfig = {
@@ -131,6 +136,7 @@ export const defaultPlaywrightWorldConfig = {
 export type PlaywrightWorldConfig = typeof defaultPlaywrightWorldConfig & {
   port?:number,
   browserSizes: Record<string,string>
+  accessibilityExcludes: string|string[]
 }
 
 export type BrowserMap = {

@@ -9,6 +9,11 @@
     "url": "https://github.com/dnotes/quickpickle"
   },
   "scripts": {
+
+    "main": "pnpm --dir packages/main",
+    "playwright": "pnpm --dir packages/playwright",
+    "browser": "pnpm --dir packages/browser",
+
     "changeset": "changeset",
     "changeset:release": "changeset publish",
     "changeset:version": "changeset version",

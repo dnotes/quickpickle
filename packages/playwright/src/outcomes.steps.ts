@@ -2,6 +2,8 @@ import { Then } from "quickpickle";
 import type { PlaywrightWorld } from "./PlaywrightWorld";
 import { expect, Locator, Page } from '@playwright/test'
 import './snapshotMatcher'
+import { AxeBuilder } from '@axe-core/playwright'
+
 // ================
 // Text on page
 
@@ -224,4 +226,17 @@ Then('the url should contain/include/be/equal {string}', async function (world:P
   let exact = world.info.step?.match(/ should (?:be|equal) ['"]/) ? true : false
   if (exact) await expect(world.page.url()).toBe(url)
   else await expect(world.page.url()).toContain(url)
+}, -10)
+
+// Accessibility testing
+Then('all accessibility tests should pass', async function (world:PlaywrightWorld) {
+  let axeBuilder = new AxeBuilder({ page: world.page })
+  if (world.worldConfig.accessibilityExcludes) {
+    let excludes = Array.isArray(world.worldConfig.accessibilityExcludes) ? world.worldConfig.accessibilityExcludes : [world.worldConfig.accessibilityExcludes]
+    excludes.forEach(exclude => { 
+      axeBuilder.exclude(exclude)
+    })
+  }
+  let results = await axeBuilder.analyze()
+  expect(results.violations).toHaveLength(0)
 }, -10)
