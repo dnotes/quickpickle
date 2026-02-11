@@ -238,5 +238,14 @@ Then('all accessibility tests should pass', async function (world:PlaywrightWorl
     })
   }
   let results = await axeBuilder.analyze()
-  expect(results.violations).toHaveLength(0)
+  try {
+    expect(results.violations).toHaveLength(0)
+  }
+  catch(e:any) {
+    throw new Error(results.violations.map((v,i) => `### ${v.help}\n${v.nodes.map(n => {
+      const contrastCheck = [...n.all, ...n.any].find(check => check.id === 'color-contrast' && check.data);
+      if (contrastCheck) return `  - (${contrastCheck.data.contrastRatio} < ${contrastCheck.data.expectedContrastRatio.replace(/:1$/,'')}) ${n.html}`;
+      else return `  - ${n.html}`;
+    }).join('\n')}`).join('\n'));
+  }
 }, -10)

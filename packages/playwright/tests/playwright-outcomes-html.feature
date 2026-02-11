@@ -155,7 +155,7 @@ Feature: Outcome step definitions on a static page
     Scenario: failing accessibility tests
       Given I load the file "tests/examples/simple.html"
       When all accessibility tests should pass
-      Then error 1 should contain "Some page content is not contained by landmarks"
+      Then error 1 should contain "All page content should be contained by landmarks"
       And clear error 1
 
     @soft
@@ -168,5 +168,5 @@ Feature: Outcome step definitions on a static page
         ```
       Given I load the file "tests/examples/simple.html"
       When all accessibility tests should pass
-      Then error 1 should NOT contain "Some page content is not contained by landmarks"
+      Then error 1 should NOT contain "All page content should be contained by landmarks"
       And clear error 1
