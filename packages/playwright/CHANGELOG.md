@@ -1,5 +1,13 @@
 # @quickpickle/playwright
 
+## 1.2.3
+
+### Patch Changes
+
+- 61ecd0f: update dependencies
+- Updated dependencies [61ecd0f]
+  - quickpickle@1.11.1
+
 ## 1.2.2
 
 ### Patch Changes
