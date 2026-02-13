@@ -43,6 +43,6 @@
     "vitest": "^3.2.4"
   },
   "dependencies": {
-    "@changesets/cli": "^2.29.3"
+    "@changesets/cli": "^2.29.8"
   }
 }
