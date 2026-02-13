@@ -101,7 +101,7 @@
     "react": "^19.1.0",
     "rollup": "^4",
     "svelte": "^5",
-    "vite": "^6",
+    "vite": "^6.4.1",
     "vitest": "^3.1.4"
   },
   "dependencies": {
