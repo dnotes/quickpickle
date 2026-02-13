@@ -1,5 +1,11 @@
 # @quickpickle/playwright
 
+## 1.2.2
+
+### Patch Changes
+
+- 5c0bd04: fix: improved errors for accessibility checks
+
 ## 1.2.1
 
 ### Patch Changes
