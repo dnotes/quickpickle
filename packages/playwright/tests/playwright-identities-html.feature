@@ -21,3 +21,10 @@ Feature: Multiple browsers with identities
     And a db record for "test" with value "user2"
     Then as "user1"
     Then the db record for "test" should be "user1"
+
+  @mobile @tablet @desktop
+  Scenario: Browser sizes are set for new identities
+    Given I load the file "tests/examples/simple.html"
+    Then the screenshot "identity-browser-size" should match
+    When I am "bob"
+    Then the screenshot "identity-browser-size" should match
