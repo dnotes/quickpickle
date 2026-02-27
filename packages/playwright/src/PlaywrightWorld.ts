@@ -215,6 +215,7 @@ export class PlaywrightWorld extends VisualWorld implements VisualWorldInterface
   async setIdentity(name:string) {
     if (!this.identities.has(name)) await this.newIdentity(name)
     this._identity = name
+    await this.setViewportSize()
   }
 
   get browserName() {
