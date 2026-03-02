@@ -194,6 +194,11 @@ Given('the network latency is {int}ms', async function (world:PlaywrightWorld, l
   });
 });
 
+// Identities
+Then('I should (still )be {string}', async function (world:PlaywrightWorld, identity:string) {
+  expect(world.identity).toBe(identity)
+})
+
 BeforeAll(async () => {
   await serverManager.startServer()
 })

@@ -211,11 +211,11 @@ export class PlaywrightWorld extends VisualWorld implements VisualWorldInterface
       context,
       page
     })
+    await this.setViewportSize(undefined, name)
   }
   async setIdentity(name:string) {
     if (!this.identities.has(name)) await this.newIdentity(name)
     this._identity = name
-    await this.setViewportSize()
   }
 
   get browserName() {
@@ -253,20 +253,21 @@ export class PlaywrightWorld extends VisualWorld implements VisualWorldInterface
     }
     this.info.config.worldConfig = newConfig
   }
-  async setViewportSize(size?:string) {
+  async setViewportSize(size?:string, identity?:string) {
+    identity = identity || this.identity
     if (size) {
       size = size.replace(/^['"]/, '').replace(/['"]$/, '')
       if (this.worldConfig.browserSizes[size]) {
-        await this.page.setViewportSize(getDimensions(this.worldConfig.browserSizes[size]))
+        await this.identities.get(identity)!.page.setViewportSize(getDimensions(this.worldConfig.browserSizes[size]))
       }
       else if (size.match(/^\d+x\d+$/)) {
-        await this.page.setViewportSize(getDimensions(size))
+        await this.identities.get(identity)!.page.setViewportSize(getDimensions(size))
       }
       else throw new Error(`Invalid browser size: ${size}
         (found: ${this.worldConfig.browserSizes[size]})
         (available: ${Object.keys(this.worldConfig.browserSizes).join(', ')})`)
     }
-    else await this.page.setViewportSize(this.browserSize)
+    else await this.identities.get(identity)!.page.setViewportSize(this.browserSize)
   }
 
   async startBrowser() {
