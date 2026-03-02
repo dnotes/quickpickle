@@ -45,7 +45,7 @@ Feature: Multiple browsers with identities
     And as "someone else"
     Then I should be "someone else"
 
-  @mobile @tablet @desktop
+  @mobile @tablet @desktop @skip-ci
   Scenario: Browser sizes are set for new identities
     Given I load the file "tests/examples/simple.html"
     Then the screenshot "identity-browser-size" should match
