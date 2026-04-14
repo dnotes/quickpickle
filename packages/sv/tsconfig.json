@@ -5,5 +5,7 @@
 		"checkJs": true,
 		"module": "NodeNext",
 		"moduleResolution": "NodeNext"
-	}
+	},
+	"include": ["src"],
+	"exclude": ["dist", "node_modules"]
 }
