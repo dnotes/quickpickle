@@ -89,8 +89,7 @@
     "test:svelte": "SHOW_BROWSER=true vitest --project svelte",
     "test:vue": "SHOW_BROWSER=true vitest --project vue",
     "test:react": "SHOW_BROWSER=true vitest --project react",
-    "test:watch": "vitest",
-    "test": "vitest --run"
+    "test:watch": "vitest"
   },
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "^5",
