@@ -1,16 +1,16 @@
 {
 	"name": "@quickpickle/sv",
 	"description": "Svelte CLI community add-on for QuickPickle behavioral testing",
-	"version": "0.13.0",
-  "homepage": "https://github.com/dnotes/quickpickle#readme",
-  "bugs": {
-    "url": "https://github.com/dnotes/quickpickle/issues"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/dnotes/quickpickle"
-  },
-  "author": "David Hunt",
+	"version": "0.13.1",
+	"homepage": "https://github.com/dnotes/quickpickle#readme",
+	"bugs": {
+		"url": "https://github.com/dnotes/quickpickle/issues"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/dnotes/quickpickle"
+	},
+	"author": "David Hunt",
 	"type": "module",
 	"license": "MIT",
 	"scripts": {
