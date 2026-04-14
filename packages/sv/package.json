@@ -1,0 +1,53 @@
+{
+	"name": "@quickpickle/sv",
+	"description": "Svelte CLI community add-on for QuickPickle behavioral testing",
+	"version": "0.13.0",
+  "homepage": "https://github.com/dnotes/quickpickle#readme",
+  "bugs": {
+    "url": "https://github.com/dnotes/quickpickle/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dnotes/quickpickle"
+  },
+  "author": "David Hunt",
+	"type": "module",
+	"license": "MIT",
+	"scripts": {
+		"demo-create": "sv create demo --types ts --template minimal --no-add-ons --no-install",
+		"demo-add": "pnpm build && sv add file:../ --cwd demo --no-git-check --no-install",
+		"demo-add:ci": "pnpm build && sv add file:../ --cwd demo --no-git-check --no-download-check --no-install",
+		"build": "tsdown",
+		"prepublishOnly": "pnpm build",
+		"test": "vitest run",
+		"test:ci": "vitest run --reporter='dot'",
+		"test:watch": "vitest"
+	},
+	"files": [
+		"dist"
+	],
+	"exports": {
+		".": {
+			"default": "./dist/index.mjs"
+		}
+	},
+	"publishConfig": {
+		"access": "public"
+	},
+	"peerDependencies": {
+		"sv": "^0.13.0"
+	},
+	"devDependencies": {
+		"@playwright/test": "^1.59.1",
+		"@sveltejs/sv-utils": "latest",
+		"@types/node": "^25.5.2",
+		"sv": "latest",
+		"tsdown": "^0.21.7",
+		"vitest": "^4.1.3"
+	},
+	"keywords": [
+		"sv-add",
+		"svelte",
+		"sveltekit"
+	]
+}
