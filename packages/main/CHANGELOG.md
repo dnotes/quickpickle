@@ -1,5 +1,11 @@
 # quickpickle
 
+## 1.11.2
+
+### Patch Changes
+
+- 7da6c2b: fix: make pixelmatch an optional peer dependency for quickpickle (thx @matus-sabo)
+
 ## 1.11.1
 
 ### Patch Changes
