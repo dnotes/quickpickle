@@ -43,7 +43,5 @@ export default {
     '@cucumber/messages',
     '@cucumber/tag-expressions',
     /^lodash/,
-    'read-pkg',
-    'unicorn-magic',
   ]
 };

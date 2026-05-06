@@ -134,6 +134,9 @@ importers:
       '@types/node':
         specifier: ^22.15.17
         version: 22.15.17
+      pixelmatch:
+        specifier: ^6.0.0
+        version: 6.0.0
       playwright:
         specifier: ^1.58.2
         version: 1.58.2

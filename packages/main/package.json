@@ -64,6 +64,7 @@
     "@types/lodash": "^4.17.16",
     "@types/lodash-es": "^4.17.12",
     "@types/node": "^22.15.17",
+    "pixelmatch": "^6.0.0",
     "playwright": "^1.58.2",
     "rollup": "^4.40.2",
     "typescript": "^5.8.3",
@@ -71,7 +72,13 @@
     "vitest": "^3.2.4"
   },
   "peerDependencies": {
+    "pixelmatch": "^6.0.0",
     "vitest": "^1.0.0 || >=2.0.0"
+  },
+  "peerDependenciesMeta": {
+    "pixelmatch": {
+      "optional": true
+    }
   },
   "repository": {
     "type": "git",

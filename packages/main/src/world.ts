@@ -2,8 +2,8 @@ import type { TestContext } from 'vitest'
 import { tagsMatch } from './tags'
 import type { QuickPickleConfig } from '.'
 import sanitize from './shims/path-sanitizer'
-import pixelmatch, { type PixelmatchOptions } from 'pixelmatch';
-import { ariaRoles, type AriaRole } from '@a11y-tools/aria-roles';
+import type { PixelmatchOptions } from 'pixelmatch'
+import { ariaRoles, type AriaRole } from '@a11y-tools/aria-roles'
 export type AriaRoleExtended = AriaRole|'element'|'input'
 import { Buffer } from 'buffer'
 import { getPNG } from './shims/png.js'
@@ -439,8 +439,21 @@ export class VisualWorld extends QuickPickleWorld implements StubVisualWorldInte
     const { width, height } = expectedPng
     const diffPng = new PNG({ width, height })
 
+    let runPixelmatch:any
     try {
-      const pixels = pixelmatch(
+      runPixelmatch = (await import('pixelmatch')).default
+    } catch (e: unknown) {
+      const err = e as NodeJS.ErrnoException & { code?: string }
+      if (err?.code === 'ERR_MODULE_NOT_FOUND' || err?.code === 'MODULE_NOT_FOUND') {
+        throw new Error(
+          'Screenshot comparison requires the optional peer dependency `pixelmatch`. Add it to your project (e.g. npm install -D pixelmatch or pnpm add -D pixelmatch).'
+        )
+      }
+      throw e
+    }
+
+    try {
+      const pixels = runPixelmatch(
         actualPng.data,
         expectedPng.data,
         diffPng.data,
