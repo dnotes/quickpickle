@@ -68,6 +68,22 @@ Then('as {string}', async function (world:PlaywrightWorld, identity) {
   await world.setIdentity(identity)
 }, -10)
 
+When(`I am using the browser of {string}`, async function (world:PlaywrightWorld, identity:string) {
+  await world.setUsingBrowser(identity)
+}, -10)
+When(`I am using {word}'s browser`, async function (world:PlaywrightWorld, identity:string) {
+  await world.setUsingBrowser(identity)
+}, -10)
+When(`I am using my (own )browser`, async function (world:PlaywrightWorld) {
+  world.clearUsingBrowser(world.identity)
+}, -10)
+When(`a/the user {string} is using the browser of {string}`, async function (world:PlaywrightWorld, userIdentity:string, browserIdentity:string) {
+  await world.setUsingBrowser(browserIdentity, userIdentity)
+}, -10)
+When(`{word} is using {word}'s browser`, async function (world:PlaywrightWorld, userIdentity:string, browserIdentity:string) {
+  await world.setUsingBrowser(browserIdentity, userIdentity)
+}, -10)
+
 // ================
 // Interaction
 

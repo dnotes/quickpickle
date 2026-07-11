@@ -154,6 +154,8 @@ export type PlaywrightWorldConfig = typeof defaultPlaywrightWorldConfig & {
 export type BrowserMap = {
   context: BrowserContext
   page: Page
+  /** When set, this identity uses that identity's owned browser (one hop). */
+  usingBrowser?: string
 }
 export class PlaywrightWorld extends VisualWorld implements VisualWorldInterface {
   browser!: Browser
@@ -176,11 +178,60 @@ export class PlaywrightWorld extends VisualWorld implements VisualWorldInterface
     await this.newIdentity('default')
     await this.setViewportSize()
   }
+
+  usingBrowserFor(name:string):string {
+    let i = this.identities.get(name)
+    if (!i) throw new Error(`There is no identity registered for "${name}".`)
+    return i?.usingBrowser || name
+  }
+
+  /**
+   * Point `name`'s effective browser at `targetName`'s owned browser.
+   * Creates missing identities.
+   */
+  async setUsingBrowser(targetName:string, name?:string) {
+    name = name ?? this.identity
+    if (name === targetName) {
+      this.clearUsingBrowser(name)
+    }
+    if (!this.identities.has(targetName)) await this.newIdentity(targetName)
+    if (!this.identities.has(name)) await this.newIdentity(name)
+    this.identities.get(name)!.usingBrowser = targetName
+  }
+
+  /**
+   * Stop borrowing; restore `name` to its owned browser.
+   */
+  clearUsingBrowser(name?:string) {
+    const id = this.identities.get(name ?? this.identity)
+    if (!id) throw new Error(`There is no identity "${name}".`)
+    delete id.usingBrowser
+  }
+
+  /**
+   * Effective page for an identity: one hop to the target's owned page when
+   * `usingBrowser` is set, otherwise that identity's owned page.
+   */
+  pageFor(name:string): Page {
+    let page = this.identities.get(this.usingBrowserFor(name))?.page
+    if (!page) throw new Error(`There is no page for identity "${this.usingBrowserFor(name)}"`)
+    return page
+  }
+
+  /**
+   * Effective browser context for an identity (same one-hop resolution as pageFor).
+   */
+  contextFor(name:string): BrowserContext {
+    let context = this.identities.get(this.usingBrowserFor(name))?.context
+    if (!context) throw new Error(`There is no context for identity "${this.usingBrowserFor(name)}"`)
+    return context
+  }
+
   get browserContext() {
-    return this.identities.get(this.identity)!.context
+    return this.contextFor(this.identity)
   }
   get page() {
-    return this.identities.get(this.identity)!.page
+    return this.pageFor(this.identity)
   }
   get identity() {
     return this._identity

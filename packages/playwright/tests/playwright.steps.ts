@@ -199,6 +199,21 @@ Then('I should (still )be {string}', async function (world:PlaywrightWorld, iden
   expect(world.identity).toBe(identity)
 })
 
+Then(`the browser for {string} should (still )be {string}`, async function (world:PlaywrightWorld, userIdentity:string, browserIdentity:string) {
+  expect(world.pageFor(userIdentity)).toBe(world.identities.get(browserIdentity)!.page)
+})
+
+When('I am using a nonexistent browser', async function (world:PlaywrightWorld) {
+  world.identities.get(world.identity)!.usingBrowser = 'nonexistent'
+})
+
+// Browser size
+Then(`the browser size should be {int} x {int}`, async function (world:PlaywrightWorld, width:number, height:number) {
+  expect(world.page.viewportSize()).toEqual({ width, height })
+})
+
+
+// Hooks
 BeforeAll(async () => {
   await serverManager.startServer()
 })
